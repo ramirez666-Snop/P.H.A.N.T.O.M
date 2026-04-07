@@ -1,0 +1,21 @@
+<div class="overview" aria-label="Resumen del usuario">
+  <div class="stats" role="region" aria-label="Estadísticas">
+    <div class="stat"><strong>Nivel</strong><span>{{ nivel|default:12 }}</span></div>
+    <div class="stat"><strong>Puntos XP</strong><span>{{ xp|default:4520 }}</span></div>
+    <div class="stat"><strong>Laboratorios</strong><span>{{ laboratorios|default:28 }}</span></div>
+  </div>
+
+  <div class="tiles" role="region" aria-label="Accesos rápidos">
+    <article class="tile" aria-labelledby="tile-desafios">
+      <h3 id="tile-desafios">Desafíos</h3>
+      <p>Accede a retos y pruebas.</p>
+      <button class="btn" data-target="desafios">Ir a Desafíos</button>
+    </article>
+
+    <article class="tile" aria-labelledby="tile-laboratorios">
+      <h3 id="tile-laboratorios">Laboratorios</h3>
+      <p>Entrenamiento práctico.</p>
+      <button class="btn" data-target="laboratorios">Ir a Laboratorios</button>
+    </article>
+  </div>
+</div>

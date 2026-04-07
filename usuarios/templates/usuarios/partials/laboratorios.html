@@ -1,0 +1,22 @@
+<section aria-label="Laboratorios">
+  <h2>Laboratorios</h2>
+  <p>Ingresar información</p>
+
+  <form id="lab-form-partial" class="form-partial">
+    <div class="form-row">
+      <label for="lab-nombre">Nombre del laboratorio</label>
+      <input id="lab-nombre" name="nombre" type="text" required>
+    </div>
+
+    <div class="form-row">
+      <label for="lab-desc">Descripción</label>
+      <textarea id="lab-desc" name="descripcion" rows="4"></textarea>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn">Enviar</button>
+    </div>
+  </form>
+
+  <div id="lab-result" class="result" aria-live="polite"></div>
+</section>
