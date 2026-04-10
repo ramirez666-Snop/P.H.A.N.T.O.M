@@ -1,0 +1,173 @@
+{% load static %}
+
+<style>
+
+/* CONTENEDOR */
+.course-container{
+    max-width:900px;
+    margin:auto;
+}
+
+/* HEADER */
+.course-header{
+    margin-bottom:20px;
+}
+
+.course-header h1{
+    font-size:32px;
+    color:#fff;
+}
+
+/* SECCIONES */
+.section{
+    margin-bottom:40px;
+    padding:20px;
+    border-radius:15px;
+    background:rgba(15,23,42,0.6);
+    border:1px solid rgba(0,170,255,0.1);
+}
+
+/* IMÁGENES */
+.section img{
+    width:100%;
+    border-radius:10px;
+    margin-top:10px;
+}
+
+/* VIDEO */
+.video{
+    margin-top:15px;
+}
+
+.video iframe{
+    width:100%;
+    height:400px;
+    border-radius:10px;
+}
+
+/* PROGRESO */
+.progress-bar{
+    position:fixed;
+    top:0;
+    left:0;
+    height:5px;
+    width:0%;
+    background:#00aaff;
+    box-shadow:0 0 10px #00aaff;
+    z-index:999;
+}
+
+/* BOTÓN FINAL */
+.finish-btn{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:#00aaff;
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow:0 0 10px #00aaff;
+}
+
+/* LOGRO */
+.achievement{
+    display:none;
+    margin-top:20px;
+    padding:20px;
+    border-radius:15px;
+    background:#020617;
+    border:1px solid #00aaff;
+    text-align:center;
+}
+
+</style>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="course-container">
+
+<div class="course-header">
+<h1>Módulo 1: Fundamentos de Análisis de Seguridad en Redes</h1>
+<p>De usuario a detective de redes.</p>
+</div>
+
+<!-- SECCIÓN -->
+
+<div class="section">
+<h2>Modelo TCP/IP</h2>
+<p>La base de toda comunicación en redes. Define cómo viajan los datos.</p>
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/3b/TCPIP_model.png">
+</div>
+
+<div class="section">
+<h2>TCP vs UDP</h2>
+<p>TCP es confiable, UDP es rápido.</p>
+
+<div class="video">
+<iframe src="https://www.youtube.com/embed/keo0dglC5GQ" allowfullscreen></iframe>
+</div>
+</div>
+
+<div class="section">
+<h2>Vulnerabilidades</h2>
+<p>Los protocolos no fueron diseñados para seguridad.</p>
+<ul>
+<li>SYN Flood</li>
+<li>Amplificación UDP</li>
+<li>ARP Spoofing</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Tipos de Ataques</h2>
+<p>Reconocimiento, acceso y denegación de servicio.</p>
+<img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Cyber_kill_chain.png">
+</div>
+
+<div class="section">
+<h2>Herramientas</h2>
+<p>Docker permite crear laboratorios aislados.</p>
+<p>Wireshark analiza tráfico en tiempo real.</p>
+</div>
+
+<div class="section">
+<h2>Criptografía</h2>
+<p>HTTPS protege datos pero dificulta el análisis.</p>
+</div>
+
+<!-- FINAL -->
+
+<button class="finish-btn" onclick="finishCourse()">Finalizar Curso</button>
+
+<div class="achievement" id="achievement">
+<h3>🏆 Logro desbloqueado</h3>
+<p>Analista de Redes Nivel 1</p>
+<img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" width="60">
+</div>
+
+</div>
+
+<script>
+
+/* PROGRESO SCROLL */
+window.addEventListener("scroll", () => {
+    let scrollTop = document.documentElement.scrollTop;
+    let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    let progress = (scrollTop / height) * 100;
+
+    document.getElementById("progressBar").style.width = progress + "%";
+
+    localStorage.setItem("curso_progreso", progress);
+});
+
+/* FINALIZAR */
+function finishCourse(){
+    localStorage.setItem("curso_completado", "true");
+
+    document.getElementById("achievement").style.display = "block";
+
+    alert("Curso completado + Logro desbloqueado");
+}
+
+</script>

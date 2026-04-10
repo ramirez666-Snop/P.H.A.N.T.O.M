@@ -1,4 +1,5 @@
 {% load static %}
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -64,8 +65,9 @@
       </section>
 
       <section class="content" aria-label="Contenido principal">
-        {% block content %}{% endblock %}
-      </section>
+      {% block content %}
+{% include "usuarios/partial/laboratorios.html" %}    
+  {% endblock %}      </section>
     </main>
   </div>
 

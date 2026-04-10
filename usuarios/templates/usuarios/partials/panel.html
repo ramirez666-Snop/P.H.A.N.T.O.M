@@ -1,21 +1,276 @@
-<div class="overview" aria-label="Resumen del usuario">
-  <div class="stats" role="region" aria-label="Estadísticas">
-    <div class="stat"><strong>Nivel</strong><span>{{ nivel|default:12 }}</span></div>
-    <div class="stat"><strong>Puntos XP</strong><span>{{ xp|default:4520 }}</span></div>
-    <div class="stat"><strong>Laboratorios</strong><span>{{ laboratorios|default:28 }}</span></div>
+<section class="panel-section">
+
+  <!-- HEADER -->
+  <div class="panel-header">
+    <h1>Bienvenido, {{ request.user.username }}</h1>
+    <p>Tu centro de operaciones en ciberseguridad</p>
   </div>
 
-  <div class="tiles" role="region" aria-label="Accesos rápidos">
-    <article class="tile" aria-labelledby="tile-desafios">
-      <h3 id="tile-desafios">Desafíos</h3>
-      <p>Accede a retos y pruebas.</p>
-      <button class="btn" data-target="desafios">Ir a Desafíos</button>
-    </article>
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span>⚡</span>
+      <h3>Nivel</h3>
+      <p>{{ nivel|default:12 }}</p>
+    </div>
 
-    <article class="tile" aria-labelledby="tile-laboratorios">
-      <h3 id="tile-laboratorios">Laboratorios</h3>
-      <p>Entrenamiento práctico.</p>
-      <button class="btn" data-target="laboratorios">Ir a Laboratorios</button>
-    </article>
+    <div class="stat-card">
+      <span>🔥</span>
+      <h3>XP</h3>
+      <p>{{ xp|default:4520 }}</p>
+    </div>
+
+    <div class="stat-card">
+      <span>🧪</span>
+      <h3>Labs</h3>
+      <p>{{ laboratorios|default:28 }}</p>
+    </div>
+
+    <div class="stat-card">
+      <span>🏆</span>
+      <h3>Completados</h3>
+      <p>14</p>
+    </div>
   </div>
-</div>
+
+  <!-- ACTIVOS -->
+  <h2 class="title">Cursos Activos</h2>
+  <div class="labs-grid">
+
+    <div class="lab-card">
+      <div class="lab-icon">🌐</div>
+      <h3>Seguridad Web</h3>
+      <p>Explotación de vulnerabilidades web modernas.</p>
+
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:60%"></div>
+      </div>
+
+      <div class="lab-meta">
+        <span class="time">Progreso 60%</span>
+        <span class="difficulty medium">Media</span>
+      </div>
+
+      <button class="lab-btn">Continuar</button>
+    </div>
+
+    <div class="lab-card">
+      <div class="lab-icon">📡</div>
+      <h3>Seguridad de Red</h3>
+      <p>Análisis y explotación de redes.</p>
+
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:35%"></div>
+      </div>
+
+      <div class="lab-meta">
+        <span class="time">Progreso 35%</span>
+        <span class="difficulty hard">Difícil</span>
+      </div>
+
+      <button class="lab-btn">Continuar</button>
+    </div>
+
+  </div>
+
+  <!-- COMPLETADOS -->
+  <h2 class="title">Completados</h2>
+  <div class="labs-grid">
+
+    <div class="lab-card completed">
+      <div class="lab-icon">🔐</div>
+      <h3>Criptografía</h3>
+      <p>Fundamentos de cifrado y hashing.</p>
+
+      <div class="lab-meta">
+        <span class="time">Finalizado</span>
+        <span class="difficulty easy">Fácil</span>
+      </div>
+
+      <button class="lab-btn done-btn">✔ Completado</button>
+    </div>
+
+  </div>
+
+  <!-- RECOMENDADOS -->
+  <h2 class="title">Recomendados</h2>
+  <div class="labs-grid">
+
+    <div class="lab-card">
+      <div class="lab-icon">🛡️</div>
+      <h3>Pentesting</h3>
+      <p>Aprende hacking ético paso a paso.</p>
+
+      <div class="lab-meta">
+        <span class="time">Nuevo</span>
+        <span class="difficulty medium">Media</span>
+      </div>
+
+      <button class="lab-btn">Empezar</button>
+    </div>
+
+    <div class="lab-card">
+      <div class="lab-icon">⚠️</div>
+      <h3>Malware</h3>
+      <p>Análisis avanzado de amenazas.</p>
+
+      <div class="lab-meta">
+        <span class="time">Nuevo</span>
+        <span class="difficulty hard">Alta</span>
+      </div>
+
+      <button class="lab-btn">Empezar</button>
+    </div>
+
+  </div>
+
+</section>
+
+<style>
+.panel-section {
+  background: #0a0a0a;
+  padding: 40px;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+/* HEADER */
+.panel-header h1 {
+  color: #00aaff;
+  margin-bottom: 5px;
+}
+
+.panel-header p {
+  color: #aaa;
+  margin-bottom: 30px;
+}
+
+/* STATS */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: #121212;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0,170,255,0.2);
+}
+
+.stat-card span {
+  font-size: 24px;
+}
+
+.stat-card h3 {
+  color: #00aaff;
+  margin: 5px 0;
+}
+
+/* TITULOS */
+.title {
+  margin: 20px 0;
+  color: #00aaff;
+}
+
+/* GRID */
+.labs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+/* TARJETAS */
+.lab-card {
+  background: #121212;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 0 15px rgba(0,170,255,0.2);
+  transition: 0.3s;
+}
+
+.lab-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 25px rgba(0,170,255,0.5);
+}
+
+/* ICONO */
+.lab-icon {
+  font-size: 30px;
+}
+
+/* TEXTO */
+.lab-card h3 {
+  color: #00aaff;
+}
+
+.lab-card p {
+  color: #ccc;
+  font-size: 0.9em;
+}
+
+/* PROGRESO */
+.progress-bar {
+  background: #1a1a1a;
+  border-radius: 10px;
+  height: 8px;
+  margin: 10px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #00aaff;
+  border-radius: 10px;
+}
+
+/* META */
+.lab-meta {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+/* DIFICULTAD */
+.difficulty {
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.easy { background: #00c853; }
+.medium { background: #ffab00; }
+.hard { background: #d50000; }
+
+/* BOTONES */
+.lab-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #00aaff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.lab-btn:hover {
+  background: #0088cc;
+}
+
+.done-btn {
+  background: #00c853;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .labs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

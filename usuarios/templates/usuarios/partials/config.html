@@ -1,4 +1,125 @@
-<section aria-label="Configuración">
-  <h2>Configuración</h2>
-  <p>Aquí se podrá hacer configuración</p>
-</section>
+{% load static %}
+
+<style>
+
+/* CONTENEDOR GENERAL */
+.config-container{
+    max-width:600px;
+    margin:auto;
+}
+
+/* TARJETA */
+.config-card{
+    background:rgba(15,23,42,0.6);
+    border-radius:16px;
+    padding:25px;
+    border:1px solid rgba(0,170,255,0.1);
+    backdrop-filter:blur(10px);
+}
+
+/* TITULO */
+.config-card h2{
+    margin-bottom:20px;
+    color:#fff;
+}
+
+/* GRUPO */
+.form-group{
+    margin-bottom:15px;
+}
+
+/* INPUTS */
+.config-card input{
+    width:100%;
+    padding:10px;
+    border-radius:10px;
+    border:1px solid rgba(0,170,255,0.2);
+    background:#020617;
+    color:#fff;
+    outline:none;
+    transition:0.2s;
+}
+
+.config-card input:focus{
+    border-color:#00aaff;
+    box-shadow:0 0 8px #00aaff;
+}
+
+/* BOTÓN */
+.btn-save{
+    width:100%;
+    margin-top:10px;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#00aaff;
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.btn-save:hover{
+    box-shadow:0 0 15px #00aaff;
+}
+
+</style>
+
+<div class="config-container">
+
+<div class="config-card">
+<h2>⚙️ Configuración de Perfil</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+```
+
+{% load static %}
+
+<div class="config-container">
+
+<div class="config-card">
+<h2>⚙️ Configuración de Perfil</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+```
+<div class="form-group">
+    <label>Nombre de usuario</label>
+    <input type="text" name="username" value="{{ request.user.username }}">
+</div>
+
+<div class="form-group">
+    <label>Correo electrónico</label>
+    <input type="email" name="email" value="{{ request.user.email }}">
+</div>
+
+<div class="form-group">
+    <label>Nueva contraseña</label>
+    <input type="password" name="password1" placeholder="Nueva contraseña">
+</div>
+
+<div class="form-group">
+    <label>Confirmar contraseña</label>
+    <input type="password" name="password2" placeholder="Confirmar contraseña">
+</div>
+
+<button type="submit" class="btn-save">Guardar cambios</button>
+```
+
+</form>
+
+</div>
+
+</div>
+
+
+```
+
+</form>
+
+</div>
+
+</div>

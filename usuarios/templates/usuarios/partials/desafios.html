@@ -1,25 +1,454 @@
-<section aria-label="Desafíos">
-  <h2>Desafíos</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>P.H.A.N.T.O.M - Desafíos</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<style>
 
-  <div class="desafio-list">
-    <article class="desafio" data-id="1">
-      <h3>Desafío 1</h3>
-      <p class="instrucciones">Instrucciones de ejemplo para el desafío 1. Lee con atención y sube tu solución.</p>
-      <div class="desafio-actions">
-        <button class="btn-enviar btn" data-desafio="1">Enviar solución</button>
-        <button class="btn-detalle btn" data-desafio="1">Ver detalles</button>
-      </div>
-    </article>
+/* RESET & BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    <article class="desafio" data-id="2">
-      <h3>Desafío 2</h3>
-      <p class="instrucciones">Instrucciones de ejemplo para el desafío 2.</p>
-      <div class="desafio-actions">
-        <button class="btn-enviar btn" data-desafio="2">Enviar solución</button>
-        <button class="btn-detalle btn" data-desafio="2">Ver detalles</button>
-      </div>
-    </article>
-  </div>
+body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: radial-gradient(circle at top, #0f172a, #020617);
+    color: #e2e8f0;
+    padding: 25px;
+    min-height: 100vh;
+}
 
-  <div id="desafio-result" class="result" aria-live="polite"></div>
-</section>
+/* Layout */
+.container {
+    display: flex;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* IZQUIERDA */
+.left {
+    flex: 3;
+}
+
+/* DERECHA */
+.right {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* TÍTULO */
+.title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #ffffff, #90e0ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: -0.3px;
+}
+
+.left > p {
+    color: #94a3b8;
+    font-weight: 500;
+    margin-bottom: 24px;
+}
+
+/* GRID DESAFÍOS */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 24px;
+}
+
+/* CARD DESAFÍO - MISMO ESTILO QUE PROFILE */
+.card {
+    position: relative;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    padding: 20px;
+    border: 1px solid rgba(0, 170, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* Efecto hover principal */
+.card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(0, 170, 255, 0.6);
+    box-shadow: 0 12px 28px rgba(0, 170, 255, 0.3);
+    background: rgba(15, 23, 42, 0.8);
+}
+
+/* Línea de brillo al pasar el mouse */
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 170, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+    pointer-events: none;
+}
+
+.card:hover::before {
+    left: 100%;
+}
+
+/* Borde neón sutil en hover */
+.card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(0, 170, 255, 0.4), rgba(0, 170, 255, 0));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.card:hover::after {
+    opacity: 1;
+}
+
+/* Títulos dentro de card */
+.card h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card p {
+    color: #94a3b8;
+    font-weight: 500;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+}
+
+/* BADGES */
+.tag {
+    display: inline-block;
+    margin-top: 5px;
+    margin-right: 6px;
+    padding: 4px 10px;
+    border-radius: 40px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: rgba(2, 6, 23, 0.7);
+    border: 1px solid rgba(0, 170, 255, 0.4);
+    color: #00aaff;
+    letter-spacing: 0.3px;
+}
+
+/* BOTÓN NEÓN - MISMO EFECTO QUE EL PERFIL */
+.btn {
+    margin-top: 16px;
+    width: 100%;
+    padding: 10px 0;
+    border: none;
+    border-radius: 40px;
+    background: #00aaff;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
+    font-family: inherit;
+}
+
+.btn:hover {
+    background: #0090dd;
+    transform: translateY(-2px);
+    box-shadow: 0 0 18px #00aaff, 0 4px 12px rgba(0, 170, 255, 0.4);
+}
+
+/* PANEL DERECHO - MISMO ESTILO QUE PROFILE-CARD */
+.panel {
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    padding: 20px;
+    border: 1px solid rgba(0, 170, 255, 0.2);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.panel:hover {
+    border-color: rgba(0, 170, 255, 0.4);
+    box-shadow: 0 8px 20px rgba(0, 170, 255, 0.15);
+}
+
+.panel h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* INSIGNIAS (badges) */
+.badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.badge {
+    padding: 6px 14px;
+    border-radius: 40px;
+    background: rgba(2, 6, 23, 0.7);
+    border: 1px solid rgba(0, 170, 255, 0.5);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #90e0ff;
+    transition: all 0.2s ease;
+}
+
+.badge:hover {
+    background: rgba(0, 170, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 0 8px rgba(0, 170, 255, 0.3);
+}
+
+/* PROGRESO */
+.progress {
+    margin-top: 12px;
+}
+
+.bar {
+    height: 8px;
+    background: #020617;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 8px 0 12px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.bar span {
+    display: block;
+    height: 100%;
+    width: 65%;
+    background: linear-gradient(90deg, #00aaff, #0099dd);
+    box-shadow: 0 0 6px #00aaff;
+    border-radius: 12px;
+    transition: width 0.4s ease;
+}
+
+.panel p {
+    color: #94a3b8;
+    font-weight: 500;
+    font-size: 0.85rem;
+    margin: 6px 0;
+}
+
+/* LOGROS DESPLEGABLE */
+.logros h3 {
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s;
+}
+
+.logros h3:hover {
+    color: #00aaff;
+    text-shadow: 0 0 4px rgba(0,170,255,0.5);
+}
+
+.lista {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    list-style: none;
+    margin-top: 8px;
+}
+
+.lista.active {
+    max-height: 280px;
+}
+
+.lista li {
+    margin: 10px 0;
+    padding: 8px 12px;
+    border-radius: 40px;
+    background: rgba(2, 6, 23, 0.7);
+    border: 1px solid rgba(0, 170, 255, 0.25);
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lista li::before {
+    content: "🏅";
+    font-size: 0.9rem;
+    filter: drop-shadow(0 0 2px #00aaff);
+}
+
+.lista li:hover {
+    background: rgba(0, 170, 255, 0.1);
+    border-color: #00aaff;
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0, 170, 255, 0.2);
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+    }
+    body {
+        padding: 20px;
+    }
+    .right {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .right .panel {
+        flex: 1;
+        min-width: 200px;
+    }
+}
+
+@media (max-width: 640px) {
+    .grid {
+        gap: 16px;
+    }
+    .card, .panel {
+        padding: 16px;
+    }
+    .title {
+        font-size: 1.8rem;
+    }
+}
+
+</style>
+
+<script>
+function toggleLogros(){
+    document.getElementById("lista").classList.toggle("active");
+}
+</script>
+
+</head>
+<body>
+
+<div class="container">
+
+<!-- IZQUIERDA: LISTA DE DESAFÍOS -->
+<div class="left">
+    <div class="title">🔥 Centro de Desafíos</div>
+    <p>Supera retos, desbloquea habilidades y conviértete en un operador élite.</p>
+
+    <div class="grid">
+        <div class="card">
+            <h3>🔐 Hack Básico</h3>
+            <p>Rompe contraseñas simples.</p>
+            <span class="tag">Fácil</span>
+            <span class="tag">Seguridad</span>
+            <button class="btn">Iniciar</button>
+        </div>
+
+        <div class="card">
+            <h3>🌐 Análisis de Red</h3>
+            <p>Detecta dispositivos conectados.</p>
+            <span class="tag">Media</span>
+            <span class="tag">Redes</span>
+            <button class="btn">Iniciar</button>
+        </div>
+
+        <div class="card">
+            <h3>💻 SQL Injection</h3>
+            <p>Explota bases de datos.</p>
+            <span class="tag">Alta</span>
+            <span class="tag">Web</span>
+            <button class="btn">Iniciar</button>
+        </div>
+
+        <div class="card">
+            <h3>🧠 Ingeniería Social</h3>
+            <p>Manipulación psicológica.</p>
+            <span class="tag">Media</span>
+            <span class="tag">Psicología</span>
+            <button class="btn">Iniciar</button>
+        </div>
+
+        <div class="card">
+            <h3>📡 Sniffing</h3>
+            <p>Captura paquetes de red.</p>
+            <span class="tag">Alta</span>
+            <span class="tag">Redes</span>
+            <button class="btn">Iniciar</button>
+        </div>
+
+        <div class="card">
+            <h3>🛡️ Defensa</h3>
+            <p>Protege sistemas.</p>
+            <span class="tag">Media</span>
+            <span class="tag">Seguridad</span>
+            <button class="btn">Iniciar</button>
+        </div>
+    </div>
+</div>
+
+<!-- DERECHA: PANELES DE ESTADÍSTICAS Y LOGROS -->
+<div class="right">
+
+    <div class="panel">
+        <h3>🏆 Desafíos Superados</h3>
+        <div class="badges">
+            <div class="badge">Hack Básico</div>
+            <div class="badge">Red</div>
+            <div class="badge">Ingeniería</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3>⚡ Progreso</h3>
+        <p>Experiencia: 1200 XP</p>
+        <div class="progress">
+            <div class="bar"><span style="width: 65%"></span></div>
+        </div>
+        <p>Tiempo total: 5h 32m</p>
+    </div>
+
+    <div class="panel logros">
+        <h3 onclick="toggleLogros()">🏅 Logros ▼</h3>
+        <ul id="lista" class="lista">
+            <li>Primer desafío completado</li>
+            <li>5 desafíos superados</li>
+            <li>Experto en redes</li>
+            <li>Dominio SQL</li>
+            <li>Maestro en seguridad</li>
+        </ul>
+    </div>
+
+</div>
+
+</div>
+
+</body>
+</html>

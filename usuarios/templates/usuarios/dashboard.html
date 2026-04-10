@@ -4,8 +4,7 @@
 <head>
   <meta charset="utf-8">
   <title>P.H.A.N.T.O.M - Dashboard</title>
-  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-</head>
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}?v=1"></head>
 <body>
   <div class="app">
     <!-- Sidebar fijo -->
@@ -30,57 +29,31 @@
     <main class="main">
       <!-- PANEL -->
       <section id="panel" class="view active">
-        <h2>Panel</h2>
-        <p>Bienvenido de nuevo, Operador</p>
-        <div class="stats">
-          <div class="stat"><strong>Nivel:</strong> 12</div>
-          <div class="stat"><strong>Puntos XP:</strong> 4520</div>
-          <div class="stat"><strong>Laboratorios:</strong> 28</div>
-        </div>
+        {% include "usuarios/partials/panel.html" %}
       </section>
 
       <!-- LABORATORIOS -->
       <section id="laboratorios" class="view">
-        <h2>Laboratorios</h2>
-        <p>Aquí se mostrarán los laboratorios disponibles.</p>
-        <form>
-          <label>Nombre del laboratorio:
-            <input type="text" name="nombre" required>
-          </label>
-          <button type="submit">Crear</button>
-        </form>
+       {% include "usuarios/partials/laboratorios.html" %}
       </section>
 
       <!-- DESAFÍOS -->
       <section id="desafios" class="view">
-        <h2>Desafíos</h2>
-        <div class="desafio">
-          <h3>Desafío 1</h3>
-          <p>Descripción del desafío.</p>
-        </div>
-        <div class="desafio">
-          <h3>Desafío 2</h3>
-          <p>Descripción del desafío.</p>
-        </div>
+             {% include "usuarios/partials/desafios.html" %}
+
       </section>
 
       <!-- PERFIL -->
       <section id="perfil" class="view">
-        <h2>Perfil</h2>
-        <div class="perfil-grid">
-          <img src="{% static 'usuarios/default-avatar.png' %}" alt="Foto" class="avatar">
-          <div class="perfil-info">
-            <p><strong>Nombre:</strong> Operador</p>
-            <p><strong>Email:</strong> operador@example.com</p>
-          </div>
-        </div>
+                   {% include "usuarios/partials/perfil.html" %}
       </section>
 
       <!-- CONFIGURACIÓN -->
       <section id="config" class="view">
-        <h2>Configuración</h2>
-        <p>Aquí se mostrarán las opciones de configuración.</p>
+                           {% include "usuarios/partials/config.html" %}
       </section>
+      
+        
     </main>
   </div>
 

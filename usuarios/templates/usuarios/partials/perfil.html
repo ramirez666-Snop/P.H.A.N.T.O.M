@@ -1,13 +1,318 @@
-<section aria-label="Perfil de usuario">
-  <h2>Perfil</h2>
-  <div class="perfil-grid">
-    <img src="{{ user.profile.photo_url|default:static('usuarios/default-avatar.png') }}" alt="Foto" class="avatar">
-    <div class="perfil-info">
-      <p><strong>Nombre:</strong> {{ user.get_full_name }}</p>
-      <p><strong>Email:</strong> {{ user.email }}</p>
-      {% if user.profile.bio %}
-      <p><strong>Bio:</strong> {{ user.profile.bio }}</p>
-      {% endif %}
+{% load static %}
+<!-- PERFIL (PARTIAL) - DISEÑO BASE MEJORADO -->
+
+<style>
+
+/* RESET & BASE */
+.profile-container * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.profile-container {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: transparent;
+    color: #e2e8f0;
+}
+
+/* BANNER */
+.profile-banner {
+    position: relative;
+    height: 180px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, #020617, #0f172a, #020617);
+    border: 1px solid rgba(0, 170, 255, 0.3);
+    box-shadow: 0 0 28px rgba(0, 170, 255, 0.25);
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.profile-banner:hover {
+    box-shadow: 0 0 35px rgba(0, 170, 255, 0.4);
+}
+
+/* Glow animado */
+.profile-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent, #00aaff, transparent);
+    opacity: 0.25;
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.profile-banner:hover::before {
+    transform: translateX(100%);
+}
+
+/* TEXTO DEL BANNER */
+.profile-header {
+    position: absolute;
+    bottom: 24px;
+    left: 28px;
+    z-index: 2;
+}
+
+.profile-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff, #90e0ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: -0.3px;
+}
+
+.profile-header p {
+    margin: 8px 0 0;
+    color: #94a3b8;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* AVATAR */
+.profile-avatar {
+    position: absolute;
+    bottom: -35px;
+    right: 35px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 3px solid #0f172a;
+    box-shadow: 0 0 0 2px rgba(0, 170, 255, 0.6), 0 0 20px #00aaff;
+    object-fit: cover;
+    background: #0f172a;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-avatar:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.8), 0 0 28px #00aaff;
+}
+
+/* GRID */
+.profile-grid {
+    margin-top: 70px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+}
+
+/* CARDS - con efectos de botón mejorados */
+.profile-card {
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    padding: 20px;
+    border: 1px solid rgba(0, 170, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* Efecto hover principal */
+.profile-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(0, 170, 255, 0.6);
+    box-shadow: 0 12px 28px rgba(0, 170, 255, 0.3);
+    background: rgba(15, 23, 42, 0.8);
+}
+
+/* Línea de brillo al pasar el mouse (efecto láser) */
+.profile-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 170, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+    pointer-events: none;
+}
+
+.profile-card:hover::before {
+    left: 100%;
+}
+
+/* Efecto de borde neón sutil en hover */
+.profile-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(0, 170, 255, 0.4), rgba(0, 170, 255, 0));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.profile-card:hover::after {
+    opacity: 1;
+}
+
+/* Títulos dentro de cards */
+.profile-card h3 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #cbd5e1;
+}
+
+.profile-card p {
+    color: #94a3b8;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+/* Barra de progreso mejorada */
+.bar {
+    height: 8px;
+    background: #020617;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 12px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.bar span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #00aaff, #0099dd);
+    box-shadow: 0 0 6px #00aaff;
+    border-radius: 12px;
+    transition: width 0.4s ease;
+}
+
+/* Lista de logros */
+.profile-logros {
+    list-style: none;
+    margin-top: 12px;
+}
+
+.profile-logros li {
+    margin: 10px 0;
+    padding: 8px 12px;
+    border-radius: 40px;
+    background: rgba(2, 6, 23, 0.7);
+    border: 1px solid rgba(0, 170, 255, 0.25);
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-logros li::before {
+    content: "🏅";
+    font-size: 1rem;
+    filter: drop-shadow(0 0 2px #00aaff);
+}
+
+.profile-logros li:hover {
+    background: rgba(0, 170, 255, 0.1);
+    border-color: #00aaff;
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0, 170, 255, 0.2);
+}
+
+/* Nivel card especial */
+.profile-card:last-child .bar span {
+    background: linear-gradient(90deg, #ffaa00, #ffcc44);
+    box-shadow: 0 0 8px #ffaa44;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .profile-banner {
+        height: 150px;
+    }
+    .profile-header h1 {
+        font-size: 1.2rem;
+    }
+    .profile-header p {
+        font-size: 0.7rem;
+    }
+    .profile-avatar {
+        width: 65px;
+        height: 65px;
+        bottom: -25px;
+        right: 20px;
+    }
+    .profile-grid {
+        gap: 16px;
+        margin-top: 50px;
+    }
+    .profile-card {
+        padding: 16px;
+    }
+}
+
+</style>
+
+<div class="profile-container">
+    <!-- BANNER -->
+    <div class="profile-banner">
+        <div class="profile-header">
+            <h1>Bienvenido, {{ request.user.username }}</h1>
+            <p>Tu centro de operaciones en ciberseguridad</p>
+        </div>
+        <img src="{% static 'usuarios/default-avatar.png' %}" class="profile-avatar" alt="avatar">
     </div>
-  </div>
-</section>
+
+    <!-- GRID DE CARDS -->
+    <div class="profile-grid">
+        <div class="profile-card">
+            <h3>📚 Cursos</h3>
+            <p>8 / 12 completados</p>
+            <div class="bar"><span style="width:65%"></span></div>
+        </div>
+
+        <div class="profile-card">
+            <h3>🧪 Laboratorios</h3>
+            <p>15 completados</p>
+            <div class="bar"><span style="width:80%"></span></div>
+        </div>
+
+        <div class="profile-card">
+            <h3>🔥 Desafíos</h3>
+            <p>10 superados</p>
+            <div class="bar"><span style="width:70%"></span></div>
+        </div>
+
+        <div class="profile-card">
+            <h3>⚡ Experiencia</h3>
+            <p>3200 XP</p>
+            <div class="bar"><span style="width:75%"></span></div>
+        </div>
+
+        <div class="profile-card">
+            <h3>🏆 Logros</h3>
+            <ul class="profile-logros">
+                <li>Primer desafío completado</li>
+                <li>Experto en redes</li>
+                <li>Dominio en SQL</li>
+                <li>Maestro en seguridad</li>
+                <li>Explorador avanzado</li>
+            </ul>
+        </div>
+
+        <div class="profile-card">
+            <h3>🎯 Nivel</h3>
+            <p>Nivel 12</p>
+            <div class="bar"><span style="width:60%"></span></div>
+        </div>
+    </div>
+</div>
