@@ -1,0 +1,226 @@
+{% load static %}
+
+<style>
+/* RESET & BASE INTEGRATION */
+.dashboard-container * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.dashboard-container {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #e2e8f0;
+    padding: 20px;
+}
+
+/* BANNER (Copiado de tu Perfil) */
+.dash-banner {
+    position: relative;
+    height: 180px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, #020617, #0f172a, #020617);
+    border: 1px solid rgba(0, 170, 255, 0.3);
+    box-shadow: 0 0 28px rgba(0, 170, 255, 0.25);
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+
+.dash-header-text {
+    position: absolute;
+    bottom: 24px;
+    left: 28px;
+    z-index: 2;
+}
+
+.dash-header-text h1 {
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, #ffffff, #90e0ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* GRID DE ESTADÍSTICAS */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    margin-bottom: 50px;
+}
+
+/* CARDS (Efecto Glassmorphism de tu diseño) */
+.dash-card {
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    padding: 24px;
+    border: 1px solid rgba(0, 170, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.dash-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(0, 170, 255, 0.6);
+    box-shadow: 0 12px 28px rgba(0, 170, 255, 0.3);
+}
+
+/* Títulos y textos */
+.dash-card h3 {
+    font-size: 1.2rem;
+    color: #cbd5e1;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dash-card .stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #00aaff;
+    text-shadow: 0 0 15px rgba(0, 170, 255, 0.4);
+}
+
+/* SECCIÓN DE CURSOS (GRID) */
+.section-title {
+    font-size: 1.4rem;
+    color: #fff;
+    margin-bottom: 24px;
+    padding-left: 10px;
+    border-left: 4px solid #00aaff;
+}
+
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+/* BARRAS DE PROGRESO (Estilo Perfil) */
+.progress-wrapper {
+    margin: 15px 0;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-bottom: 8px;
+}
+
+.bar-bg {
+    height: 8px;
+    background: #020617;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #00aaff, #0099dd);
+    box-shadow: 0 0 8px #00aaff;
+    border-radius: 12px;
+}
+
+/* BOTÓN ESTILO LÁSER */
+.btn-launch {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background: rgba(0, 170, 255, 0.1);
+    border: 1px solid rgba(0, 170, 255, 0.4);
+    border-radius: 14px;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-launch:hover {
+    background: #00aaff;
+    box-shadow: 0 0 20px rgba(0, 170, 255, 0.6);
+    color: #020617;
+}
+
+/* EFECTO LÁSER AL HOVER (Igual que tus cards de perfil) */
+.dash-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 170, 255, 0.15), transparent);
+    transition: left 0.6s ease;
+}
+
+.dash-card:hover::before {
+    left: 100%;
+}
+</style>
+
+<div class="dashboard-container">
+    <div class="dash-banner">
+        <div class="dash-header-text">
+            <h1>Panel de Control</h1>
+            <p>Operador: {{ request.user.username }} | Estatus: Activo</p>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="dash-card">
+            <h3>⚡ Nivel</h3>
+            <p class="stat-value">12</p>
+        </div>
+        <div class="dash-card">
+            <h3>🔥 XP Total</h3>
+            <p class="stat-value">4,520</p>
+        </div>
+        <div class="dash-card">
+            <h3>🧪 Labs</h3>
+            <p class="stat-value">28</p>
+        </div>
+    </div>
+
+    <h2 class="section-title">Misiones en Curso</h2>
+    <div class="courses-grid">
+        
+        <div class="dash-card">
+            <div style="font-size: 2rem; margin-bottom: 15px;">🌐</div>
+            <h3>Seguridad Web</h3>
+            <p style="color: #94a3b8; font-size: 0.9rem;">Explotación de vulnerabilidades modernas.</p>
+            
+            <div class="progress-wrapper">
+                <div class="progress-info">
+                    <span>Progreso</span>
+                    <span>60%</span>
+                </div>
+                <div class="bar-bg"><span class="bar-fill" style="width:60%"></span></div>
+            </div>
+            
+            <button class="btn-launch">CONTINUAR</button>
+        </div>
+
+        <div class="dash-card">
+            <div style="font-size: 2rem; margin-bottom: 15px;">📡</div>
+            <h3>Seguridad de Red</h3>
+            <p style="color: #94a3b8; font-size: 0.9rem;">Análisis de tráfico y protocolos.</p>
+            
+            <div class="progress-wrapper">
+                <div class="progress-info">
+                    <span>Progreso</span>
+                    <span>35%</span>
+                </div>
+                <div class="bar-bg"><span class="bar-fill" style="width:35%"></span></div>
+            </div>
+            
+            <button class="btn-launch">CONTINUAR</button>
+        </div>
+
+    </div>
+</div>

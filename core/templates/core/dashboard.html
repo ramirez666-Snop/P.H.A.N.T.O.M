@@ -1,73 +1,54 @@
 {% load static %}
-
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>P.H.A.N.T.O.M — Dashboard</title>
+  <link rel="stylesheet" href="{% static 'usuarios/css/diseno.css' %}">
   <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 </head>
 <body>
   <div class="app">
-    <aside class="sidebar" role="navigation" aria-label="Barra lateral principal">
+    <aside class="sidebar">
       <div class="brand">
         <img src="{% static 'usuarios/logo.png' %}" alt="Logo" class="brand-logo">
         <span class="brand-name">P.H.A.N.T.O.M</span>
       </div>
-
-      <nav class="menu" aria-label="Menú principal">
+      <nav class="menu">
         <ul>
-          <li><a href="{% url 'panel' %}">Panel</a></li>
-          <li><a href="{% url 'laboratorios' %}">Laboratorios</a></li>
-          <li><a href="{% url 'desafios' %}">Desafíos</a></li>
-          <li><a href="{% url 'perfil' %}">Perfil</a></li>
-          <li><a href="{% url 'config' %}">Configuración</a></li>
-        </ul>
+          <li><a href="{% url 'dashboard' %}">Panel</a></li>
+          <li><a href="#" id="btn-show-labs">Laboratorios</a></li>
+          </ul>
       </nav>
-
       <footer class="sidebar-footer">
         <a href="{% url 'logout' %}">Cerrar sesión</a>
       </footer>
     </aside>
 
-    <main class="main" role="main">
-      <header class="welcome" aria-live="polite">
-        <h1>Bienvenido, {{ user.get_full_name|default:"Operador" }}</h1>
-        <p class="subtitle">Continúa tu entrenamiento</p>
-      </header>
+    <main class="main">
+      <div id="dashboard-inicio">
+          <header class="welcome">
+            <h1>Bienvenido, {{ user.get_full_name|default:"Operador" }}</h1>
+            <p class="subtitle">Continúa tu entrenamiento</p>
+          </header>
 
-      <section class="overview" aria-label="Resumen del usuario">
-        <div class="stats" role="region" aria-label="Estadísticas">
-          <div class="stat">
-            <strong>Nivel</strong>
-            <span>{{ nivel|default:1 }}</span>
-          </div>
-          <div class="stat">
-            <strong>Puntos XP</strong>
-            <span>{{ xp|default:0 }}</span>
-          </div>
-        </div>
+          <section class="overview">
+            <div class="stats">
+              <div class="stat"><strong>Nivel</strong><span>{{ nivel|default:1 }}</span></div>
+              <div class="stat"><strong>Puntos XP</strong><span>{{ xp|default:0 }}</span></div>
+            </div>
+          </section>
+          
+          <section id="laboratorios" class="content">
+            {% block content %}
+              {% include "usuarios/partial/laboratorios.html" %}
+            {% endblock %}
+          </section>
+      </div>
 
-        <div class="tiles" role="region" aria-label="Accesos rápidos">
-          <article class="tile">
-            <h3>Desafíos</h3>
-            <p>Accede a retos y pruebas.</p>
-            <a class="btn" href="{% url 'desafios' %}">Ir a Desafíos</a>
-          </article>
-
-          <article class="tile">
-            <h3>Laboratorios</h3>
-            <p>Entrenamiento práctico.</p>
-            <a class="btn" href="{% url 'laboratorios' %}">Ir a Laboratorios</a>
-          </article>
-        </div>
-      </section>
-
-      <section class="content" aria-label="Contenido principal">
-      {% block content %}
-{% include "usuarios/partial/laboratorios.html" %}    
-  {% endblock %}      </section>
+      <section id="curso-contenedor" style="display: none;"></section>
+      
     </main>
   </div>
 

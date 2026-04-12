@@ -1,0 +1,29 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/curso.css' %}">
+
+<div class="container">
+
+    <div class="left">
+        <h1 class="title">🔥 Laboratorios</h1>
+
+        <div class="grid">
+
+            {% for curso in cursos %}
+            <div class="card">
+                <h3>{{ curso.titulo }}</h3>
+                <p>{{ curso.descripcion }}</p>
+
+                <span class="tag">{{ curso.dificultad }}</span>
+                <span class="tag">{{ curso.duracion }}</span>
+
+                <a href="{% url 'detalle_curso' curso.id %}">
+                    <button class="btn">Comenzar</button>
+                </a>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+</div>

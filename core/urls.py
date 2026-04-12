@@ -14,4 +14,5 @@ urlpatterns = [
     path('', include('usuarios.urls')),  # Usa las URLs de la app usuarios
     path('cursos/', include('cursos.urls')),
     path('laboratorios/', include('laboratorios.urls')),
+    
 ]

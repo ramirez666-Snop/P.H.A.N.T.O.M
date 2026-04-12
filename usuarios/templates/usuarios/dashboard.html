@@ -2,62 +2,60 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <title>P.H.A.N.T.O.M - Dashboard</title>
-<link rel="stylesheet" href="{% static 'css/dashboard.css' %}?v=1"></head>
+    <meta charset="utf-8">
+    <title>P.H.A.N.T.O.M - Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'usuarios/css/diseno.css' %}">
+</head>
 <body>
-  <div class="app">
-    <!-- Sidebar fijo -->
-    <aside class="sidebar">
-      <div class="brand">
-        <img src="{% static 'usuarios/logo.png' %}" alt="P.H.A.N.T.O.M" class="brand-logo">
-        <div class="brand-name">P.H.A.N.T.O.M</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="{% static 'usuarios/logo.png' %}" alt="P.H.A.N.T.O.M" class="brand-logo">
+                <div class="brand-name">P.H.A.N.T.O.M</div>
+            </div>
 
-      <nav class="menu">
-        <ul>
-          <li><button class="menu-btn active" data-target="panel">Panel</button></li>
-          <li><button class="menu-btn" data-target="laboratorios">Laboratorios</button></li>
-          <li><button class="menu-btn" data-target="desafios">Desafíos</button></li>
-          <li><button class="menu-btn" data-target="perfil">Perfil</button></li>
-          <li><button class="menu-btn" data-target="config">Configuración</button></li>
-        </ul>
-      </nav>
-    </aside>
+            <nav class="menu">
+                <ul>
+                    <li><button class="menu-btn active" data-target="panel">Panel</button></li>
+                    <li><button class="menu-btn" data-target="laboratorios">Laboratorios</button></li>
+                    <li><button class="menu-btn" data-target="desafios">Desafíos</button></li>
+                    <li><button class="menu-btn" data-target="perfil">Perfil</button></li>
+                    <li><button class="menu-btn" data-target="config">Configuración</button></li>
+                </ul>
+            </nav>
+        </aside>
 
-    <!-- Contenido dinámico -->
-    <main class="main">
-      <!-- PANEL -->
-      <section id="panel" class="view active">
-        {% include "usuarios/partials/panel.html" %}
-      </section>
+        <main class="main">
+            
+            <section id="panel" class="view active">
+                {% include "usuarios/partial/panel.html" %}
+            </section>
 
-      <!-- LABORATORIOS -->
-      <section id="laboratorios" class="view">
-       {% include "usuarios/partials/laboratorios.html" %}
-      </section>
+            <section id="laboratorios" class="view">
+                <div id="contenedor-labs">
+                    {% include "usuarios/partial/laboratorios.html" %}
+                </div>
+            </section>
 
-      <!-- DESAFÍOS -->
-      <section id="desafios" class="view">
-             {% include "usuarios/partials/desafios.html" %}
+            <section id="curso-contenedor" class="view" style="display: none;">
+                </section>
 
-      </section>
+            <section id="desafios" class="view">
+                {% include "usuarios/partial/desafios.html" %}
+            </section>
 
-      <!-- PERFIL -->
-      <section id="perfil" class="view">
-                   {% include "usuarios/partials/perfil.html" %}
-      </section>
+            <section id="perfil" class="view">
+                {% include "usuarios/partial/perfil.html" %}
+            </section>
 
-      <!-- CONFIGURACIÓN -->
-      <section id="config" class="view">
-                           {% include "usuarios/partials/config.html" %}
-      </section>
-      
-        
-    </main>
-  </div>
+            <section id="config" class="view">
+                {% include "usuarios/partial/config.html" %}
+            </section>
+            
+        </main>
+    </div>
 
-  <script src="{% static 'js/dashboard.js' %}"></script>
+    <script src="{% static 'js/dashboard.js' %}"></script>
 </body>
 </html>
-

@@ -1,0 +1,63 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'usuarios/css/diseno.css' %}">
+<div class="labs-container">
+    <div class="labs-banner">
+        <div class="labs-banner-text">
+            <h2>Laboratorios de Entrenamiento</h2>
+            <p style="color: #94a3b8;">Despliega entornos controlados y pon a prueba tus habilidades.</p>
+        </div>
+    </div>
+
+    <div class="labs-filters">
+        <div class="filter-chip active">Todos</div>
+        <div class="filter-chip">Seguridad Web</div>
+        <div class="filter-chip">Redes</div>
+        <div class="filter-chip">Forense</div>
+    </div>
+
+    <div class="labs-grid">
+        
+        <div class="lab-card-phantom">
+            <div class="lab-icon-sphere">🌐</div>
+            <h3>Análisis de Redes</h3>
+            <p>Domina el tráfico de red y detecta anomalías antes de que sea tarde.</p>
+            
+            <div class="lab-stats">
+                <span class="stat-tag">⏱ 3h</span>
+                <span class="stat-tag" style="color:#4ade80;">Fácil</span>
+            </div>
+<button class="lab-btn btn-phantom" onclick="window.open('/cargar-curso/1/', '_blank')">
+    Comenzar
+</button>
+
+
+</div>
+
+        <div class="lab-card-phantom">
+            <div class="lab-icon-sphere">🔐</div>
+            <h3>Inyección SQL</h3>
+            <p>Aprende a proteger bases de datos analizando vectores de ataque comunes.</p>
+            
+            <div class="lab-stats">
+                <span class="stat-tag">⏱ 2h</span>
+                <span class="stat-tag" style="color:#fbbf24;">Media</span>
+            </div>
+
+            <a href="#" class="btn-phantom">Iniciar Secuencia</a>
+        </div>
+
+        <div class="lab-card-phantom">
+            <div class="lab-icon-sphere">🛡️</div>
+            <h3>Firewall Defensivo</h3>
+            <p>Configura perímetros de seguridad y gestiona políticas de denegación.</p>
+            
+            <div class="lab-stats">
+                <span class="stat-tag">⏱ 4h</span>
+                <span class="stat-tag" style="color:#f87171;">Difícil</span>
+            </div>
+
+            <a href="#" class="btn-phantom">Iniciar Secuencia</a>
+        </div>
+
+    </div>
+</div>

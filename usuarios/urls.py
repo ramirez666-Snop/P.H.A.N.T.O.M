@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import include, path
 from . import views
 
 urlpatterns = [
@@ -7,6 +7,7 @@ urlpatterns = [
     path("dashboard/", views.dashboard_view, name="dashboard"),
     path('registro/', views.registro_view, name='registro'),
     path('cargar-curso/<int:curso_id>/', views.cargar_curso, name='cargar_curso'),
+    path('', include('cursos.urls')),
 
 ]
 

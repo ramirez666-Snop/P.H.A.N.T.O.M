@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>P.H.A.N.T.O.M </title>
+    <title>P.H.A.N.T.O.M - Acceso</title>
     {% load static %}
     <link rel="icon" type="image/png" href="{% static 'usuarios/logo.png' %}">
     <style>
@@ -95,15 +95,25 @@
             font-size: 1.6em;
         }
 
-        .form-box p {
-            margin-bottom: 18px;
-            color: #d0d8e6;
+        .error-banner {
+            background-color: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff4444;
+            color: #ffcccc;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            text-align: center;
+            animation: shake 0.5s;
         }
 
-        form {
-            display: flex;
-            flex-direction: column;
+        @keyframes shake {
+            0%, 100% {transform: translateX(0);}
+            25% {transform: translateX(-5px);}
+            75% {transform: translateX(5px);}
         }
+
+        form { display: flex; flex-direction: column; }
 
         label {
             margin-top: 10px;
@@ -114,7 +124,7 @@
 
         .input-group {
             display: flex;
-            align-items: center; /* centra verticalmente icono y texto */
+            align-items: center;
             margin-top: 8px;
             background-color: var(--input-bg);
             border-radius: 8px;
@@ -122,50 +132,21 @@
             gap: 10px;
         }
 
-        /* Iconos: ancho mayor, altura ajustada para que queden visualmente centrados */
-        .input-group img {
-            display: block;
-            opacity: 0.95;
-        }
-
-        /* correo: un poco más bajo (menor altura) para alinearse con el texto */
-        .icono-correo {
-            width: 30px;
-            height: 20px;
-            flex: 0 0 30px;
-        }
-
-        /* candado: cuadrado y centrado verticalmente */
-        .icono-candado {
-            width: 30px;
-            height: 30px;
-            flex: 0 0 30px;
-        }
-
         .input-group input {
             flex: 1;
             padding: 12px 10px;
             border: none;
-            border-radius: 6px;
             background: transparent;
             color: #fff;
-            font-size: 0.95em;
             outline: none;
-            line-height: 1.2;
         }
 
-        .input-group:focus-within{
-            box-shadow: 0 0 18px rgba(0,170,255,0.12);
-            border: 1px solid rgba(0,170,255,0.12);
-        }
-
-        .checkbox-row{
+        .checkbox-row {
             display:flex;
             align-items:center;
             gap:8px;
             margin-top:12px;
             color:#cfe8ff;
-            font-size:0.95em;
         }
 
         button {
@@ -177,40 +158,13 @@
             color: #fff;
             font-weight: bold;
             cursor: pointer;
-            font-size: 1em;
+            transition: 0.3s;
         }
 
-        button:hover {
-            background-color: #0088cc;
-        }
+        button:hover { background-color: #0088cc; }
 
-        .links {
-            margin-top: 18px;
-            font-size: 0.95em;
-            text-align: center;
-            color:#cfe8ff;
-        }
-
-        .links a {
-            color: var(--accent);
-            text-decoration: none;
-            margin: 6px 0;
-            display:inline-block;
-        }
-
-        .links a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 900px){
-            body{flex-direction:column;height:auto}
-            .left, .right{flex:unset;width:100%;padding:40px}
-            .left{order:1}
-            .right{order:2;border-left:none;border-top:2px solid var(--accent)}
-            .brand-text{font-size:2em}
-            .logo{width:110px}
-            .form-box{max-width:100%}
-        }
+        .links { margin-top: 18px; text-align: center; }
+        .links a { color: var(--accent); text-decoration: none; font-size: 0.9em; }
     </style>
 </head>
 <body>
@@ -223,26 +177,32 @@
             </div>
         </div>
         <p><strong>Entrena. Defiende. Domina.</strong></p>
-        <p>Accede a laboratorios y desafíos de ciberseguridad de vanguardia diseñados por profesionales de la industria.<br>
-        Domina escenarios de ataque y defensa del mundo real.</p>
+        <p>Accede a laboratorios y desafíos de ciberseguridad de vanguardia.</p>
     </div>
 
     <div class="right">
         <div class="form-box">
             <h2>Acceso al Laboratorio</h2>
-            <p>Ingresa tus credenciales para continuar</p>
+            <p style="color: #d0d8e6; margin-bottom: 20px;">Ingresa tus credenciales para continuar</p>
+
+            {% if error %}
+            <div class="error-banner">
+                <i class="fas fa-exclamation-triangle"></i> {{ error }}
+            </div>
+            {% endif %}
+
             <form method="post">
                 {% csrf_token %}
                 <label for="email">Correo electrónico</label>
                 <div class="input-group">
-                    <img src="{% static 'usuarios/correo.png' %}" alt="Correo" class="icono-correo">
-                    <input type="text" id="email" name="email" autocomplete="username" placeholder="tucorreo@ejemplo.com">
+                    <img src="{% static 'usuarios/correo.png' %}" alt="Correo" style="width:25px;">
+                    <input type="email" id="email" name="email" placeholder="tucorreo@ejemplo.com" required>
                 </div>
 
                 <label for="password">Contraseña</label>
                 <div class="input-group">
-                    <img src="{% static 'usuarios/candado.png' %}" alt="Contraseña" class="icono-candado">
-                    <input type="password" id="password" name="password" autocomplete="current-password" placeholder="••••••••">
+                    <img src="{% static 'usuarios/candado.png' %}" alt="Candado" style="width:25px;">
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
                 </div>
 
                 <div class="checkbox-row">
@@ -252,12 +212,12 @@
 
                 <button type="submit">Acceder al Laboratorio</button>
             </form>
+
             <div class="links">
-                <a href="#">¿Olvidaste tu contraseña?</a><br>
+                <a href="#">¿Olvidaste tu contraseña?</a><br><br>
                 <a href="{% url 'registro' %}">¿Nuevo aquí? Crear cuenta</a>
             </div>
         </div>
     </div>
 </body>
 </html>
-

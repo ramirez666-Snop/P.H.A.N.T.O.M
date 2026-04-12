@@ -1,6 +1,13 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
+from .models import Curso
 
-def cursos_home(request):
-    return HttpResponse("Página de Cursos funcionando")
+def lista_cursos(request):
+    cursos = Curso.objects.all()  # pylint: disable=no-member
+    return render(request, "cursos/lista_cursos.html", {"cursos": cursos})
 
+
+def curso_detalle(request, id):
+    curso = get_object_or_404(Curso, id=id)
+    return render(request, "cursos/curso_detalle.html", {
+        "curso": curso
+    })
