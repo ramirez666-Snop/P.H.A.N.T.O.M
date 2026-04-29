@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Curso, Seccion
+from .models import Curso, Seccion, Inscripcion
 
 class SeccionInline(admin.TabularInline):
     model = Seccion
@@ -9,3 +9,5 @@ class CursoAdmin(admin.ModelAdmin):
     inlines = [SeccionInline]
 
 admin.site.register(Curso, CursoAdmin)
+admin.site.register(Seccion)
+admin.site.register(Inscripcion)

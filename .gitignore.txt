@@ -1,9 +1,0 @@
-cd D:\P.H.A.N.T.O.M
-echo venv/ > .gitignore
-echo __pycache__/ >> .gitignore
-echo *.pyc >> .gitignore
-echo db.sqlite3 >> .gitignore
-echo .env >> .gitignore
-echo staticfiles/ >> .gitignore
-echo media/ >> .gitignore
-echo .vscode/ >> .gitignore

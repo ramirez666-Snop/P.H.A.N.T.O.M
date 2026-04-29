@@ -24,3 +24,10 @@ class Seccion(models.Model):
         # Accedemos de forma que Pylint no se confunda
         nombre_curso = getattr(self.curso, 'titulo', 'Curso sin nombre')
         return f"{nombre_curso} - {self.titulo}"
+    
+class Inscripcion(models.Model):
+    usuario = models.ForeignKey('usuarios.Usuario', on_delete=models.CASCADE)
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.usuario.nombre} - {self.curso.titulo}"
