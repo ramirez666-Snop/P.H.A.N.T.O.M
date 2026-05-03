@@ -11,3 +11,6 @@ def curso_detalle(request, id):
     return render(request, "cursos/curso_detalle.html", {
         "curso": curso
     })
+def finalizar_curso(request, curso_id):
+        curso = get_object_or_404(Curso, id=id)
+{}
