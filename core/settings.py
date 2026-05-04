@@ -18,7 +18,10 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 DATABASES = {
-'default': dj_database_url.config(default='sqlite:///db.sqlite3')}
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL')
+    )
+}
 # Templates configuration (definida antes de cualquier uso)
 TEMPLATES = [
     {
