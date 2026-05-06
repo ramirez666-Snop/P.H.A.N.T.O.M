@@ -4,126 +4,222 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ curso.titulo }} | P.H.A.N.T.O.M</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="{% static 'usuarios/css/diseno.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    
+    <meta name="referrer" content="no-referrer">
+
     <style>
-        /* Estilos específicos para que el curso se vea premium */
+        :root {
+            --phantom-green: #4ade80;
+            --font-body: 'Poppins', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: #020617;
+            color: #f8fafc;
+            margin: 0;
+        }
+
+        h1, h2 {
+            font-family: var(--font-code);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* TEXTO TIPO INSTAGRAM (Poppins 600 + Justificado) */
+        .text-content {
+            font-family: var(--font-body);
+            font-weight: 600; 
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #cbd5e1;
+            text-align: justify;
+            margin-bottom: 30px;
+        }
+
+        .media-block {
+            width: 100%;
+            margin: 40px 0;
+            display: block;
+        }
+
+        .image-container {
+            width: 100%;
+            background: #0f172a;
+            border-radius: 12px;
+            border: 1px solid #1e293b;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        /* CONTENEDOR DE VIDEO MEJORADO */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--phantom-green);
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border: none;
+        }
+
         .course-layout {
             display: grid;
-            grid-template-columns: 1fr 300px; /* Contenido a la izquierda, info extra a la derecha */
-            gap: 20px;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
             max-width: 1200px;
             margin: 0 auto;
             padding: 40px 20px;
         }
 
         .course-main-content {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 30px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid #1e293b;
+            border-radius: 24px;
+            padding: 45px;
+            backdrop-filter: blur(10px);
         }
 
         .section-card {
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .info-panel {
             background: #0f172a;
-            border-left: 4px solid #4ade80; /* Detalle verde Phantom */
-            margin-bottom: 30px;
-            padding: 20px;
-            border-radius: 0 8px 8px 0;
-        }
-
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 */
-            height: 0;
-            margin: 20px 0;
-            border: 2px solid #334155;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-        }
-
-        .course-sidebar {
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--phantom-green);
             position: sticky;
             top: 20px;
         }
 
-        .info-panel {
-            background: #1e293b;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px border #4ade80;
+        .img-error {
+            padding: 40px;
+            text-align: center;
+            color: #475569;
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+            border: 1px dashed #334155;
+            width: 100%;
         }
     </style>
 </head>
-<body class="dashboard-body"> <div class="progress-bar-container">
-        <div class="progress-bar" id="progressBar" style="width: 0%; height: 5px; background: #4ade80;"></div>
-    </div>
+<body>
+
+    <div id="progressBar" style="position: fixed; top: 0; left: 0; height: 5px; background: var(--phantom-green); width: 0%; z-index: 1000;"></div>
 
     <div class="course-layout">
-        
         <main class="course-main-content">
-            <header class="course-header">
-                <span class="badge">Módulo de Entrenamiento</span>
-                <h1>{{ curso.titulo }}</h1>
-                <p class="description">{{ curso.descripcion }}</p>
-                <hr style="border: 0; border-top: 1px solid #334155; margin: 20px 0;">
+            <header style="margin-bottom: 50px;">
+                <h1 style="font-size: 2.8rem; color: #fff;">{{ curso.titulo }}</h1>
+                <p style="color: #94a3b8; font-size: 1.1rem;">{{ curso.descripcion }}</p>
             </header>
 
             {% for seccion in curso.secciones.all|dictsort:"orden" %}
             <article class="section-card">
-                <small style="color: #4ade80; font-family: monospace;">// SECCIÓN {{ forloop.counter }}</small>
-                <h2>{{ seccion.titulo }}</h2>
+                <small style="color: var(--phantom-green); font-family: var(--font-code); font-weight: bold;">// MÓDULO_{{ forloop.counter }}</small>
+                <h2 style="margin: 15px 0 25px 0; font-size: 1.8rem; color: #f1f5f9;">{{ seccion.titulo }}</h2>
                 
                 <div class="text-content">
                     {{ seccion.contenido|linebreaks }}
                 </div>
 
+                <!-- SECCIÓN DE IMAGEN -->
                 {% if seccion.imagen %}
-                <div class="image-wrapper">
-                    <img src="{{ seccion.imagen.url }}" alt="{{ seccion.titulo }}" style="width: 100%; border-radius: 8px; margin-top: 15px;">
+                <div class="media-block">
+                    <div class="image-container" id="img-container-{{ forloop.counter }}">
+                        <img src="{{ seccion.imagen }}" 
+                             onerror="handleImageError(this, 'img-container-{{ forloop.counter }}')">
+                    </div>
                 </div>
                 {% endif %}
 
+                <!-- SECCIÓN DE VIDEO -->
                 {% if seccion.video %}
-                <div class="video-container">
-                    <iframe src="{{ seccion.video }}" frameborder="0" allowfullscreen></iframe>
+                <div class="media-block">
+                    <div class="video-container">
+                        <!-- Dejamos el src original, el script de abajo lo arreglará -->
+                        <iframe 
+                            data-url="{{ seccion.video }}"
+                            class="youtube-iframe"
+                            title="P.H.A.N.T.O.M Video Player"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
                 </div>
                 {% endif %}
             </article>
             {% endfor %}
-
-            <div style="text-align: center; margin-top: 50px;">
-                <button class="btn-phantom" onclick="finishCourse()" style="padding: 15px 40px; font-size: 1.2rem;">
-                    FINALIZAR SECUENCIA
-                </button>
-            </div>
         </main>
 
-        <aside class="course-sidebar">
+        <aside>
             <div class="info-panel">
-                <h3>Estado del Operador</h3>
-                <ul style="list-style: none; padding: 0; color: #94a3b8;">
-                    <li>📌 <strong>ID:</strong> PH-{{ curso.id }}</li>
-                    <li>⏱ <strong>Dificultad:</strong> Media</li>
-                    <li>🏆 <strong>Recompensa:</strong> 500 XP</li>
-                </ul>
-                <button onclick="window.close()" class="btn-phantom" style="width: 100%; background: transparent; border: 1px solid #f87171; color: #f87171; margin-top: 20px;">
-                    Abortar Misión
+                <h3 style="font-size: 0.8rem; color: var(--phantom-green); margin-bottom: 20px;">SISTEMA P.H.A.N.T.O.M</h3>
+                <div style="font-family: var(--font-code); font-size: 0.75rem; color: #64748b; line-height: 2;">
+                    <p>> USUARIO: OPERADOR_01</p>
+                    <p>> CURSO_ID: {{ curso.id }}</p>
+                </div>
+                <button onclick="window.close()" style="width: 100%; margin-top: 25px; padding: 12px; background: transparent; border: 1px solid #f87171; color: #f87171; font-family: var(--font-code); cursor: pointer; border-radius: 8px; font-weight: bold;">
+                    CERRAR_SESIÓN
                 </button>
             </div>
         </aside>
     </div>
 
-    <script src="{% static 'js/curso.js' %}"></script>
     <script>
-        // Lógica simple para la barra de progreso al hacer scroll
+        // 1. FIX DE YOUTUBE: Convierte links normales a links de inserción (embed)
+        document.querySelectorAll('.youtube-iframe').forEach(iframe => {
+            let rawUrl = iframe.getAttribute('data-url');
+            if (rawUrl.includes('watch?v=')) {
+                let videoId = rawUrl.split('v=')[1].split('&')[0];
+                iframe.src = `https://www.youtube.com/embed/${videoId}?origin=${window.location.origin}`;
+            } else if (rawUrl.includes('youtu.be/')) {
+                let videoId = rawUrl.split('youtu.be/')[1].split('?')[0];
+                iframe.src = `https://www.youtube.com/embed/${videoId}?origin=${window.location.origin}`;
+            } else {
+                iframe.src = rawUrl;
+            }
+        });
+
+        // 2. Manejo de errores de imagen
+        function handleImageError(image, containerId) {
+            const container = document.getElementById(containerId);
+            image.style.display = 'none';
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'img-error';
+            errorMsg.innerHTML = '[ ERROR: LINK_DE_IMAGEN_NO_VÁLIDO ]';
+            container.appendChild(errorMsg);
+        }
+
+        // 3. Barra de progreso
         window.onscroll = function() {
-            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let winScroll = document.documentElement.scrollTop;
             let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             let scrolled = (winScroll / height) * 100;
             document.getElementById("progressBar").style.width = scrolled + "%";
