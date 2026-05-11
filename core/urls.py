@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.shortcuts import redirect
-
-# from core import views  # <--- ELIMINA o COMENTA esta línea
+from cursos import challenge_logic
 
 urlpatterns = [
     path('', lambda request: redirect('login')),  # Redirige la raíz a login
@@ -14,5 +13,6 @@ urlpatterns = [
     path('', include('usuarios.urls')),  # Usa las URLs de la app usuarios
     path('cursos/', include('cursos.urls')),
     path('laboratorios/', include('laboratorios.urls')),
-    
+    path('challenges/sql-injection/', challenge_logic.desafio_sql_injection, name='sql_challenge'),
+path('iniciar/<str:desafio_slug>/', challenge_logic.iniciar_desafio, name='lanzador_desafios'),    
 ]

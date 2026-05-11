@@ -344,7 +344,24 @@ body {
         font-size: 1.8rem;
     }
 }
+/* Añadir en tu archivo CSS */
+body {
+    font-family: 'Poppins', sans-serif;
+}
 
+.card h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    color: #00ff41; /* Verde Matrix/Terminal */
+}
+
+.tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: #222;
+}
 </style>
 
 <script>
@@ -365,15 +382,18 @@ function toggleLogros(){
 
     <div class="grid">
         <div class="card">
-            <h3>🔐 Hack Básico</h3>
-            <p>Rompe contraseñas simples.</p>
+            <h3>🌐 Desafíos de Redes</h3>
+            <p>Visualizar procesos TCP.</p>
             <span class="tag">Fácil</span>
-            <span class="tag">Seguridad</span>
-            <button class="btn">Iniciar</button>
-        </div>
+            <span class="tag">Redes</span>
+<button class="lab-btn btn-phantom" 
+            onclick="window.open('{% url 'lanzador_desafios' 'sql-injection' %}', '_blank')">
+        Comenzar
+    </button>       
+</div>
 
         <div class="card">
-            <h3>🌐 Análisis de Red</h3>
+            <h3>🌐🔐 Análisis de Red</h3>
             <p>Detecta dispositivos conectados.</p>
             <span class="tag">Media</span>
             <span class="tag">Redes</span>

@@ -1,6 +1,4 @@
 {% load static %}
-<!-- PERFIL (PARTIAL) - DISEÑO BASE MEJORADO -->
-
 <style>
 
 /* RESET & BASE */
@@ -45,6 +43,36 @@
 
 .profile-banner:hover::before {
     transform: translateX(100%);
+}
+
+/* BOTÓN DE CERRAR SESIÓN (NUEVO AGREGADO) */
+.logout-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 18px;
+    background: rgba(248, 113, 113, 0.1);
+    border: 1px solid rgba(248, 113, 113, 0.4);
+    color: #f87171;
+    border-radius: 14px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 10;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: #f87171;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(248, 113, 113, 0.5);
+    transform: translateY(-2px);
+    border-color: #f87171;
 }
 
 /* TEXTO DEL BANNER */
@@ -258,13 +286,23 @@
     .profile-card {
         padding: 16px;
     }
+    .logout-btn {
+        padding: 8px 12px;
+        font-size: 0.65rem;
+        top: 10px;
+        right: 10px;
+    }
 }
 
 </style>
 
 <div class="profile-container">
-    <!-- BANNER -->
     <div class="profile-banner">
+        
+        <a href="{% url 'logout' %}" class="logout-btn">
+            Cerrar Sesión ✕
+        </a>
+
         <div class="profile-header">
             <h1>Bienvenido, {{ request.user.username }}</h1>
             <p>Tu centro de operaciones en ciberseguridad</p>
@@ -272,7 +310,6 @@
         <img src="{% static 'usuarios/default-avatar.png' %}" class="profile-avatar" alt="avatar">
     </div>
 
-    <!-- GRID DE CARDS -->
     <div class="profile-grid">
         <div class="profile-card">
             <h3>📚 Cursos</h3>

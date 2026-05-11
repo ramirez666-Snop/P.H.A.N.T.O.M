@@ -17,6 +17,7 @@
             --phantom-green: #4ade80;
             --font-body: 'Poppins', sans-serif;
             --font-code: 'JetBrains Mono', monospace;
+            --phantom-gray: #64748b; /* Color para el estado inactivo */
         }
 
         body {
@@ -33,7 +34,6 @@
             letter-spacing: 1px;
         }
 
-        /* TEXTO TIPO INSTAGRAM (Poppins 600 + Justificado) */
         .text-content {
             font-family: var(--font-body);
             font-weight: 600; 
@@ -68,7 +68,6 @@
             object-fit: contain;
         }
 
-        /* CONTENEDOR DE VIDEO MEJORADO */
         .video-container {
             position: relative;
             padding-bottom: 56.25%; /* 16:9 */
@@ -117,6 +116,29 @@
             top: 20px;
         }
 
+        /* ESTILO DEL BOTÓN DINÁMICO */
+        .btn-status {
+            width: 100%; 
+            margin-top: 25px; 
+            padding: 12px; 
+            background: transparent; 
+            border: 1px solid var(--phantom-gray); 
+            color: var(--phantom-gray); 
+            font-family: var(--font-code); 
+            cursor: pointer; 
+            border-radius: 8px; 
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        /* Clase para cuando el progreso llega al final */
+        .btn-status.active-green {
+            border-color: var(--phantom-green) !important;
+            color: #020617 !important;
+            background-color: var(--phantom-green) !important;
+            box-shadow: 0 0 15px var(--phantom-green);
+        }
+
         .img-error {
             padding: 40px;
             text-align: center;
@@ -130,7 +152,8 @@
 </head>
 <body>
 
-    <div id="progressBar" style="position: fixed; top: 0; left: 0; height: 5px; background: var(--phantom-green); width: 0%; z-index: 1000;"></div>
+    <!-- BARRA DE PROGRESO (Mantenida) -->
+    <div id="progressBar" style="position: fixed; top: 0; left: 0; height: 5px; background: var(--phantom-green); width: {{ inscripcion.progreso_porcentaje }}%; z-index: 1000;"></div>
 
     <div class="course-layout">
         <main class="course-main-content">
@@ -148,7 +171,6 @@
                     {{ seccion.contenido|linebreaks }}
                 </div>
 
-                <!-- SECCIÓN DE IMAGEN -->
                 {% if seccion.imagen %}
                 <div class="media-block">
                     <div class="image-container" id="img-container-{{ forloop.counter }}">
@@ -158,15 +180,14 @@
                 </div>
                 {% endif %}
 
-                <!-- SECCIÓN DE VIDEO -->
                 {% if seccion.video %}
                 <div class="media-block">
                     <div class="video-container">
-                        <!-- Dejamos el src original, el script de abajo lo arreglará -->
+                        <!-- IFRAME CON DATA-URL PARA EL SCRIPT (Mantenido) -->
                         <iframe 
                             data-url="{{ seccion.video }}"
                             class="youtube-iframe"
-                            title="P.H.A.N.T.O.M Video Player"
+                            title="P.H.A.N.T-O-M Video Player"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                             referrerpolicy="strict-origin-when-cross-origin"
                             allowfullscreen>
@@ -182,18 +203,23 @@
             <div class="info-panel">
                 <h3 style="font-size: 0.8rem; color: var(--phantom-green); margin-bottom: 20px;">SISTEMA P.H.A.N.T.O.M</h3>
                 <div style="font-family: var(--font-code); font-size: 0.75rem; color: #64748b; line-height: 2;">
-                    <p>> USUARIO: OPERADOR_01</p>
+                    <p>> USUARIO: {{ request.user.username }}</p>
                     <p>> CURSO_ID: {{ curso.id }}</p>
+                    <p>> STATUS: <span id="statusLabel">{% if inscripcion.completado %}COMPLETADO{% else %}EN_PROGRESO{% endif %}</span></p>
                 </div>
-                <button onclick="window.close()" style="width: 100%; margin-top: 25px; padding: 12px; background: transparent; border: 1px solid #f87171; color: #f87171; font-family: var(--font-code); cursor: pointer; border-radius: 8px; font-weight: bold;">
-                    CERRAR_SESIÓN
+
+                <!-- BOTÓN ACTUALIZADO -->
+                <button id="btnTerminar" 
+                        data-inscripcion-id="{{ inscripcion.id }}"
+                        class="btn-status {% if inscripcion.completado %}active-green{% endif %}">
+                    {% if inscripcion.completado %}CURSO COMPLETADO{% else %}TERMINAR CURSO{% endif %}
                 </button>
             </div>
         </aside>
     </div>
 
     <script>
-        // 1. FIX DE YOUTUBE: Convierte links normales a links de inserción (embed)
+        // --- 1. FIX DE YOUTUBE (Mantenido) ---
         document.querySelectorAll('.youtube-iframe').forEach(iframe => {
             let rawUrl = iframe.getAttribute('data-url');
             if (rawUrl.includes('watch?v=')) {
@@ -207,7 +233,7 @@
             }
         });
 
-        // 2. Manejo de errores de imagen
+        // --- 2. MANEJO DE ERRORES DE IMAGEN (Mantenido) ---
         function handleImageError(image, containerId) {
             const container = document.getElementById(containerId);
             image.style.display = 'none';
@@ -217,13 +243,66 @@
             container.appendChild(errorMsg);
         }
 
-        // 3. Barra de progreso
+        // --- 3. PROGRESO Y LÓGICA DE BASE DE DATOS (Agregado) ---
+        const btnTerminar = document.getElementById("btnTerminar");
+        const inscripcionId = btnTerminar.getAttribute("data-inscripcion-id");
+        let maxProgress = {{ inscripcion.progreso_porcentaje|default:0 }};
+
         window.onscroll = function() {
             let winScroll = document.documentElement.scrollTop;
             let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             let scrolled = (winScroll / height) * 100;
+            
+            // Actualizar barra de progreso visual
             document.getElementById("progressBar").style.width = scrolled + "%";
+
+            // Lógica de iluminación del botón al llegar abajo
+            if (scrolled >= 98) { 
+                btnTerminar.classList.add("active-green");
+            } else if ("{{ inscripcion.completado }}" !== "True") {
+                btnTerminar.classList.remove("active-green");
+            }
+
+            // Guardar progreso en DB cada 10% para optimizar
+            if (scrolled > maxProgress) {
+                let currentRounded = Math.round(scrolled);
+                if (currentRounded > maxProgress && currentRounded % 10 === 0) {
+                    maxProgress = currentRounded;
+                    actualizarProgresoDB(maxProgress, false);
+                }
+            }
         };
+
+        async function actualizarProgresoDB(porcentaje, estaCompletado) {
+            try {
+                await fetch(`/cursos/actualizar-progreso/${inscripcionId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        'progreso': porcentaje,
+                        'completado': estaCompletado
+                    })
+                });
+            } catch (e) { console.error("Error guardando progreso"); }
+        }
+
+        btnTerminar.addEventListener('click', () => {
+            let winScroll = document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+
+            if (scrolled >= 98 || btnTerminar.classList.contains("active-green")) {
+                actualizarProgresoDB(100, true);
+                btnTerminar.innerText = "CURSO COMPLETADO";
+                document.getElementById("statusLabel").innerText = "COMPLETADO";
+                alert("Progreso guardado. Curso completado.");
+            } else {
+                alert("Debes terminar el contenido antes de finalizar.");
+            }
+        });
     </script>
 </body>
 </html>

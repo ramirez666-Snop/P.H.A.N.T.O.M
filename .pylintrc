@@ -1,0 +1,6 @@
+[MASTER]
+load-plugins=pylint_django
+
+[MESSAGES CONTROL]
+# Opcional: silenciar advertencias de falta de docstring
+disable=missing-docstring, invalid-name

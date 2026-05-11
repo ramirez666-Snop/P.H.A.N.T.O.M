@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>PHANTOM - SQL Lab</title>
+    <style>
+        body { 
+            background-color: #0a0a0a; 
+            color: #00ff41; 
+            font-family: 'Poppins', sans-serif; 
+            padding: 20px;
+        }
+        .terminal {
+            background: #000;
+            border: 1px solid #333;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+        }
+        input {
+            background: #111;
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            padding: 8px;
+            width: 300px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .btn-phantom {
+            background: #00ff41;
+            color: #000;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .error { color: #ff4444; margin-top: 10px; }
+        .success { color: #00ff41; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="terminal">
+    <h2>[SISTEMA P.H.A.N.T.O.M] - SQL INJECTION LAB</h2>
+    <p>Objetivo: Obtener la 'secret_key' del usuario 'admin'.</p>
+    <hr border="1" color="#222">
+
+    <form method="GET">
+        <label>CONSULTA DE USUARIO:</label><br><br>
+        <input type="text" name="q" placeholder="' OR 1=1 --" value="{{ request.GET.q }}">
+        <button type="submit" class="btn-phantom">EJECUTAR</button>
+    </form>
+
+    {% if error %}
+        <p class="error"><strong>[SQL ERROR]:</strong> {{ error }}</p>
+    {% endif %}
+
+    <div style="margin-top: 30px;">
+        <h4>RESULTADOS DE LA DB:</h4>
+        {% if results %}
+            <ul>
+                {% for row in results %}
+                    <li>Registro encontrado: <span class="success">{{ row.0 }}</span></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p style="color: #666;">No se encontraron registros o la consulta falló.</p>
+        {% endif %}
+    </div>
+
+    {% if query_ejecutada %}
+        <p style="color: #444; font-size: 0.8rem; margin-top: 50px;">
+            DEBUG QUERY: <code>{{ query_ejecutada }}</code>
+        </p>
+    {% endif %}
+</div>
+
+</body>
+</html>
