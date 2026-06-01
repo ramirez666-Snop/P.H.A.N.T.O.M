@@ -272,37 +272,64 @@
                 }
             }
         };
+async function actualizarProgresoDB(porcentaje, estaCompletado) {
+    try {
+        const response = await fetch(`/cursos/actualizar-progreso/${inscripcionId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                progreso: porcentaje,
+                completado: estaCompletado
+            })
+        });
 
-        async function actualizarProgresoDB(porcentaje, estaCompletado) {
-            try {
-                await fetch(`/cursos/actualizar-progreso/${inscripcionId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    body: JSON.stringify({
-                        'progreso': porcentaje,
-                        'completado': estaCompletado
-                    })
-                });
-            } catch (e) { console.error("Error guardando progreso"); }
+        const text = await response.text();
+        console.log("STATUS:", response.status);
+        console.log("RESPUESTA RAW:", text);
+
+        let data = {};
+        try {
+            data = JSON.parse(text);
+        } catch {
+            alert("Django no devolvió JSON. Revisa consola/terminal.");
+            return false;
         }
 
-        btnTerminar.addEventListener('click', () => {
-            let winScroll = document.documentElement.scrollTop;
-            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            let scrolled = (winScroll / height) * 100;
+        if (!response.ok || data.status !== "success") {
+            alert("Error al guardar progreso: " + (data.message || "Error desconocido"));
+            return false;
+        }
 
-            if (scrolled >= 98 || btnTerminar.classList.contains("active-green")) {
-                actualizarProgresoDB(100, true);
-                btnTerminar.innerText = "CURSO COMPLETADO";
-                document.getElementById("statusLabel").innerText = "COMPLETADO";
-                alert("Progreso guardado. Curso completado.");
-            } else {
-                alert("Debes terminar el contenido antes de finalizar.");
-            }
-        });
+        return true;
+
+    } catch (e) {
+        console.error("Error fetch:", e);
+        alert("Error de conexión al guardar progreso.");
+        return false;
+    }
+}
+
+btnTerminar.addEventListener('click', async () => {
+    let winScroll = document.documentElement.scrollTop;
+    let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    let scrolled = (winScroll / height) * 100;
+
+    if (scrolled >= 98 || btnTerminar.classList.contains("active-green")) {
+        const guardado = await actualizarProgresoDB(100, true);
+
+        if (guardado) {
+            btnTerminar.innerText = "CURSO COMPLETADO";
+            document.getElementById("statusLabel").innerText = "COMPLETADO";
+            alert("Progreso guardado. Curso completado.");
+        }
+
+    } else {
+        alert("Debes terminar el contenido antes de finalizar.");
+    }
+});
     </script>
 </body>
 </html>

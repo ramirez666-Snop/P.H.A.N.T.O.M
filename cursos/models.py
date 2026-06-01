@@ -1,4 +1,5 @@
 from django.db import models
+import django.contrib.auth.models
 
 class Curso(models.Model):
     titulo = models.CharField(max_length=200)
@@ -23,12 +24,9 @@ class Seccion(models.Model):
         return f"{nombre_curso} - {self.titulo}"
 
 class Inscripcion(models.Model):
-    # Asegúrate que 'usuarios' es el nombre real de tu app de usuario
-    usuario = models.ForeignKey('usuarios.Usuario', on_delete=models.CASCADE)
+    usuario = models.ForeignKey(django.contrib.auth.models.User, on_delete=models.CASCADE)
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
-    
-    # --- CAMPOS DE PROGRESO ---
-    progreso_porcentaje = models.IntegerField(default=0) 
+    progreso_porcentaje = models.IntegerField(default=0)
     completado = models.BooleanField(default=False)
     fecha_finalizacion = models.DateTimeField(null=True, blank=True)
 

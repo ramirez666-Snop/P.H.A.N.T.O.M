@@ -1,11 +1,11 @@
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.shortcuts import render
-from django.shortcuts import render, get_object_or_404
-from cursos.models import Curso
+import django.contrib.auth.models
+from cursos.models import Curso, Inscripcion
+from django.contrib import messages
+
 def login_view(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -14,13 +14,13 @@ def login_view(request):
         # Intentamos obtener al usuario por email
         try:
             # Importante: Asegúrate de que tus usuarios tengan emails únicos
-            user_obj = User.objects.get(email=email)
+            user_obj = django.contrib.auth.models.User.objects.get(email=email)
             username = user_obj.username
-        except User.DoesNotExist:
+        except django.contrib.auth.models.User.DoesNotExist:
             return render(request, "usuarios/login.html", {
                 "error": "El correo electrónico no está registrado"
             })
-        except User.MultipleObjectsReturned:
+        except django.contrib.auth.models.User.MultipleObjectsReturned:
             return render(request, "usuarios/login.html", {
                 "error": "Existen múltiples cuentas con este correo. Contacta a soporte."
             })
@@ -44,10 +44,18 @@ def login_view(request):
 
 @login_required
 def dashboard_view(request):
-    return render(request, "usuarios/dashboard.html")
+    inscripciones = Inscripcion.objects.filter(
+        usuario=request.user
+    ).select_related("curso")
 
+    cursos_completados = inscripciones.filter(completado=True)
+    cursos_en_progreso = inscripciones.filter(completado=False)
 
-from django.contrib import messages # Importante añadir esto
+    return render(request, "usuarios/dashboard.html", {
+        "inscripciones": inscripciones,
+        "cursos_completados": cursos_completados,
+        "cursos_en_progreso": cursos_en_progreso,
+    })
 
 def registro_view(request):
     if request.method == "POST":
@@ -62,16 +70,16 @@ def registro_view(request):
             return render(request, "usuarios/registro.html")
 
         # 2. Validar si el usuario o email ya existen
-        if User.objects.filter(username=username).exists():
+        if django.contrib.auth.models.User.objects.filter(username=username).exists():
             messages.error(request, "El nombre de usuario ya está en uso")
             return render(request, "usuarios/registro.html")
             
-        if User.objects.filter(email=email).exists():
+        if django.contrib.auth.models.User.objects.filter(email=email).exists():
             messages.error(request, "Este correo ya tiene una cuenta activa")
             return render(request, "usuarios/registro.html")
 
         # 3. Crear usuario (Usar create_user para que encripte la clave)
-        user = User.objects.create_user(
+        user = django.contrib.auth.models.User.objects.create_user(
             username=username,
             email=email,
             password=password1

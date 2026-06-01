@@ -1,21 +1,168 @@
 {% load static %}
 
 <style>
+
+@font-face {
+    font-family: 'Biological Migration Regular';
+    src: url('/static/usuarios/fonts/Biological Migration Regular.otf') format('opentype');
+}
+@font-face {
+    font-family: 'Biological Migration Regular';
+    src: url('/static/usuarios/fonts/Biological Migration Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Black Crush';
+    src: url('/static/usuarios/fonts/Black Crush.otf') format('opentype');
+}
+@font-face {
+    font-family: 'Blackcraft';
+    src: url('/static/usuarios/fonts/Blackcraft.otf') format('opentype');
+}
+@font-face {
+    font-family: 'Blackcraft';
+    src: url('/static/usuarios/fonts/Blackcraft.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'CENTAURS-Regular';
+    src: url('/static/usuarios/fonts/CENTAURS-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'COVERS SHORES DEMO';
+    src: url('/static/usuarios/fonts/COVERS SHORES DEMO.otf') format('opentype');
+}
+@font-face {
+    font-family: 'COVERS SHORES DEMO';
+    src: url('/static/usuarios/fonts/COVERS SHORES DEMO.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Crazy rooster';
+    src: url('/static/usuarios/fonts/Crazy rooster.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Delon';
+    src: url('/static/usuarios/fonts/Delon.otf') format('opentype');
+}
+@font-face {
+    font-family: 'Delon';
+    src: url('/static/usuarios/fonts/Delon.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'StreetWolfker';
+    src: url('/static/usuarios/fonts/STREET WOLFKER.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'HollowGenesis';
+    src: url('/static/usuarios/fonts/Hollowe Genesis.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'WrongBoys';
+    src: url('/static/usuarios/fonts/Wrong boys.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Zorvex';
+    src: url('/static/usuarios/fonts/Zorvex.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Drybrush';
+    src: url('/static/usuarios/fonts/Drybrush.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'DrybrushTTF';
+    src: url('/static/usuarios/fonts/Drybrush.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Elfis';
+    src: url('/static/usuarios/fonts/Elfis-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Fujimoto';
+    src: url('/static/usuarios/fonts/Fujimoto DEMO.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'HollowGenesis';
+    src: url('/static/usuarios/fonts/Hollowe Genesis.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Istarot';
+    src: url('/static/usuarios/fonts/Istarot.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Quishe';
+    src: url('/static/usuarios/fonts/QUISHE.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'QuisheTTF';
+    src: url('/static/usuarios/fonts/QUISHE.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'SanguineFrost';
+    src: url('/static/usuarios/fonts/Sanguine Frost.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Sealgair';
+    src: url('/static/usuarios/fonts/Sealgair-Demo.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'StreetWolfker';
+    src: url('/static/usuarios/fonts/STREET WOLFKER.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'VinqueAntiqueBoldItalic';
+    src: url('/static/usuarios/fonts/vinque antique bd it.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'VinqueAntiqueBold';
+    src: url('/static/usuarios/fonts/vinque antique bd.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'WildGraffiti';
+    src: url('/static/usuarios/fonts/wild graffiti.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'WrongBoys';
+    src: url('/static/usuarios/fonts/Wrong boys.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Zorvex';
+    src: url('/static/usuarios/fonts/Zorvex.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'ZultaMusic';
+    src: url('/static/usuarios/fonts/ZultaMusicDemo-Regular.otf') format('opentype');
+}
+
 /* RESET & BASE INTEGRATION */
-.dashboard-container * {
+#panel .dashboard-container * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-.dashboard-container {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    color: #e2e8f0;
-    padding: 20px;
+#panel .dashboard-container * {
+    box-sizing: border-box;
 }
 
-/* BANNER (Copiado de tu Perfil) */
-.dash-banner {
+/* BANNER */
+#panel .dash-banner {
     position: relative;
     height: 180px;
     border-radius: 28px;
@@ -26,14 +173,35 @@
     margin-bottom: 40px;
 }
 
-.dash-header-text {
+#panel .username-bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: clamp(4rem, 14vw, 11rem);
+    font-weight: 900;
+    text-transform: uppercase;
+
+    color: rgba(0, 170, 255, 0.25);
+    background: none;
+
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+}
+#panel .dash-header-text {
     position: absolute;
     bottom: 24px;
     left: 28px;
     z-index: 2;
 }
 
-.dash-header-text h1 {
+#panel .dash-header-text h1 {
     font-size: 1.8rem;
     background: linear-gradient(135deg, #ffffff, #90e0ff);
     -webkit-background-clip: text;
@@ -42,15 +210,15 @@
 }
 
 /* GRID DE ESTADÍSTICAS */
-.stats-grid {
+#panel .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 24px;
     margin-bottom: 50px;
 }
 
-/* CARDS (Efecto Glassmorphism de tu diseño) */
-.dash-card {
+/* CARDS */
+#panel .dash-card {
     background: rgba(15, 23, 42, 0.65);
     backdrop-filter: blur(12px);
     border-radius: 24px;
@@ -61,14 +229,13 @@
     overflow: hidden;
 }
 
-.dash-card:hover {
+#panel .dash-card:hover {
     transform: translateY(-6px);
     border-color: rgba(0, 170, 255, 0.6);
     box-shadow: 0 12px 28px rgba(0, 170, 255, 0.3);
 }
 
-/* Títulos y textos */
-.dash-card h3 {
+#panel .dash-card h3 {
     font-size: 1.2rem;
     color: #cbd5e1;
     margin-bottom: 8px;
@@ -77,15 +244,14 @@
     gap: 10px;
 }
 
-.dash-card .stat-value {
+#panel .dash-card .stat-value {
     font-size: 2rem;
     font-weight: 800;
     color: #00aaff;
     text-shadow: 0 0 15px rgba(0, 170, 255, 0.4);
 }
 
-/* SECCIÓN DE CURSOS (GRID) */
-.section-title {
+#panel .section-title {
     font-size: 1.4rem;
     color: #fff;
     margin-bottom: 24px;
@@ -93,18 +259,17 @@
     border-left: 4px solid #00aaff;
 }
 
-.courses-grid {
+#panel .courses-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 24px;
 }
 
-/* BARRAS DE PROGRESO (Estilo Perfil) */
-.progress-wrapper {
+#panel .progress-wrapper {
     margin: 15px 0;
 }
 
-.progress-info {
+#panel .progress-info {
     display: flex;
     justify-content: space-between;
     font-size: 0.85rem;
@@ -112,14 +277,14 @@
     margin-bottom: 8px;
 }
 
-.bar-bg {
+#panel .bar-bg {
     height: 8px;
     background: #020617;
     border-radius: 12px;
     overflow: hidden;
 }
 
-.bar-fill {
+#panel .bar-fill {
     display: block;
     height: 100%;
     background: linear-gradient(90deg, #00aaff, #0099dd);
@@ -127,8 +292,7 @@
     border-radius: 12px;
 }
 
-/* BOTÓN ESTILO LÁSER */
-.btn-launch {
+#panel .btn-launch {
     width: 100%;
     padding: 12px;
     margin-top: 15px;
@@ -141,14 +305,13 @@
     transition: all 0.3s ease;
 }
 
-.btn-launch:hover {
+#panel .btn-launch:hover {
     background: #00aaff;
     box-shadow: 0 0 20px rgba(0, 170, 255, 0.6);
     color: #020617;
 }
 
-/* EFECTO LÁSER AL HOVER (Igual que tus cards de perfil) */
-.dash-card::before {
+#panel .dash-card::before {
     content: '';
     position: absolute;
     top: 0;
@@ -159,68 +322,159 @@
     transition: left 0.6s ease;
 }
 
-.dash-card:hover::before {
+#panel .dash-card:hover::before {
     left: 100%;
 }
 </style>
 
 <div class="dashboard-container">
+
     <div class="dash-banner">
-        <div class="dash-header-text">
-            <h1>Panel de Control</h1>
-            <p>Operador: {{ request.user.username }} | Estatus: Activo</p>
+        
+        <div 
+        class="username-bg js-username-font">
+            {{ request.user.username }}
         </div>
     </div>
+    
+<script>
+(function () {
+    console.log("SCRIPT EJECUTADO");
+    const fonts = [
+        "StreetWolfker",
+        "WrongBoys",
+        "WildGraffiti",
+        "HollowGenesis",
+        "Fujimoto",
+        "SanguineFrost",
+        "Zorvex",
+        "Elfis",
+        "Sealgair",
+        "Drybrush",
+        "Quishe",
+        "Istarot",
+        "VinqueAntiqueBold",
+        "VinqueAntiqueBoldItalic",
+        "ZultaMusic",
+        "Delon",
+        "Crazy rooster",
+        "COVERS SHORES DEMO",
+        "CENTAURS-Regular",
+        "Blackcraft",
+        "Black Crush",
+        "Biological Migration Regular"
+    ];
+
+    const usernameBg = document.querySelector(".js-username-font");
+
+    if (!usernameBg) return;
+
+    const randomFont =
+        fonts[Math.floor(Math.random() * fonts.length)];
+
+    console.log("Fuente seleccionada:", randomFont);
+    console.log(getComputedStyle(usernameBg).fontFamily);
+    usernameBg.style.fontFamily = randomFont;
+
+})();
+    </div> //Linea delimita el dashboard
+</script>
 
     <div class="stats-grid">
         <div class="dash-card">
-            <h3>⚡ Nivel</h3>
-            <p class="stat-value">12</p>
+            <h3>✅ Cursos completados</h3>
+            <p class="stat-value">{{ cursos_completados.count }}</p>
         </div>
+
         <div class="dash-card">
-            <h3>🔥 XP Total</h3>
-            <p class="stat-value">4,520</p>
+            <h3>📘 Cursos en progreso</h3>
+            <p class="stat-value">{{ cursos_en_progreso.count }}</p>
         </div>
+
         <div class="dash-card">
-            <h3>🧪 Labs</h3>
-            <p class="stat-value">28</p>
+            <h3>🧪 Labs completados</h3>
+            <p class="stat-value">0</p>
+        </div>
+
+        <div class="dash-card">
+            <h3>⚙️ Labs en progreso</h3>
+            <p class="stat-value">0</p>
         </div>
     </div>
 
-    <h2 class="section-title">Misiones en Curso</h2>
+    <h2 class="section-title">Cursos en progreso</h2>
+
     <div class="courses-grid">
-        
-        <div class="dash-card">
-            <div style="font-size: 2rem; margin-bottom: 15px;">🌐</div>
-            <h3>Seguridad Web</h3>
-            <p style="color: #94a3b8; font-size: 0.9rem;">Explotación de vulnerabilidades modernas.</p>
-            
-            <div class="progress-wrapper">
-                <div class="progress-info">
-                    <span>Progreso</span>
-                    <span>60%</span>
-                </div>
-                <div class="bar-bg"><span class="bar-fill" style="width:60%"></span></div>
-            </div>
-            
-            <button class="btn-launch">CONTINUAR</button>
-        </div>
+        {% for inscripcion in cursos_en_progreso %}
+            <div class="dash-card">
+                <div style="font-size: 2rem; margin-bottom: 15px;">📘</div>
 
-        <div class="dash-card">
-            <div style="font-size: 2rem; margin-bottom: 15px;">📡</div>
-            <h3>Seguridad de Red</h3>
-            <p style="color: #94a3b8; font-size: 0.9rem;">Análisis de tráfico y protocolos.</p>
-            
-            <div class="progress-wrapper">
-                <div class="progress-info">
-                    <span>Progreso</span>
-                    <span>35%</span>
-                </div>
-                <div class="bar-bg"><span class="bar-fill" style="width:35%"></span></div>
-            </div>
-            
-            <button class="btn-launch">CONTINUAR</button>
-        </div>
+                <h3>{{ inscripcion.curso.titulo }}</h3>
 
+                <p style="color: #94a3b8; font-size: 0.9rem;">
+                    {{ inscripcion.curso.descripcion }}
+                </p>
+
+                <div class="progress-wrapper">
+                    <div class="progress-info">
+                        <span>Progreso</span>
+                        <span>{{ inscripcion.progreso_porcentaje }}%</span>
+                    </div>
+
+                    <div class="bar-bg">
+                        <span class="bar-fill" style="width: {{ inscripcion.progreso_porcentaje }}%"></span>
+                    </div>
+                </div>
+
+                <a href="{% url 'curso_detalle' inscripcion.curso.id %}" class="btn-launch">
+                    CONTINUAR
+                </a>
+            </div>
+        {% empty %}
+            <p style="color: #94a3b8;">No tienes cursos en progreso.</p>
+        {% endfor %}
+    </div>
+
+    <h2 class="section-title">Cursos completados</h2>
+
+    <div class="courses-grid">
+        {% for inscripcion in cursos_completados %}
+            <div class="dash-card">
+                <div style="font-size: 2rem; margin-bottom: 15px;">✅</div>
+
+                <h3>{{ inscripcion.curso.titulo }}</h3>
+
+                <p style="color: #94a3b8; font-size: 0.9rem;">
+                    {{ inscripcion.curso.descripcion }}
+                </p>
+
+                <div class="progress-wrapper">
+                    <div class="progress-info">
+                        <span>Progreso</span>
+                        <span>100%</span>
+                    </div>
+
+                    <div class="bar-bg">
+                        <span class="bar-fill" style="width: 100%"></span>
+                    </div>
+                </div>
+
+                <a href="{% url 'curso_detalle' inscripcion.curso.id %}" class="btn-launch">
+                    VER CURSO
+                </a>
+            </div>
+        {% empty %}
+            <p style="color: #94a3b8;">Todavía no has completado cursos.</p>
+        {% endfor %}
+    </div>
+
+    <h2 class="section-title">Labs en progreso</h2>
+    <div class="courses-grid">
+        <p style="color: #94a3b8;">Aún no tienes laboratorios en progreso.</p>
+    </div>
+
+    <h2 class="section-title">Labs completados</h2>
+    <div class="courses-grid">
+        <p style="color: #94a3b8;">Aún no has completado laboratorios.</p>
     </div>
 </div>
