@@ -46,7 +46,10 @@ TEMPLATES = [
 SECRET_KEY = 'django-insecure-h$u3_gum!wuclc6uwlupyead+hvmppxxvk_cp5#jmg3c^!km8+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = False
+#DEBUG = True
+
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -63,7 +66,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
     'usuarios',
     'cursos',
     'laboratorios',
@@ -135,6 +137,10 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+#STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+
+
 # Redirección al login personalizado
 # Configuración de login/logout
 LOGIN_URL = '/login/'

@@ -1,13 +1,48 @@
 {% load static %}
 <style>
 
+    @font-face {
+    font-family: '1';
+    src: url('/static/usuarios/fonts/COVERS SHORES DEMO.ttf') format('truetype');
+}
+
 /* RESET & BASE */
 .profile-container * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+.profile-title {
+    position: absolute;
+    top: 24px;
+    left: 32px;
+    z-index: 3;
 
+    font-family: '1', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.45rem;
+    color: #ffffff;
+}
+
+.profile-username {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: '1', sans-serif;
+    font-size: clamp(4rem, 11vw, 9rem);
+    line-height: 0.85;
+
+    text-transform: uppercase;
+    color: rgb(255, 255, 255);
+
+    white-space: nowrap;
+    pointer-events: none;
+}
 .profile-container {
     font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     background: transparent;
@@ -75,51 +110,7 @@
     border-color: #f87171;
 }
 
-/* TEXTO DEL BANNER */
-.profile-header {
-    position: absolute;
-    bottom: 24px;
-    left: 28px;
-    z-index: 2;
-}
 
-.profile-header h1 {
-    margin: 0;
-    font-size: 1.8rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, #ffffff, #90e0ff);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    letter-spacing: -0.3px;
-}
-
-.profile-header p {
-    margin: 8px 0 0;
-    color: #94a3b8;
-    font-size: 0.95rem;
-    font-weight: 500;
-}
-
-/* AVATAR */
-.profile-avatar {
-    position: absolute;
-    bottom: -35px;
-    right: 35px;
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    border: 3px solid #0f172a;
-    box-shadow: 0 0 0 2px rgba(0, 170, 255, 0.6), 0 0 20px #00aaff;
-    object-fit: cover;
-    background: #0f172a;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.profile-avatar:hover {
-    transform: scale(1.02);
-    box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.8), 0 0 28px #00aaff;
-}
 
 /* GRID */
 .profile-grid {
@@ -292,64 +283,69 @@
         top: 10px;
         right: 10px;
     }
+   .profile-banner {
+    position: relative;
+    height: 220px;
+    border-radius: 28px;
+    overflow: hidden;
+}
+
 }
 
 </style>
 
 <div class="profile-container">
+
     <div class="profile-banner">
-        
+
         <a href="{% url 'logout' %}" class="logout-btn">
             Cerrar Sesión ✕
         </a>
 
-        <div class="profile-header">
-            <h1>Bienvenido, {{ request.user.username }}</h1>
-            <p>Tu centro de operaciones en ciberseguridad</p>
+        <div class="profile-title">
+            PERFIL
         </div>
-        <img src="{% static 'usuarios/default-avatar.png' %}" class="profile-avatar" alt="avatar">
+
+        <div class="profile-username">
+            {{ request.user.username }}
+        </div>
+
     </div>
 
     <div class="profile-grid">
+
         <div class="profile-card">
-            <h3>📚 Cursos</h3>
-            <p>8 / 12 completados</p>
-            <div class="bar"><span style="width:65%"></span></div>
+            <h3>📚 Cursos completados</h3>
+            <p>{{ cursos_completados.count }} / {{ inscripciones.count }}</p>
+            <div class="bar">
+                <span style="width: {{ porcentaje_cursos }}%"></span>
+            </div>
         </div>
 
         <div class="profile-card">
-            <h3>🧪 Laboratorios</h3>
-            <p>15 completados</p>
-            <div class="bar"><span style="width:80%"></span></div>
+            <h3>📘 Cursos en progreso</h3>
+            <p>{{ cursos_en_progreso.count }}</p>
+            <div class="bar">
+                <span style="width: {{ porcentaje_cursos_progreso }}%"></span>
+            </div>
         </div>
 
         <div class="profile-card">
-            <h3>🔥 Desafíos</h3>
-            <p>10 superados</p>
-            <div class="bar"><span style="width:70%"></span></div>
+            <h3>🧪 Labs completados</h3>
+            <p>{{ labs_completados }}</p>
+            <div class="bar">
+                <span style="width: {{ porcentaje_labs }}%"></span>
+            </div>
         </div>
 
         <div class="profile-card">
-            <h3>⚡ Experiencia</h3>
-            <p>3200 XP</p>
-            <div class="bar"><span style="width:75%"></span></div>
+            <h3>⚙️ Labs en progreso</h3>
+            <p>{{ labs_en_progreso }}</p>
+            <div class="bar">
+                <span style="width: {{ porcentaje_labs_progreso }}%"></span>
+            </div>
         </div>
 
-        <div class="profile-card">
-            <h3>🏆 Logros</h3>
-            <ul class="profile-logros">
-                <li>Primer desafío completado</li>
-                <li>Experto en redes</li>
-                <li>Dominio en SQL</li>
-                <li>Maestro en seguridad</li>
-                <li>Explorador avanzado</li>
-            </ul>
-        </div>
-
-        <div class="profile-card">
-            <h3>🎯 Nivel</h3>
-            <p>Nivel 12</p>
-            <div class="bar"><span style="width:60%"></span></div>
-        </div>
     </div>
+
 </div>

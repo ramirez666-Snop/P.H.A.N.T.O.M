@@ -8,17 +8,18 @@
         </div>
     </div>
 
-    <div class="labs-filters">
-        <div class="filter-chip active">Todos</div>
-        <div class="filter-chip">Seguridad Web</div>
-        <div class="filter-chip">Redes</div>
-        <div class="filter-chip">Vulnerabilidades</div>
-    </div>
+
+   <div class="labs-filters">
+    <div class="filter-chip active" data-filter="todos">Todos</div>
+    <div class="filter-chip" data-filter="web">Seguridad Web</div>
+    <div class="filter-chip" data-filter="redes">Redes</div>
+    <div class="filter-chip" data-filter="vulnerabilidades">Vulnerabilidades</div>
+</div>
 
     <div class="labs-grid">
         
-        <div class="lab-card-phantom">
-            <div class="lab-icon-sphere">🌐</div>
+            <div class="lab-card-phantom" data-category="redes">
+                <div class="lab-icon-sphere">🌐</div>
             <h3>Fundamentos de Análisis de Seguridad en Redes</h3>
             <p>Introducción al análisis de seguridad en redes: detección de amenazas, vulnerabilidades y protección básica de infraestructuras.</p>
             
@@ -33,7 +34,7 @@
 
 </div>
 
-        <div class="lab-card-phantom">
+        <div class="lab-card-phantom" data-category="vulnerabilidades">
             <div class="lab-icon-sphere">🔐</div>
             <h3>PHISHING</h3>
             <p>Técnica de fraude en la que atacantes se hacen pasar por entidades confiables para engañar a usuarios y obtener información sensible, como contraseñas o datos bancarios.</p>
@@ -47,7 +48,7 @@
     Comenzar
 </button>        </div>
 
-        <div class="lab-card-phantom">
+        <div class="lab-card-phantom" data-category="vulnerabilidades">
             <div class="lab-icon-sphere">🛡️</div>
             <h3>RANSOMWARE</h3>
             <p>Malware que bloquea o cifra archivos y exige un pago para restaurar el acceso.</p>
@@ -64,3 +65,28 @@
 
     </div>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const chips = document.querySelectorAll(".filter-chip");
+    const cards = document.querySelectorAll(".lab-card-phantom");
+
+    chips.forEach(chip => {
+        chip.addEventListener("click", function () {
+            const selected = this.dataset.filter;
+
+            chips.forEach(c => c.classList.remove("active"));
+            this.classList.add("active");
+
+            cards.forEach(card => {
+                const category = card.dataset.category;
+
+                if (selected === "todos" || category === selected) {
+                    card.style.display = "flex";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        });
+    });
+});
+</script>

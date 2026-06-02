@@ -1,125 +1,135 @@
 {% load static %}
 
 <style>
-
-/* CONTENEDOR GENERAL */
-.config-container{
-    max-width:600px;
-    margin:auto;
+.config-container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 30px 20px;
 }
 
-/* TARJETA */
-.config-card{
-    background:rgba(15,23,42,0.6);
-    border-radius:16px;
-    padding:25px;
-    border:1px solid rgba(0,170,255,0.1);
-    backdrop-filter:blur(10px);
+.config-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(145deg, rgba(15,23,42,0.92), rgba(2,6,23,0.96));
+    border-radius: 26px;
+    padding: 34px;
+    border: 1px solid rgba(0,170,255,0.28);
+    box-shadow: 0 0 35px rgba(0,170,255,0.18);
+    backdrop-filter: blur(14px);
 }
 
-/* TITULO */
-.config-card h2{
-    margin-bottom:20px;
-    color:#fff;
+.config-card::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: radial-gradient(circle at top right, rgba(0,170,255,0.24), transparent 35%);
+    pointer-events: none;
 }
 
-/* GRUPO */
-.form-group{
-    margin-bottom:15px;
+.config-card h2 {
+    position: relative;
+    margin-bottom: 8px;
+    color: #fff;
+    font-size: 1.8rem;
 }
 
-/* INPUTS */
-.config-card input{
-    width:100%;
-    padding:10px;
-    border-radius:10px;
-    border:1px solid rgba(0,170,255,0.2);
-    background:#020617;
-    color:#fff;
-    outline:none;
-    transition:0.2s;
+.config-subtitle {
+    position: relative;
+    color: #94a3b8;
+    margin-bottom: 28px;
+    font-size: 0.95rem;
 }
 
-.config-card input:focus{
-    border-color:#00aaff;
-    box-shadow:0 0 8px #00aaff;
+.form-group {
+    position: relative;
+    margin-bottom: 20px;
 }
 
-/* BOTÓN */
-.btn-save{
-    width:100%;
-    margin-top:10px;
-    padding:10px;
-    border:none;
-    border-radius:10px;
-    background:#00aaff;
-    color:#fff;
-    font-weight:600;
-    cursor:pointer;
-    transition:0.3s;
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #bae6fd;
+    font-size: 0.9rem;
+    font-weight: 600;
 }
 
-.btn-save:hover{
-    box-shadow:0 0 15px #00aaff;
+.config-card input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(0,170,255,0.22);
+    background: rgba(2,6,23,0.85);
+    color: #fff;
+    outline: none;
+    transition: 0.25s ease;
 }
 
+.config-card input:focus {
+    border-color: #00aaff;
+    box-shadow: 0 0 0 3px rgba(0,170,255,0.14), 0 0 16px rgba(0,170,255,0.35);
+}
+
+.config-divider {
+    height: 1px;
+    margin: 28px 0;
+    background: linear-gradient(90deg, transparent, rgba(0,170,255,0.5), transparent);
+}
+
+.btn-save {
+    width: 100%;
+    margin-top: 8px;
+    padding: 14px;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #00aaff, #2563eb);
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 24px rgba(0,170,255,0.55);
+}
 </style>
 
 <div class="config-container">
+    <div class="config-card">
+        <h2>⚙️ Configuración de Perfil</h2>
+        <p class="config-subtitle">
+            Actualiza tus credenciales
+        </p>
 
-<div class="config-card">
-<h2>⚙️ Configuración de Perfil</h2>
+        <form method="post">
+            {% csrf_token %}
 
-<form method="post">
-    {% csrf_token %}
+            <div class="form-group">
+                <label>Nombre de usuario</label>
+                <input type="text" name="username" value="{{ request.user.username }}">
+            </div>
 
-```
+            <div class="form-group">
+                <label>Correo electrónico</label>
+                <input type="email" name="email" value="{{ request.user.email }}">
+            </div>
 
-{% load static %}
+            <div class="config-divider"></div>
 
-<div class="config-container">
+            <div class="form-group">
+                <label>Nueva contraseña</label>
+                <input type="password" name="password1" placeholder="Nueva contraseña">
+            </div>
 
-<div class="config-card">
-<h2>⚙️ Configuración de Perfil</h2>
+            <div class="form-group">
+                <label>Confirmar contraseña</label>
+                <input type="password" name="password2" placeholder="Confirmar contraseña">
+            </div>
 
-<form method="post">
-    {% csrf_token %}
-
-```
-<div class="form-group">
-    <label>Nombre de usuario</label>
-    <input type="text" name="username" value="{{ request.user.username }}">
-</div>
-
-<div class="form-group">
-    <label>Correo electrónico</label>
-    <input type="email" name="email" value="{{ request.user.email }}">
-</div>
-
-<div class="form-group">
-    <label>Nueva contraseña</label>
-    <input type="password" name="password1" placeholder="Nueva contraseña">
-</div>
-
-<div class="form-group">
-    <label>Confirmar contraseña</label>
-    <input type="password" name="password2" placeholder="Confirmar contraseña">
-</div>
-
-<button type="submit" class="btn-save">Guardar cambios</button>
-```
-
-</form>
-
-</div>
-
-</div>
-
-
-```
-
-</form>
-
-</div>
-
+            <button type="submit" class="btn-save">
+                Guardar cambios
+            </button>
+        </form>
+    </div>
 </div>
