@@ -1,474 +1,445 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>P.H.A.N.T.O.M - Desafíos</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+{% load static %}
+
 <style>
-
-/* RESET & BASE */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    background: radial-gradient(circle at top, #0f172a, #020617);
+.challenge-page {
+    width: 100%;
     color: #e2e8f0;
-    padding: 25px;
-    min-height: 100vh;
+    font-family: 'Inter', system-ui, sans-serif;
 }
 
-/* Layout */
-.container {
-    display: flex;
+.challenge-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(260px, 1fr);
     gap: 24px;
-    max-width: 1400px;
-    margin: 0 auto;
 }
 
-/* IZQUIERDA */
-.left {
-    flex: 3;
+.challenge-header {
+    margin-bottom: 24px;
 }
 
-/* DERECHA */
-.right {
-    flex: 1.2;
+.challenge-header h2 {
+    font-size: 2rem;
+    color: #fff;
+}
+
+.challenge-header p {
+    color: #94a3b8;
+}
+
+.challenge-slider {
+    position: relative;
+    width: 100%;
+    height: 560px;
+    overflow: hidden;
+    border-radius: 28px;
+    background: #020617;
+    border: 1px solid rgba(0,170,255,0.25);
+    box-shadow: 0 0 30px rgba(0,170,255,0.18);
+}
+
+.challenge-list {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.challenge-item {
+    list-style: none;
+    position: absolute;
+    top: 50%;
+    width: 220px;
+    height: 320px;
+    transform: translateY(-50%);
+    background-size: cover;
+    background-position: center;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+    transition: all 0.6s ease;
+}
+
+.challenge-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(2,6,23,0.9), rgba(2,6,23,0.25));
+    z-index: 1;
+}
+
+.challenge-item:nth-child(1),
+.challenge-item:nth-child(2) {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: none;
+    border-radius: 28px;
+}
+
+.challenge-item:nth-child(3) {
+    left: 58%;
+}
+
+.challenge-item:nth-child(4) {
+    left: calc(58% + 240px);
+}
+
+.challenge-item:nth-child(5) {
+    left: calc(58% + 480px);
+}
+
+.challenge-item:nth-child(n+6) {
+    left: calc(58% + 720px);
+    opacity: 0;
+}
+
+.challenge-content {
+    position: absolute;
+    top: 50%;
+    left: 45px;
+    transform: translateY(-50%);
+    max-width: 430px;
+    z-index: 2;
+    display: none;
+}
+
+.challenge-item:nth-child(2) .challenge-content {
+    display: block;
+}
+
+.challenge-content h3 {
+    font-size: 2.2rem;
+    color: #fff;
+    margin-bottom: 14px;
+}
+
+.challenge-content p {
+    color: #cbd5e1;
+    line-height: 1.6;
+    margin-bottom: 18px;
+}
+
+.challenge-tag {
+    display: inline-block;
+    margin-right: 8px;
+    margin-bottom: 18px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(0,170,255,0.15);
+    border: 1px solid rgba(0,170,255,0.35);
+    color: #90e0ff;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.challenge-btn {
+    display: block;
+    padding: 12px 22px;
+    border-radius: 14px;
+    border: 1px solid rgba(0,170,255,0.5);
+    background: rgba(0,170,255,0.15);
+    color: #fff;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.challenge-btn:hover {
+    background: #00aaff;
+    color: #020617;
+    box-shadow: 0 0 22px rgba(0,170,255,0.65);
+}
+
+.challenge-nav {
+    position: absolute;
+    bottom: 28px;
+    left: 45px;
+    z-index: 10;
+    display: flex;
+    gap: 12px;
+}
+
+.challenge-nav button {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,170,255,0.45);
+    background: rgba(15,23,42,0.85);
+    color: #fff;
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.challenge-nav button:hover {
+    background: #00aaff;
+    color: #020617;
+}
+
+.challenge-side {
     display: flex;
     flex-direction: column;
     gap: 24px;
 }
 
-/* TÍTULO */
-.title {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    background: linear-gradient(135deg, #ffffff, #90e0ff);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    letter-spacing: -0.3px;
-}
-
-.left > p {
-    color: #94a3b8;
-    font-weight: 500;
-    margin-bottom: 24px;
-}
-
-/* GRID DESAFÍOS */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-    gap: 24px;
-}
-
-/* CARD DESAFÍO - MISMO ESTILO QUE PROFILE */
-.card {
-    position: relative;
+.challenge-panel {
     background: rgba(15, 23, 42, 0.65);
     backdrop-filter: blur(12px);
     border-radius: 24px;
     padding: 20px;
-    border: 1px solid rgba(0, 170, 255, 0.2);
-    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-    overflow: hidden;
-    cursor: pointer;
+    border: 1px solid rgba(0,170,255,0.2);
 }
 
-/* Efecto hover principal */
-.card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(0, 170, 255, 0.6);
-    box-shadow: 0 12px 28px rgba(0, 170, 255, 0.3);
-    background: rgba(15, 23, 42, 0.8);
-}
-
-/* Línea de brillo al pasar el mouse */
-.card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(0, 170, 255, 0.2), transparent);
-    transition: left 0.5s ease;
-    pointer-events: none;
-}
-
-.card:hover::before {
-    left: 100%;
-}
-
-/* Borde neón sutil en hover */
-.card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 24px;
-    padding: 1px;
-    background: linear-gradient(135deg, rgba(0, 170, 255, 0.4), rgba(0, 170, 255, 0));
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-}
-
-.card:hover::after {
-    opacity: 1;
-}
-
-/* Títulos dentro de card */
-.card h3 {
-    margin: 0 0 8px 0;
-    font-size: 1.35rem;
-    font-weight: 600;
-    color: #cbd5e1;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.card p {
-    color: #94a3b8;
-    font-weight: 500;
-    margin-bottom: 12px;
-    font-size: 0.9rem;
-}
-
-/* BADGES */
-.tag {
-    display: inline-block;
-    margin-top: 5px;
-    margin-right: 6px;
-    padding: 4px 10px;
-    border-radius: 40px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    background: rgba(2, 6, 23, 0.7);
-    border: 1px solid rgba(0, 170, 255, 0.4);
-    color: #00aaff;
-    letter-spacing: 0.3px;
-}
-
-/* BOTÓN NEÓN - MISMO EFECTO QUE EL PERFIL */
-.btn {
-    margin-top: 16px;
-    width: 100%;
-    padding: 10px 0;
-    border: none;
-    border-radius: 40px;
-    background: #00aaff;
-    color: #fff;
-    font-weight: 600;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
-    font-family: inherit;
-}
-
-.btn:hover {
-    background: #0090dd;
-    transform: translateY(-2px);
-    box-shadow: 0 0 18px #00aaff, 0 4px 12px rgba(0, 170, 255, 0.4);
-}
-
-/* PANEL DERECHO - MISMO ESTILO QUE PROFILE-CARD */
-.panel {
-    background: rgba(15, 23, 42, 0.65);
-    backdrop-filter: blur(12px);
-    border-radius: 24px;
-    padding: 20px;
-    border: 1px solid rgba(0, 170, 255, 0.2);
-    transition: all 0.3s ease;
-    overflow: hidden;
-}
-
-.panel:hover {
-    border-color: rgba(0, 170, 255, 0.4);
-    box-shadow: 0 8px 20px rgba(0, 170, 255, 0.15);
-}
-
-.panel h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
+.challenge-panel h3 {
+    font-size: 1.1rem;
     margin-bottom: 12px;
     color: #cbd5e1;
-    display: flex;
-    align-items: center;
-    gap: 8px;
 }
 
-/* INSIGNIAS (badges) */
-.badges {
+.challenge-badges {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 8px;
 }
 
-.badge {
+.challenge-badge {
     padding: 6px 14px;
-    border-radius: 40px;
-    background: rgba(2, 6, 23, 0.7);
-    border: 1px solid rgba(0, 170, 255, 0.5);
+    border-radius: 999px;
+    background: rgba(2,6,23,0.7);
+    border: 1px solid rgba(0,170,255,0.5);
     font-size: 0.75rem;
-    font-weight: 500;
     color: #90e0ff;
-    transition: all 0.2s ease;
 }
 
-.badge:hover {
-    background: rgba(0, 170, 255, 0.15);
-    transform: translateY(-2px);
-    box-shadow: 0 0 8px rgba(0, 170, 255, 0.3);
-}
-
-/* PROGRESO */
-.progress {
-    margin-top: 12px;
-}
-
-.bar {
+.challenge-bar {
     height: 8px;
     background: #020617;
     border-radius: 12px;
     overflow: hidden;
-    margin: 8px 0 12px;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+    margin: 10px 0 14px;
 }
 
-.bar span {
+.challenge-bar span {
     display: block;
     height: 100%;
-    width: 65%;
     background: linear-gradient(90deg, #00aaff, #0099dd);
     box-shadow: 0 0 6px #00aaff;
-    border-radius: 12px;
-    transition: width 0.4s ease;
 }
 
-.panel p {
+.challenge-panel p {
     color: #94a3b8;
-    font-weight: 500;
     font-size: 0.85rem;
     margin: 6px 0;
 }
 
-/* LOGROS DESPLEGABLE */
-.logros h3 {
-    cursor: pointer;
-    user-select: none;
-    transition: color 0.2s;
-}
-
-.logros h3:hover {
-    color: #00aaff;
-    text-shadow: 0 0 4px rgba(0,170,255,0.5);
-}
-
-.lista {
+.challenge-list-logros {
+    list-style: none;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-    list-style: none;
-    margin-top: 8px;
+    transition: max-height 0.35s ease;
 }
 
-.lista.active {
-    max-height: 280px;
+.challenge-list-logros.active {
+    max-height: 260px;
 }
 
-.lista li {
+.challenge-list-logros li {
     margin: 10px 0;
     padding: 8px 12px;
-    border-radius: 40px;
-    background: rgba(2, 6, 23, 0.7);
-    border: 1px solid rgba(0, 170, 255, 0.25);
+    border-radius: 999px;
+    background: rgba(2,6,23,0.7);
+    border: 1px solid rgba(0,170,255,0.25);
+    color: #cbd5e1;
     font-size: 0.8rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
 }
 
-.lista li::before {
-    content: "🏅";
-    font-size: 0.9rem;
-    filter: drop-shadow(0 0 2px #00aaff);
+.challenge-toggle {
+    cursor: pointer;
+    user-select: none;
 }
 
-.lista li:hover {
-    background: rgba(0, 170, 255, 0.1);
-    border-color: #00aaff;
-    transform: translateX(5px);
-    box-shadow: 0 2px 8px rgba(0, 170, 255, 0.2);
-}
+@media (max-width: 980px) {
+    .challenge-layout {
+        grid-template-columns: 1fr;
+    }
 
-/* RESPONSIVE */
-@media (max-width: 900px) {
-    .container {
-        flex-direction: column;
-    }
-    body {
-        padding: 20px;
-    }
-    .right {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-    .right .panel {
-        flex: 1;
-        min-width: 200px;
+    .challenge-side {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
 }
 
 @media (max-width: 640px) {
-    .grid {
-        gap: 16px;
+    .challenge-slider {
+        height: 480px;
     }
-    .card, .panel {
-        padding: 16px;
-    }
-    .title {
-        font-size: 1.8rem;
-    }
-}
-/* Añadir en tu archivo CSS */
-body {
-    font-family: 'Poppins', sans-serif;
-}
 
-.card h3 {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.1rem;
-    color: #00ff41; /* Verde Matrix/Terminal */
-}
+    .challenge-content {
+        left: 24px;
+        max-width: 300px;
+    }
 
-.tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    padding: 4px 8px;
-    border-radius: 4px;
-    background: #222;
+    .challenge-content h3 {
+        font-size: 1.6rem;
+    }
+
+    .challenge-item:nth-child(3) {
+        left: 62%;
+    }
 }
 </style>
 
+<div class="challenge-page">
+    <div class="challenge-layout">
+
+        <div class="challenge-main">
+            <div class="challenge-header">
+                <h2>🔥 Centro de Desafíos</h2>
+                <p>Supera retos, desbloquea habilidades y conviértete en un operador élite.</p>
+            </div>
+
+            <div class="challenge-slider">
+                <ul class="challenge-list">
+
+                    <li class="challenge-item" style="background-image: url('{% static "usuarios/img/i1.jpg" %}')">
+                        <div class="challenge-content">
+                            <h3>🌐 Desafíos de Redes</h3>
+                            <p>Visualizar procesos TCP.</p>
+                            <span class="challenge-tag">Fácil</span>
+                            <span class="challenge-tag">Redes</span>
+                            <button class="challenge-btn"
+                                onclick="window.open('{% url 'lanzador_desafios' 'sql-injection' %}', '_blank')">
+                                Comenzar
+                            </button>
+                        </div>
+                    </li>
+
+                    <li class="challenge-item" style="background-image: url('{% static "usuarios/img/i2.jpg" %}')">
+                        <div class="challenge-content">
+                            <h3>🌐🔐 Análisis de Red</h3>
+                            <p>Detecta dispositivos conectados.</p>
+                            <span class="challenge-tag">Media</span>
+                            <span class="challenge-tag">Redes</span>
+                            <button class="challenge-btn">Iniciar</button>
+                        </div>
+                    </li>
+
+                    <li class="challenge-item" style="background-image: url('{% static "usuarios/img/sql.jpg" %}')">
+                        <div class="challenge-content">
+                            <h3>💻 SQL Injection</h3>
+                            <p>Explota bases de datos.</p>
+                            <span class="challenge-tag">Alta</span>
+                            <span class="challenge-tag">Web</span>
+                            <button class="challenge-btn" onclick="window.open('{% url 'lanzador_desafios' 'sql-injection' %}', '_blank')"
+                            >Iniciar</button>
+                        </div>
+                    </li>
+
+                    <li class="challenge-item" style="background-image: url('{% static "usuarios/img/is.jpg" %}')">
+                        <div class="challenge-content">
+                            <h3>🧠 Ingeniería Social</h3>
+                            <p>Manipulación psicológica.</p>
+                            <span class="challenge-tag">Media</span>
+                            <span class="challenge-tag">Social</span>
+                            <button class="challenge-btn">Iniciar</button>
+                        </div>
+                    </li>
+
+                    <li class="challenge-item" style="background-image: url('{% static "usuarios/img/sn.jpg" %}')">
+                        <div class="challenge-content">
+                            <h3>📡 Sniffing</h3>
+                            <p>Captura paquetes de red.</p>
+                            <span class="challenge-tag">Alta</span>
+                            <span class="challenge-tag">Redes</span>
+                            <button class="challenge-btn">Iniciar</button>
+                        </div>
+                    </li>
+
+                </ul>
+
+                <div class="challenge-nav">
+                    <button type="button" class="challenge-prev">‹</button>
+                    <button type="button" class="challenge-next">›</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="challenge-side">
+            <div class="challenge-panel">
+                <h3>🏆 Desafíos Superados</h3>
+                <div class="challenge-badges">
+                    <div class="challenge-badge">Hack Básico</div>
+                    <div class="challenge-badge">Red</div>
+                    <div class="challenge-badge">Ingeniería</div>
+                </div>
+            </div>
+
+            <div class="challenge-panel">
+                <h3>⚡ Progreso</h3>
+                <p>Experiencia: 1200 XP</p>
+                <div class="challenge-bar">
+                    <span style="width: 65%"></span>
+                </div>
+                <p>Tiempo total: 5h 32m</p>
+            </div>
+
+            <div class="challenge-panel">
+                <h3 class="challenge-toggle">🏅 Logros ▼</h3>
+                <ul class="challenge-list-logros">
+                    <li>Primer desafío completado</li>
+                    <li>5 desafíos superados</li>
+                    <li>Experto en redes</li>
+                    <li>Dominio SQL</li>
+                    <li>Maestro en seguridad</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 <script>
-function toggleLogros(){
-    document.getElementById("lista").classList.toggle("active");
-}
+(function () {
+    const root = document.querySelector(".challenge-page");
+    if (!root) return;
+
+    const slider = root.querySelector(".challenge-list");
+    const next = root.querySelector(".challenge-next");
+    const prev = root.querySelector(".challenge-prev");
+    const toggle = root.querySelector(".challenge-toggle");
+    const logros = root.querySelector(".challenge-list-logros");
+
+    if (!slider || !next || !prev) return;
+
+    let locked = false;
+
+    function unlock() {
+        locked = false;
+    }
+
+    function moveNext() {
+        if (locked) return;
+        locked = true;
+
+        slider.appendChild(slider.firstElementChild);
+        setTimeout(unlock, 650);
+    }
+
+    function movePrev() {
+        if (locked) return;
+        locked = true;
+
+        slider.prepend(slider.lastElementChild);
+        setTimeout(unlock, 650);
+    }
+
+    next.addEventListener("click", moveNext);
+    prev.addEventListener("click", movePrev);
+
+    if (toggle && logros) {
+        toggle.addEventListener("click", function () {
+            logros.classList.toggle("active");
+        });
+    }
+})();
 </script>
-
-</head>
-<body>
-
-<div class="container">
-
-<!-- IZQUIERDA: LISTA DE DESAFÍOS -->
-<div class="left">
-    <div class="title">🔥 Centro de Desafíos</div>
-    <p>Supera retos, desbloquea habilidades y conviértete en un operador élite.</p>
-
-    <div class="grid">
-        <div class="card">
-            <h3>🌐 Desafíos de Redes</h3>
-            <p>Visualizar procesos TCP.</p>
-            <span class="tag">Fácil</span>
-            <span class="tag">Redes</span>
-<button class="lab-btn btn-phantom" 
-            onclick="window.open('{% url 'lanzador_desafios' 'sql-injection' %}', '_blank')">
-        Comenzar
-    </button>       
-</div>
-
-        <div class="card">
-            <h3>🌐🔐 Análisis de Red</h3>
-            <p>Detecta dispositivos conectados.</p>
-            <span class="tag">Media</span>
-            <span class="tag">Redes</span>
-            <button class="btn">Iniciar</button>
-        </div>
-
-        <div class="card">
-            <h3>💻 SQL Injection</h3>
-            <p>Explota bases de datos.</p>
-            <span class="tag">Alta</span>
-            <span class="tag">Web</span>
-            <button class="btn">Iniciar</button>
-        </div>
-
-        <div class="card">
-            <h3>🧠 Ingeniería Social</h3>
-            <p>Manipulación psicológica.</p>
-            <span class="tag">Media</span>
-            <span class="tag">Psicología</span>
-            <button class="btn">Iniciar</button>
-        </div>
-
-        <div class="card">
-            <h3>📡 Sniffing</h3>
-            <p>Captura paquetes de red.</p>
-            <span class="tag">Alta</span>
-            <span class="tag">Redes</span>
-            <button class="btn">Iniciar</button>
-        </div>
-
-        <div class="card">
-            <h3>🛡️ Defensa</h3>
-            <p>Protege sistemas.</p>
-            <span class="tag">Media</span>
-            <span class="tag">Seguridad</span>
-            <button class="btn">Iniciar</button>
-        </div>
-    </div>
-</div>
-
-<!-- DERECHA: PANELES DE ESTADÍSTICAS Y LOGROS -->
-<div class="right">
-
-    <div class="panel">
-        <h3>🏆 Desafíos Superados</h3>
-        <div class="badges">
-            <div class="badge">Hack Básico</div>
-            <div class="badge">Red</div>
-            <div class="badge">Ingeniería</div>
-        </div>
-    </div>
-
-    <div class="panel">
-        <h3>⚡ Progreso</h3>
-        <p>Experiencia: 1200 XP</p>
-        <div class="progress">
-            <div class="bar"><span style="width: 65%"></span></div>
-        </div>
-        <p>Tiempo total: 5h 32m</p>
-    </div>
-
-    <div class="panel logros">
-        <h3 onclick="toggleLogros()">🏅 Logros ▼</h3>
-        <ul id="lista" class="lista">
-            <li>Primer desafío completado</li>
-            <li>5 desafíos superados</li>
-            <li>Experto en redes</li>
-            <li>Dominio SQL</li>
-            <li>Maestro en seguridad</li>
-        </ul>
-    </div>
-
-</div>
-
-</div>
-
-</body>
-</html>

@@ -3,9 +3,19 @@
 
     @font-face {
     font-family: '1';
-    src: url('/static/usuarios/fonts/COVERS SHORES DEMO.ttf') format('truetype');
+    src: url('/static/usuarios/fonts/Wrong boys.ttf') format('truetype');
+}
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
+.card-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
 /* RESET & BASE */
 .profile-container * {
     margin: 0;
@@ -315,7 +325,13 @@
     <div class="profile-grid">
 
         <div class="profile-card">
-            <h3>📚 Cursos completados</h3>
+           <h3 class="card-title">
+    <img
+        src="{% static 'usuarios/icons/icons8-aprendizaje-electrónico-48.png' %}"
+        alt="Cursos"
+        class="card-icon"
+    >CURSOS COMPLETADOS
+        </h3>
             <p>{{ cursos_completados.count }} / {{ inscripciones.count }}</p>
             <div class="bar">
                 <span style="width: {{ porcentaje_cursos }}%"></span>
@@ -323,7 +339,13 @@
         </div>
 
         <div class="profile-card">
-            <h3>📘 Cursos en progreso</h3>
+               <h3 class="card-title">
+    <img
+        src="{% static 'usuarios/icons/completed.png' %}"
+        alt="Cursos"
+        class="card-icon"
+    >CURSOS EN PROGRESO
+        </h3>
             <p>{{ cursos_en_progreso.count }}</p>
             <div class="bar">
                 <span style="width: {{ porcentaje_cursos_progreso }}%"></span>
@@ -331,7 +353,7 @@
         </div>
 
         <div class="profile-card">
-            <h3>🧪 Labs completados</h3>
+            <h3>🧪 LABS COMPLETADOS</h3>
             <p>{{ labs_completados }}</p>
             <div class="bar">
                 <span style="width: {{ porcentaje_labs }}%"></span>
@@ -339,7 +361,7 @@
         </div>
 
         <div class="profile-card">
-            <h3>⚙️ Labs en progreso</h3>
+            <h3>⚙️ LABS EN PROGRESO</h3>
             <p>{{ labs_en_progreso }}</p>
             <div class="bar">
                 <span style="width: {{ porcentaje_labs_progreso }}%"></span>

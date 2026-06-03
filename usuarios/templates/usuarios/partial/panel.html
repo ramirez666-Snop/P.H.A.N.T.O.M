@@ -161,7 +161,11 @@
 #panel .dashboard-container * {
     box-sizing: border-box;
 }
-
+.card-icon {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
 /* BANNER */
 #panel .dash-banner {
     position: relative;
@@ -350,24 +354,19 @@
         "WrongBoys",
         "WildGraffiti",
         "HollowGenesis",
-        "Fujimoto",
         "SanguineFrost",
         "Zorvex",
         "Elfis",
-        "Sealgair",
         "Drybrush",
         "Quishe",
         "Istarot",
         "VinqueAntiqueBold",
         "VinqueAntiqueBoldItalic",
-        "ZultaMusic",
         "Delon",
         "Crazy rooster",
-        "COVERS SHORES DEMO",
         "CENTAURS-Regular",
         "Blackcraft",
         "Black Crush",
-        "Biological Migration Regular",
     ];
 
     const usernameBg = document.querySelector(".js-username-font");
@@ -406,22 +405,42 @@
 </script>
     <div class="stats-grid">
         <div class="dash-card">
-            <h3>✅ Cursos completados</h3>
+        <h3 class="card-title">
+            <img
+            src="{% static 'usuarios/icons/completed.png' %}"
+            alt="Cursos"
+            class="card-icon" >CURSOS COMPLETADOS
+        </h3>
             <p class="stat-value">{{ cursos_completados.count }}</p>
         </div>
 
         <div class="dash-card">
-            <h3>📘 Cursos en progreso</h3>
+            <h3 class="card-title">
+            <img
+            src="{% static 'usuarios/icons/progress.png' %}"
+            alt="Cursos"
+            class="card-icon" >CURSOS EN PROGRESO
+        </h3>
             <p class="stat-value">{{ cursos_en_progreso.count }}</p>
         </div>
 
         <div class="dash-card">
-            <h3>🧪 Labs completados</h3>
+             <h3 class="card-title">
+            <img
+            src="{% static 'usuarios/icons/labs1.png' %}"
+            alt="Cursos"
+            class="card-icon" >LABS COMPLETADOS
+        </h3>
             <p class="stat-value">0</p>
         </div>
 
         <div class="dash-card">
-            <h3>⚙️ Labs en progreso</h3>
+              <h3 class="card-title">
+            <img
+            src="{% static 'usuarios/icons/lab2.png' %}"
+            alt="Cursos"
+            class="card-icon" >LABS EN PROGRESO
+        </h3>
             <p class="stat-value">0</p>
         </div>
     </div>
@@ -431,7 +450,7 @@
     <div class="courses-grid">
         {% for inscripcion in cursos_en_progreso %}
             <div class="dash-card">
-                <div style="font-size: 2rem; margin-bottom: 15px;">📘</div>
+                <div style="font-size: 2rem; margin-bottom: 15px;">❗</div>
 
                 <h3>{{ inscripcion.curso.titulo }}</h3>
 

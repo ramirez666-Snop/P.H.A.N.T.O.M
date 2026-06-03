@@ -88,7 +88,12 @@
     cursor: pointer;
     transition: 0.3s ease;
 }
-
+.section-icon {
+    width: 50px;
+    height: 50px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
 .btn-save:hover {
     transform: translateY(-2px);
     box-shadow: 0 0 24px rgba(0,170,255,0.55);
@@ -97,8 +102,15 @@
 
 <div class="config-container">
     <div class="config-card">
-        <h2>⚙️ Configuración de Perfil</h2>
-        <p class="config-subtitle">
+<h2 class="config-title">
+    <img
+        src="{% static 'usuarios/icons/icons8-ajustes.svg' %}"
+        class="section-icon"
+        alt="Configuración"
+    >
+    Configuración de Perfil
+</h2>
+    <p class="config-subtitle">
             Actualiza tus credenciales
         </p>
 
