@@ -1,0 +1,788 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>P.H.A.N.T.O.M - Ingeniería Social</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #020202;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    overflow: hidden;
+}
+
+.game {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("{% static 'usuarios/img/fondo_oficina.jpg' %}");
+    background-size: cover;
+    background-position: center;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at center, rgba(0,255,136,.08), rgba(0,0,0,.75)),
+        linear-gradient(to bottom, rgba(0,0,0,.15), rgba(0,0,0,.85));
+}
+
+.top-hud {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    right: 18px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    z-index: 10;
+}
+
+.card {
+    background: rgba(0,0,0,.65);
+    border: 1px solid #00ff88;
+    border-radius: 14px;
+    padding: 12px 18px;
+    box-shadow: 0 0 18px rgba(0,255,136,.18);
+}
+
+.title {
+    color: #00ff88;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.stat {
+    color: #b8ffd7;
+}
+
+.life-bar {
+    width: 180px;
+    height: 12px;
+    border: 1px solid #00ff88;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.life-fill {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #ff3e03, #ff3e03);
+    transition: .4s;
+}
+
+.character {
+    position: absolute;
+    bottom: 140px;
+    height: 62vh;
+    max-height: 620px;
+    z-index: 4;
+    filter: drop-shadow(0 0 25px rgba(0,0,0,.9));
+    transition: .5s;
+}
+
+.character.left {
+    left: 8%;
+}
+
+.character.right {
+    right: 8%;
+}
+
+.character.center {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.dialog-box {
+    position: absolute;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%);
+    width: 88%;
+    min-height: 180px;
+    background: rgba(0,0,0,.82);
+    border: 1px solid #00ff88;
+    border-radius: 18px;
+    padding: 20px;
+    z-index: 20;
+    box-shadow: 0 0 35px rgba(0,255,136,.22);
+}
+
+.speaker {
+    color: #00ff88;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.dialog {
+    font-size: 19px;
+    line-height: 1.5;
+    color: #eafff2;
+    min-height: 58px;
+}
+
+.choices {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.choice {
+    border: 1px solid #00ff88;
+    background: rgba(0,255,136,.08);
+    color: #dfffee;
+    border-radius: 12px;
+    padding: 13px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: .25s;
+}
+
+.choice:hover {
+    background: rgba(0,255,136,.22);
+    transform: translateY(-2px);
+}
+
+.log-panel {
+    position: absolute;
+    top: 95px;
+    right: 18px;
+    width: 330px;
+    max-height: 420px;
+    overflow-y: auto;
+    background: rgba(0,0,0,.75);
+    border: 1px solid #222;
+    border-radius: 14px;
+    padding: 15px;
+    z-index: 15;
+}
+
+.log-panel h3 {
+    margin-top: 0;
+    color: #00ff88;
+}
+
+.log-item {
+    font-size: 13px;
+    color: #c8ffe0;
+    border-bottom: 1px solid #1f1f1f;
+    padding: 8px 0;
+}
+
+.final-screen {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.94);
+    z-index: 99;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+}
+
+.final-card {
+    max-width: 850px;
+    background: #080808;
+    border: 1px solid #00ff88;
+    border-radius: 22px;
+    padding: 35px;
+    box-shadow: 0 0 40px rgba(0,255,136,.25);
+}
+
+.final-card h1 {
+    color: #00ff88;
+}
+
+.badge {
+    display: inline-block;
+    margin: 8px 8px 8px 0;
+    padding: 8px 12px;
+    border: 1px solid #00ff88;
+    border-radius: 20px;
+    color: #00ff88;
+}
+
+.finish-btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(90deg, #00ff88, #00bfff);
+    color: #000;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+@media(max-width: 850px) {
+    .choices {
+        grid-template-columns: 1fr;
+    }
+
+    .log-panel {
+        display: none;
+    }
+
+    .character {
+        height: 46vh;
+    }
+
+    .dialog-box {
+        width: 95%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <div class="overlay"></div>
+
+    <div class="top-hud">
+        <div class="card">
+            <div class="title">P.H.A.N.T.O.M SOCIAL SIMULATOR</div>
+            <div>Desafío: Ingeniería Social</div>
+        </div>
+
+        <div class="card stats">
+            <div>
+                <div class="stat">Vida mental: <span id="vidaText">100</span>%</div>
+                <div class="life-bar">
+                    <div class="life-fill" id="vidaBar"></div>
+                </div>
+            </div>
+            <div class="stat">Confianza: <span id="confianza">50</span></div>
+            <div class="stat">Puntaje: <span id="puntaje">0</span></div>
+        </div>
+    </div>
+
+    <div class="log-panel">
+        <h3>Registro de decisiones</h3>
+        <div id="decisionLog"></div>
+    </div>
+
+    <img id="charAnalista" class="character left" src="{% static 'usuarios/img/analista.png' %}" alt="analista">
+    <img id="charAtacante" class="character right hidden" src="{% static 'usuarios/img/atacante.png' %}" alt="atacante">
+    <img id="charSecretaria" class="character right hidden" src="{% static 'usuarios/img/secretaria.png' %}" alt="secretaria">
+    <img id="charCeo" class="character right hidden" src="{% static 'usuarios/img/ceo.png' %}" alt="ceo">
+    <img id="charSoporte" class="character right hidden" src="{% static 'usuarios/img/soporte.png' %}" alt="soporte">
+    <img id="charProveedor" class="character right hidden" src="{% static 'usuarios/img/proveedor.png' %}" alt="proveedor">
+
+    <div class="dialog-box">
+        <div class="speaker" id="speaker">Sistema PHANTOM</div>
+        <div class="dialog" id="dialog">
+            Bienvenido operador. Hoy no vas a atacar ningún sistema. Vas a defender uno de los puntos más débiles de cualquier organización: las decisiones humanas.
+        </div>
+
+        <div class="choices" id="choices"></div>
+    </div>
+
+    <div class="final-screen" id="finalScreen">
+        <div class="final-card">
+            <h1>Informe final del laboratorio</h1>
+            <p id="finalText"></p>
+
+            <div>
+                <span class="badge" id="badgeNivel"></span>
+                <span class="badge" id="badgePuntaje"></span>
+                <span class="badge" id="badgeVida"></span>
+            </div>
+
+            <h3>Resumen de tus decisiones</h3>
+            <div id="finalLog"></div>
+
+            <button class="finish-btn" onclick="terminarLaboratorio()">
+                Terminar laboratorio
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+let vida = 100;
+let confianza = 50;
+let puntaje = 0;
+let escenaActual = 0;
+let historial = [];
+
+const escenas = [
+    {
+        speaker: "Sistema P.H.A.N.T.O.M",
+        character: "charAnalista",
+        text: "Escenario 1. Son las 8:42 AM. Recibes una llamada interna. La persona dice ser del área de soporte y asegura que hay una actualización urgente de credenciales.",
+        choices: [
+            {
+                text: "Pedir número de ticket y validar por canal oficial.",
+                vida: 0,
+                confianza: 10,
+                puntaje: 20,
+                note: "Validaste identidad antes de compartir información.",
+                next: 1
+            },
+            {
+                text: "Dar tu usuario para agilizar el proceso.",
+                vida: -20,
+                confianza: -15,
+                puntaje: -15,
+                note: "Compartiste información sin confirmar identidad.",
+                next: 1
+            },
+            {
+                text: "Colgar sin registrar nada.",
+                vida: -5,
+                confianza: 0,
+                puntaje: 5,
+                note: "Evitaste el riesgo, pero no documentaste el intento.",
+                next: 1
+            },
+            {
+                text: "Preguntar qué sistema será actualizado y quién autorizó el cambio.",
+                vida: 0,
+                confianza: 8,
+                puntaje: 15,
+                note: "Hiciste preguntas de verificación útiles.",
+                next: 1
+            }
+        ]
+    },
+    {
+        speaker: "Supuesto Soporte Técnico",
+        character: "charSoporte",
+        text: "Hola, soy Diego de soporte. Tenemos una falla crítica. Si no verificamos tu cuenta en este momento, podrías perder acceso al panel interno.",
+        choices: [
+            {
+                text: "Responder: envíame el ticket oficial desde la mesa de ayuda.",
+                vida: 0,
+                confianza: 10,
+                puntaje: 20,
+                note: "Usaste un canal verificable.",
+                next: 2
+            },
+            {
+                text: "Aceptar la urgencia y seguir sus instrucciones.",
+                vida: -25,
+                confianza: -20,
+                puntaje: -20,
+                note: "Caíste en presión por urgencia.",
+                next: 2
+            },
+            {
+                text: "Pedir su nombre completo, extensión y área responsable.",
+                vida: 0,
+                confianza: 5,
+                puntaje: 12,
+                note: "Solicitaste datos para validar identidad.",
+                next: 2
+            },
+            {
+                text: "Decir que estás ocupado y que llame después.",
+                vida: -5,
+                confianza: 0,
+                puntaje: 3,
+                note: "No entregaste datos, pero tampoco reportaste el intento.",
+                next: 2
+            }
+        ]
+    },
+    {
+        speaker: "Secretaría Ejecutiva",
+        character: "charSecretaria",
+        text: "Escenario 2. Llega un mensaje de la secretaria del CEO. Dice que el director necesita urgentemente un archivo con datos de empleados para una junta privada.",
+        choices: [
+            {
+                text: "Enviar el archivo porque viene de dirección.",
+                vida: -30,
+                confianza: -25,
+                puntaje: -25,
+                note: "Obedeciste autoridad sin validar necesidad ni permisos.",
+                next: 3
+            },
+            {
+                text: "Solicitar confirmación mediante correo corporativo firmado o ticket.",
+                vida: 0,
+                confianza: 12,
+                puntaje: 25,
+                note: "Aplicaste verificación formal para datos sensibles.",
+                next: 3
+            },
+            {
+                text: "Preguntar qué datos exactos necesita y con qué fundamento.",
+                vida: 0,
+                confianza: 8,
+                puntaje: 18,
+                note: "Limitaste exposición de información.",
+                next: 3
+            },
+            {
+                text: "Ignorar el mensaje.",
+                vida: -8,
+                confianza: -2,
+                puntaje: 2,
+                note: "No filtraste datos, pero tampoco escalaste la solicitud.",
+                next: 3
+            }
+        ]
+    },
+    {
+        speaker: "CEO",
+        character: "charCeo",
+        text: "El mensaje ahora parece venir del CEO: 'No tenemos tiempo para burocracia. Mándame el archivo ya. Es confidencial.'",
+        choices: [
+            {
+                text: "Cumplir la orden por miedo a represalias.",
+                vida: -35,
+                confianza: -30,
+                puntaje: -30,
+                note: "La autoridad y presión emocional afectaron tu decisión.",
+                next: 4
+            },
+            {
+                text: "Responder con respeto que los datos sensibles requieren validación.",
+                vida: 0,
+                confianza: 15,
+                puntaje: 30,
+                note: "Mantuviste política de seguridad aunque hubiera presión.",
+                next: 4
+            },
+            {
+                text: "Llamar al CEO usando el número oficial del directorio interno.",
+                vida: 0,
+                confianza: 18,
+                puntaje: 35,
+                note: "Validaste por un canal independiente.",
+                next: 4
+            },
+            {
+                text: "Enviar solo una parte del archivo.",
+                vida: -20,
+                confianza: -15,
+                puntaje: -10,
+                note: "Reduciste daño, pero igual filtraste información.",
+                next: 4
+            }
+        ]
+    },
+    {
+        speaker: "Proveedor Externo",
+        character: "charProveedor",
+        text: "Escenario 3. Un proveedor escribe por chat: 'Necesito acceso temporal al dashboard. El responsable anterior siempre me pasaba una cuenta compartida.'",
+        choices: [
+            {
+                text: "Crear una cuenta temporal sin avisar.",
+                vida: -25,
+                confianza: -20,
+                puntaje: -20,
+                note: "Creaste acceso sin proceso formal.",
+                next: 5
+            },
+            {
+                text: "Indicar que no se usan cuentas compartidas y pedir solicitud oficial.",
+                vida: 0,
+                confianza: 12,
+                puntaje: 25,
+                note: "Aplicaste control de acceso correcto.",
+                next: 5
+            },
+            {
+                text: "Preguntar quién era el responsable anterior.",
+                vida: 0,
+                confianza: 4,
+                puntaje: 10,
+                note: "Intentaste verificar contexto antes de actuar.",
+                next: 5
+            },
+            {
+                text: "Compartir una cuenta de pruebas.",
+                vida: -18,
+                confianza: -12,
+                puntaje: -12,
+                note: "Una cuenta de pruebas también puede ser abusada.",
+                next: 5
+            }
+        ]
+    },
+    {
+        speaker: "Atacante",
+        character: "charAtacante",
+        text: "El proveedor insiste: 'No quiero meter a tu jefe en esto. Solo pásame acceso y lo resolvemos rápido. Te debo una.'",
+        choices: [
+            {
+                text: "Aceptar para evitar problemas.",
+                vida: -30,
+                confianza: -25,
+                puntaje: -25,
+                note: "Fuiste manipulado con presión social y recompensa.",
+                next: 6
+            },
+            {
+                text: "Guardar evidencia y reportar al SOC.",
+                vida: 0,
+                confianza: 20,
+                puntaje: 40,
+                note: "Reportaste un intento claro de manipulación.",
+                next: 6
+            },
+            {
+                text: "Pedir que mande la solicitud por correo corporativo.",
+                vida: 0,
+                confianza: 10,
+                puntaje: 20,
+                note: "Redirigiste a canal formal.",
+                next: 6
+            },
+            {
+                text: "Bloquearlo sin registrar evidencia.",
+                vida: -5,
+                confianza: 3,
+                puntaje: 8,
+                note: "Cortaste el contacto, pero faltó documentación.",
+                next: 6
+            }
+        ]
+    },
+    {
+        speaker: "Sistema P.H.A.N.T.O.M",
+        character: "charAnalista",
+        text: "Último escenario. Debes crear una conclusión para el reporte. ¿Cuál es la mejor recomendación para evitar este tipo de incidentes?",
+        choices: [
+            {
+                text: "Confiar solo en la intuición del empleado.",
+                vida: -15,
+                confianza: -10,
+                puntaje: -10,
+                note: "La intuición ayuda, pero no reemplaza procesos.",
+                next: "end"
+            },
+            {
+                text: "Capacitación, verificación por canal oficial y reporte temprano.",
+                vida: 0,
+                confianza: 20,
+                puntaje: 45,
+                note: "Excelente cierre defensivo.",
+                next: "end"
+            },
+            {
+                text: "Bloquear todos los mensajes externos.",
+                vida: -5,
+                confianza: 0,
+                puntaje: 5,
+                note: "No es una solución realista ni completa.",
+                next: "end"
+            },
+            {
+                text: "Prohibir llamadas telefónicas.",
+                vida: -5,
+                confianza: 0,
+                puntaje: 3,
+                note: "La seguridad debe equilibrar operación y control.",
+                next: "end"
+            }
+        ]
+    }
+];
+
+function mostrarEscena(index) {
+    const escena = escenas[index];
+
+    document.getElementById("speaker").innerText = escena.speaker;
+    document.getElementById("dialog").innerText = escena.text;
+
+    mostrarPersonaje(escena.character);
+
+    const choicesBox = document.getElementById("choices");
+    choicesBox.innerHTML = "";
+
+    escena.choices.forEach((choice) => {
+        const btn = document.createElement("button");
+        btn.className = "choice";
+        btn.innerText = choice.text;
+        btn.onclick = () => elegir(choice);
+        choicesBox.appendChild(btn);
+    });
+}
+
+function mostrarPersonaje(id) {
+    const personajes = [
+        "charAnalista",
+        "charAtacante",
+        "charSecretaria",
+        "charCeo",
+        "charSoporte",
+        "charProveedor"
+    ];
+
+    personajes.forEach(p => {
+        document.getElementById(p).classList.add("hidden");
+    });
+
+    document.getElementById(id).classList.remove("hidden");
+}
+
+function elegir(choice) {
+    vida += choice.vida;
+    confianza += choice.confianza;
+    puntaje += choice.puntaje;
+
+    if (vida > 100) vida = 100;
+    if (vida < 0) vida = 0;
+
+    if (confianza > 100) confianza = 100;
+    if (confianza < 0) confianza = 0;
+
+    historial.push({
+        escena: escenaActual + 1,
+        decision: choice.text,
+        resultado: choice.note,
+        vida: vida,
+        confianza: confianza,
+        puntaje: puntaje
+    });
+
+    guardarProgresoLocal();
+    actualizarHUD();
+    agregarLog(choice.text, choice.note);
+
+    if (choice.next === "end" || vida <= 0) {
+        mostrarFinal();
+    } else {
+        escenaActual = choice.next;
+        mostrarEscena(escenaActual);
+    }
+}
+
+function actualizarHUD() {
+    document.getElementById("vidaText").innerText = vida;
+    document.getElementById("vidaBar").style.width = vida + "%";
+    document.getElementById("confianza").innerText = confianza;
+    document.getElementById("puntaje").innerText = puntaje;
+}
+
+function agregarLog(decision, resultado) {
+    const log = document.getElementById("decisionLog");
+    const item = document.createElement("div");
+    item.className = "log-item";
+    item.innerHTML = `
+        <strong>Decisión:</strong> ${decision}<br>
+        <strong>Resultado:</strong> ${resultado}
+    `;
+    log.prepend(item);
+}
+
+function guardarProgresoLocal() {
+    localStorage.setItem("phantom_ing_social", JSON.stringify({
+        vida,
+        confianza,
+        puntaje,
+        escenaActual,
+        historial
+    }));
+}
+
+function mostrarFinal() {
+    document.getElementById("finalScreen").style.display = "flex";
+
+    let nivel = "Operador en entrenamiento";
+
+    if (puntaje >= 140) {
+        nivel = "Human Firewall";
+    } else if (puntaje >= 90) {
+        nivel = "Analista social defensivo";
+    } else if (puntaje >= 40) {
+        nivel = "Observador cauteloso";
+    } else {
+        nivel = "Riesgo humano alto";
+    }
+
+    document.getElementById("badgeNivel").innerText = "Nivel: " + nivel;
+    document.getElementById("badgePuntaje").innerText = "Puntaje: " + puntaje;
+    document.getElementById("badgeVida").innerText = "Vida mental: " + vida + "%";
+
+    document.getElementById("finalText").innerText =
+        "Has completado el simulador de Ingeniería Social. Durante el laboratorio enfrentaste presión, autoridad falsa, urgencia, manipulación emocional y solicitudes de acceso no verificadas. Tu resultado refleja qué tan bien aplicaste verificación, reporte y control de información.";
+
+    const finalLog = document.getElementById("finalLog");
+    finalLog.innerHTML = "";
+
+    historial.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "log-item";
+        div.innerHTML = `
+            <strong>Escena ${item.escena}</strong><br>
+            ${item.decision}<br>
+            <em>${item.resultado}</em>
+        `;
+        finalLog.appendChild(div);
+    });
+}
+
+function terminarLaboratorio() {
+    const data = {
+        laboratorio: "ingenieria_social",
+        completado: true,
+        progreso: 100,
+        vida: vida,
+        confianza: confianza,
+        puntaje: puntaje,
+        historial: historial
+    };
+
+    console.log("Resultado del laboratorio:", data);
+
+    /*
+    Cuando tengas endpoint en Django, activa esto:
+
+    fetch("/laboratorios/finalizar/ingenieria-social/", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        window.location.href = "/dashboard/";
+    })
+    .catch(error => {
+        console.error("Error guardando laboratorio:", error);
+    });
+    */
+
+    localStorage.removeItem("phantom_ing_social");
+    alert("Laboratorio completado. Resultado guardado localmente.");
+    window.location.href = "/dashboard/";
+}
+
+mostrarEscena(escenaActual);
+actualizarHUD();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>PHANTOM - Laboratorio Guiado</title>
+
+<style>
+body {
+    margin: 0;
+    background: #070707;
+    color: #e8ffe8;
+    font-family: 'Inter', Arial, sans-serif;
+}
+
+.lab-wrapper {
+    max-width: 1100px;
+    margin: auto;
+    padding: 40px 20px;
+}
+
+.lab-header {
+    background: linear-gradient(135deg, #001f13, #050505);
+    border: 1px solid #00ff88;
+    border-radius: 18px;
+    padding: 35px;
+    box-shadow: 0 0 30px rgba(0, 255, 136, .15);
+}
+
+.lab-header h1 {
+    color: #00ff88;
+    margin-bottom: 10px;
+}
+
+.badges span {
+    display: inline-block;
+    margin: 8px 8px 0 0;
+    padding: 8px 12px;
+    background: #101010;
+    border: 1px solid #00ff88;
+    border-radius: 20px;
+    color: #00ff88;
+    font-size: 14px;
+}
+
+.section {
+    margin-top: 30px;
+    background: #0d0d0d;
+    border: 1px solid #222;
+    border-radius: 16px;
+    padding: 25px;
+}
+
+.section h2 {
+    color: #00ff88;
+}
+
+.step {
+    border-left: 3px solid #00ff88;
+    padding-left: 18px;
+    margin: 25px 0;
+}
+
+code, pre {
+    background: #000;
+    color: #00ff88;
+    border-radius: 10px;
+}
+
+pre {
+    padding: 15px;
+    overflow-x: auto;
+    border: 1px solid #1f1f1f;
+}
+
+.expected {
+    background: #06140d;
+    border: 1px solid #00ff8855;
+    padding: 15px;
+    border-radius: 10px;
+    color: #b7ffd9;
+}
+
+.warning {
+    background: #211500;
+    border: 1px solid #ffaa00;
+    color: #ffdc8a;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.finish-btn {
+    margin-top: 35px;
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(90deg, #00ff88, #00bfff);
+    color: #000;
+    border: none;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.finish-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 25px rgba(0,255,136,.4);
+}
+</style>
+</head>
+
+<body>
+
+<div class="lab-wrapper">
+
+    <div class="lab-header">
+        <h1>Laboratorio Guiado: Auditoría Básica de Seguridad en Linux</h1>
+        <p>
+            En esta práctica aprenderás a revisar usuarios, servicios, puertos abiertos,
+            actualizaciones y registros del sistema dentro de una máquina virtual Linux.
+        </p>
+
+        <div class="badges">
+            <span>Dificultad: Básica</span>
+            <span>Duración: 30 - 45 min</span>
+            <span>Entorno: Kali Linux / CyberOps / Ubuntu</span>
+            <span>Tipo: Defensa / Hardening</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Objetivo del laboratorio</h2>
+        <p>
+            El objetivo es que el usuario aprenda a realizar una revisión inicial de seguridad
+            en su propia máquina Linux, identificando información básica del sistema,
+            usuarios existentes, servicios activos, puertos abiertos y posibles mejoras.
+        </p>
+
+        <div class="warning">
+            Esta práctica debe ejecutarse únicamente en una máquina virtual propia.
+            No se escanean ni atacan sistemas externos.
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Requisitos previos</h2>
+        <ul>
+            <li>VirtualBox o VMware instalado.</li>
+            <li>Una VM con Kali Linux, Cisco CyberOps Workstation o Ubuntu.</li>
+            <li>Acceso a terminal.</li>
+            <li>Conexión a internet opcional para actualizar paquetes.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Paso 1: Preparar la máquina virtual</h2>
+
+        <div class="step">
+            <p>Inicia tu VM y abre una terminal.</p>
+
+            <p>Verifica el usuario actual:</p>
+            <pre><code>whoami</code></pre>
+
+            <div class="expected">
+                Salida esperada aproximada:
+                <pre><code>kali</code></pre>
+                o:
+                <pre><code>student</code></pre>
+            </div>
+        </div>
+
+        <div class="step">
+            <p>Verifica la versión del sistema:</p>
+            <pre><code>cat /etc/os-release</code></pre>
+
+            <div class="expected">
+                Salida esperada aproximada:
+                <pre><code>PRETTY_NAME="Kali GNU/Linux Rolling"</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Paso 2: Revisar información básica del sistema</h2>
+
+        <div class="step">
+            <p>Consulta el nombre del equipo:</p>
+            <pre><code>hostname</code></pre>
+        </div>
+
+        <div class="step">
+            <p>Consulta la dirección IP local:</p>
+            <pre><code>ip addr show</code></pre>
+
+            <div class="expected">
+                Busca una línea parecida a:
+                <pre><code>inet 192.168.x.x/24</code></pre>
+            </div>
+        </div>
+
+        <div class="step">
+            <p>Consulta cuánto tiempo lleva encendido el sistema:</p>
+            <pre><code>uptime</code></pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Paso 3: Revisar usuarios del sistema</h2>
+
+        <div class="step">
+            <p>Lista los usuarios registrados:</p>
+            <pre><code>cat /etc/passwd</code></pre>
+
+            <p>Para ver solo los nombres de usuario:</p>
+            <pre><code>cut -d: -f1 /etc/passwd</code></pre>
+        </div>
+
+        <div class="step">
+            <p>Revisa qué usuarios tienen shell interactiva:</p>
+            <pre><code>grep "/bin/bash" /etc/passwd</code></pre>
+
+            <div class="expected">
+                Salida esperada aproximada:
+                <pre><code>root:x:0:0:root:/root:/bin/bash
+kali:x:1000:1000:kali:/home/kali:/bin/bash</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Paso 4: Revisar privilegios administrativos</h2>
+
+        <div class="step">
+            <p>Verifica si tu usuario puede usar sudo:</p>
+            <pre><code>sudo -l</code></pre>
+
+            <div class="expected">
+                Salida esperada aproximada:
+                <pre><code>User kali may run the following commands on kali:
+    (ALL : ALL) ALL</code></pre>
+            </div>
+        </div>
+
+        <p>
+            Si aparece que el usuario puede ejecutar todo con sudo, significa que tiene
+            privilegios administrativos.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Paso 5: Revisar servicios activos</h2>
+
+        <div class="step">
+            <p>Muestra los servicios en ejecución:</p>
+            <pre><code>systemctl --type=service --state=running</code></pre>
+        </div>
+
+        <div class="step">
+            <p>Busca si SSH está instalado o activo:</p>
+            <pre><code>systemctl status ssh</code></pre>
+
+            <div class="expected">
+                Si SSH no está activo, podrías ver:
+                <pre><code>Unit ssh.service could not be found.</code></pre>
+
+                Si está activo:
+                <pre><code>Active: active (running)</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Paso 6: Revisar puertos abiertos</h2>
+
+        <div class="step">
+            <p>Ejecuta:</p>
+            <pre><code>ss -tuln</code></pre>
+
+            <div class="expected">
+                Ejemplo de salida:
+                <pre><code>Netid State  Local Address:Port
+tcp   LISTEN 127.0.0.1:631
+udp   UNCONN 0.0.0.0:68</code></pre>
+            </div>
+
+            <p>
+                Los puertos en estado <code>LISTEN</code> indican servicios esperando conexiones.
+            </p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Paso 7: Revisar actualizaciones pendientes</h2>
+
+        <div class="step">
+            <p>Actualiza la lista de paquetes:</p>
+            <pre><code>sudo apt update</code></pre>
+        </div>
+
+        <div class="step">
+            <p>Verifica paquetes actualizables:</p>
+            <pre><code>apt list --upgradable</code></pre>
+
+            <div class="expected">
+                Si hay actualizaciones:
+                <pre><code>package-name/version is upgradable...</code></pre>
+
+                Si no hay:
+                <pre><code>Listing... Done</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Paso 8: Revisar logs básicos del sistema</h2>
+
+        <div class="step">
+            <p>Consulta errores recientes del sistema:</p>
+            <pre><code>journalctl -p err -n 20</code></pre>
+        </div>
+
+        <div class="step">
+            <p>Consulta intentos recientes de autenticación:</p>
+            <pre><code>sudo journalctl | grep -i "failed"</code></pre>
+
+            <p>
+                Esto ayuda a detectar errores o intentos fallidos dentro de la propia VM.
+            </p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Paso 9: Resultado esperado</h2>
+        <p>Al finalizar, el usuario debe haber identificado:</p>
+
+        <ul>
+            <li>Nombre del sistema.</li>
+            <li>Usuario actual.</li>
+            <li>Distribución Linux instalada.</li>
+            <li>Usuarios con shell interactiva.</li>
+            <li>Servicios activos.</li>
+            <li>Puertos abiertos.</li>
+            <li>Actualizaciones pendientes.</li>
+            <li>Errores recientes en logs.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Conclusión</h2>
+        <p>
+            Esta práctica introduce al usuario en tareas defensivas básicas de ciberseguridad.
+            Antes de proteger un sistema, primero debe aprender a observarlo, identificar
+            qué servicios corren, qué usuarios existen y qué actividad reciente aparece en logs.
+        </p>
+
+        <button class="finish-btn" onclick="terminarLaboratorio()">
+            Terminar laboratorio
+        </button>
+    </div>
+
+</div>
+
+<script>
+function terminarLaboratorio() {
+    alert("Laboratorio marcado como completado.");
+
+    /*
+    Aquí puedes conectar con Django.
+
+    Ejemplo futuro:
+    fetch("/laboratorios/finalizar/1/", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            completado: true,
+            progreso: 100
+        })
+    });
+    */
+}
+</script>
+
+</body>
+</html>

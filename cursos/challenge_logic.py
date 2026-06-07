@@ -1,47 +1,93 @@
 import sqlite3
 from django.shortcuts import render, redirect
-from django.http import HttpResponse # Por si necesitas hacer pruebas rápidas
+from django.http import Http404
+
+
+DESAFIOS = {
+    "sql-injection": {
+        "tipo": "redirect",
+        "ruta": "sql_challenge",
+    },
+    "lab_auditoria_linux": {
+        "tipo": "loading",
+        "template_carga": "desafios/cargando_lab.html",
+        "url_final": "lab_auditoria_linux",
+        "titulo": "Auditoría Básica Linux",
+    },
+    "ingenieria_social": {
+    "tipo": "loading",
+    "template_carga": "desafios/cargando_lab.html",
+    "url_final": "ingenieria_social",
+    "titulo": "Ingeniería Social",
+    },
+    "sniffing_lab": {
+    "tipo": "loading",
+    "template_carga": "desafios/cargando_lab.html",
+    "url_final": "sniffing_lab",
+    "titulo": "Sniffing Lab",
+    },
+    #"nuevo_lab": {
+    #"tipo": "template",
+    #"template": "laboratorios/nuevo_lab.html",
+#},
+}
+
+def lab_auditoria_linux(request):
+    return render(request, "desafios/lab_auditoria_linux.html")
+
+def ingenieria_social(request):
+    return render(request, "desafios/ingenieria_social.html")
+
+def sniffing_lab(request):
+    return render(request, "desafios/sniffing_lab.html")
 
 def iniciar_desafio(request, desafio_slug):
-    if desafio_slug == 'sql-injection':
-        # Cambia la llamada directa por un redirect para limpiar la pila de ejecución
-        return redirect('sql_challenge') 
-    
-    return redirect('dashboard')
-    
+    desafio = DESAFIOS.get(desafio_slug)
+
+    if not desafio:
+        return redirect("dashboard")
+
+    if desafio["tipo"] == "redirect":
+        return redirect(desafio["ruta"])
+
+    if desafio["tipo"] == "loading":
+        return render(request, desafio["template_carga"], {
+            "titulo": desafio["titulo"],
+            "url_final": desafio["url_final"],
+        })
+
+    return redirect("dashboard")
+
+
 def desafio_sql_injection(request):
     results = []
     error = None
-    raw_query = "" # Inicializar como string vacío en lugar de None
+    raw_query = ""
 
-    # 1. Creamos la conexión
-    conn = sqlite3.connect(':memory:') 
-    
+    conn = sqlite3.connect(":memory:")
+
     try:
         cursor = conn.cursor()
-        
-        # 2. Setup de la tabla
-        cursor.execute('CREATE TABLE users (id INT, username TEXT, secret_key TEXT)')
+
+        cursor.execute("CREATE TABLE users (id INT, username TEXT, secret_key TEXT)")
         cursor.execute("INSERT INTO users VALUES (1, 'admin', 'FLAG{SQL_MASTER_2024}')")
         cursor.execute("INSERT INTO users VALUES (2, 'operador', 'password123')")
-        
-        query_input = request.GET.get('q', '')
+
+        query_input = request.GET.get("q", "")
 
         if query_input:
             raw_query = f"SELECT username FROM users WHERE username = '{query_input}'"
             cursor.execute(raw_query)
-            # 3. Importante: Forzamos la extracción de datos antes de cerrar la conexión
-            results = list(cursor.fetchall()) 
-            
+            results = list(cursor.fetchall())
+
     except Exception as e:
         error = str(e)
-    finally:
-        # 4. Cerramos la conexión SIEMPRE, pero después de haber guardado los datos en 'results'
-        conn.close() 
 
-    # 5. Renderizado
-    return render(request, 'desafios/sql_lab.html', {
-        'results': results,
-        'error': error,
-        'query_ejecutada': raw_query 
+    finally:
+        conn.close()
+
+    return render(request, "desafios/sql_lab.html", {
+        "results": results,
+        "error": error,
+        "query_ejecutada": raw_query
     })

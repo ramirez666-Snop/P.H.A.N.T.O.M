@@ -301,14 +301,14 @@
             <div class="challenge-slider">
                 <ul class="challenge-list">
 
-                    <li class="challenge-item" style="background-image: url('{% static "usuarios/img/i1.jpg" %}')">
+                    <li class="challenge-item" style="background-image: url('{% static "usuarios/img/linux.jpg" %}')">
                         <div class="challenge-content">
-                            <h3>🌐 Desafíos de Redes</h3>
-                            <p>Visualizar procesos TCP.</p>
+                            <h3>💀 Auditoría básica de seguridad en Linux</h3>
+                            <p>Inspeccionar, identificar, analizar, verificar, documentar.</p>
                             <span class="challenge-tag">Fácil</span>
                             <span class="challenge-tag">Redes</span>
                             <button class="challenge-btn"
-                                onclick="window.open('{% url 'lanzador_desafios' 'sql-injection' %}', '_blank')">
+                                onclick="window.open('{% url 'lanzador_desafios' 'lab_auditoria_linux' %}', '_blank')">
                                 Comenzar
                             </button>
                         </div>
@@ -341,7 +341,9 @@
                             <p>Manipulación psicológica.</p>
                             <span class="challenge-tag">Media</span>
                             <span class="challenge-tag">Social</span>
-                            <button class="challenge-btn">Iniciar</button>
+                            <button class="challenge-btn"
+                            onclick="window.open('{% url 'lanzador_desafios' 'ingenieria_social' %}', '_blank')"
+                            >Iniciar</button>
                         </div>
                     </li>
 
@@ -349,9 +351,11 @@
                         <div class="challenge-content">
                             <h3>📡 Sniffing</h3>
                             <p>Captura paquetes de red.</p>
-                            <span class="challenge-tag">Alta</span>
+                            <span class="challenge-tag">Media</span>
                             <span class="challenge-tag">Redes</span>
-                            <button class="challenge-btn">Iniciar</button>
+                            <button class="challenge-btn"
+                            onclick="window.open('{% url 'lanzador_desafios' 'sniffing_lab' %}', '_blank')"
+                            >Iniciar</button>
                         </div>
                     </li>
 

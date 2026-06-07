@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Inicializando laboratorio</title>
+
+<style>
+body {
+    margin: 0;
+    background: #050505;
+    color: #00ff88;
+    font-family: monospace;
+    overflow: hidden;
+}
+
+.loader {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 22px;
+}
+
+.glitch {
+    font-size: 42px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-shadow: 0 0 15px #00ff88;
+}
+
+.terminal {
+    width: 80%;
+    max-width: 760px;
+    background: #000;
+    border: 1px solid #00ff88;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 0 30px rgba(0, 255, 136, .2);
+}
+
+.line {
+    margin: 8px 0;
+    opacity: 0;
+    animation: showLine .5s forwards;
+}
+
+.line:nth-child(1) { animation-delay: .3s; }
+.line:nth-child(2) { animation-delay: 1s; }
+.line:nth-child(3) { animation-delay: 1.7s; }
+.line:nth-child(4) { animation-delay: 2.4s; }
+.line:nth-child(5) { animation-delay: 3.1s; }
+
+@keyframes showLine {
+    to { opacity: 1; }
+}
+
+.bar {
+    width: 80%;
+    max-width: 760px;
+    height: 12px;
+    border: 1px solid #00ff88;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: #00ff88;
+    animation: load 4s forwards;
+}
+
+@keyframes load {
+    to { width: 100%; }
+}
+
+.blink {
+    animation: blink .7s infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="loader">
+    <div class="glitch">P.H.A.N.T.O.M LAB</div>
+
+    <div class="terminal">
+        <div class="line">[+] Inicializando entorno seguro...</div>
+        <div class="line">[+] Cargando práctica: {{ titulo }}</div>
+        <div class="line">[+] Verificando sesión del operador...</div>
+        <div class="line">[+] Preparando instrucciones guiadas...</div>
+        <div class="line">[✓] Laboratorio listo<span class="blink">_</span></div>
+    </div>
+
+    <div class="bar">
+        <div class="progress"></div>
+    </div>
+</div>
+
+<script>
+setTimeout(() => {
+    window.location.href = "{% url url_final %}";
+}, 4300);
+</script>
+
+</body>
+</html>

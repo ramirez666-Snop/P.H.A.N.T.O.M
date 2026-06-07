@@ -1,0 +1,749 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>P.H.A.N.T.O.M - Sniffing Lab</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #0e1117;
+    color: #d7dde8;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.lab {
+    min-height: 100vh;
+    background:
+        linear-gradient(rgba(14,17,23,.92), rgba(14,17,23,.96)),
+        url("{% static 'usuarios/img/network_bg.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    padding: 24px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+    background: #151a23;
+    border: 1px solid #252d3a;
+    border-radius: 16px;
+    padding: 20px 24px;
+}
+
+.header h1 {
+    margin: 0;
+    color: #f2f5fa;
+    font-size: 26px;
+}
+
+.header p {
+    margin: 6px 0 0;
+    color: #9ba7b8;
+}
+
+.badge {
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #1d2430;
+    border: 1px solid #30394a;
+    color: #aab7ca;
+    font-size: 13px;
+}
+
+.stats {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.stat {
+    background: #10151d;
+    border: 1px solid #273142;
+    border-radius: 12px;
+    padding: 10px 14px;
+    color: #cbd5e1;
+}
+
+.stat strong {
+    color: #37d67a;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 1.5fr .9fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.panel {
+    background: #151a23;
+    border: 1px solid #252d3a;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.panel-title {
+    padding: 14px 18px;
+    background: #10151d;
+    border-bottom: 1px solid #252d3a;
+    color: #f2f5fa;
+    font-weight: 600;
+}
+
+.toolbar {
+    display: flex;
+    gap: 10px;
+    padding: 14px;
+    border-bottom: 1px solid #252d3a;
+    background: #121721;
+}
+
+.toolbar input {
+    flex: 1;
+    background: #0d1118;
+    border: 1px solid #2b3546;
+    color: #e5eaf2;
+    padding: 11px 12px;
+    border-radius: 10px;
+    outline: none;
+}
+
+.toolbar button,
+.choice-btn,
+.finish-btn {
+    background: #1f8f55;
+    border: none;
+    color: #f5fff8;
+    padding: 11px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.toolbar button:hover,
+.choice-btn:hover,
+.finish-btn:hover {
+    background: #27a765;
+}
+
+.packet-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.packet-table th {
+    background: #111722;
+    color: #9ba7b8;
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #252d3a;
+}
+
+.packet-table td {
+    padding: 11px 12px;
+    border-bottom: 1px solid #252d3a;
+    color: #d7dde8;
+}
+
+.packet-table tr {
+    cursor: pointer;
+}
+
+.packet-table tr:hover {
+    background: #1b2230;
+}
+
+.packet-table tr.selected {
+    background: #213047;
+}
+
+.proto {
+    display: inline-block;
+    min-width: 58px;
+    text-align: center;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.http { background: #3b2f1d; color: #ffc978; }
+.dns { background: #1d2f3b; color: #8ed8ff; }
+.tcp { background: #242b38; color: #c8d1df; }
+.arp { background: #3b1d24; color: #ff9bb0; }
+.tls { background: #1d3328; color: #90f0b9; }
+
+.side {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mission {
+    padding: 18px;
+}
+
+.mission h2 {
+    margin-top: 0;
+    color: #f2f5fa;
+}
+
+.mission ul {
+    padding-left: 20px;
+    color: #b8c3d3;
+}
+
+.detail {
+    padding: 18px;
+    min-height: 260px;
+}
+
+.detail h3 {
+    margin-top: 0;
+    color: #f2f5fa;
+}
+
+.detail-block {
+    background: #0d1118;
+    border: 1px solid #2b3546;
+    border-radius: 12px;
+    padding: 14px;
+    color: #cbd5e1;
+    font-family: Consolas, monospace;
+    white-space: pre-wrap;
+    line-height: 1.45;
+}
+
+.answers {
+    padding: 18px;
+}
+
+.question {
+    margin-bottom: 16px;
+}
+
+.question label {
+    display: block;
+    margin-bottom: 8px;
+    color: #cbd5e1;
+}
+
+.question select {
+    width: 100%;
+    background: #0d1118;
+    color: #e5eaf2;
+    border: 1px solid #2b3546;
+    border-radius: 10px;
+    padding: 11px;
+}
+
+.feedback {
+    margin-top: 14px;
+    background: #0d1118;
+    border: 1px solid #2b3546;
+    border-radius: 12px;
+    padding: 14px;
+    color: #cbd5e1;
+}
+
+.hidden {
+    display: none;
+}
+
+.final {
+    margin-top: 20px;
+    background: #151a23;
+    border: 1px solid #252d3a;
+    border-radius: 16px;
+    padding: 22px;
+}
+
+.final h2 {
+    color: #37d67a;
+}
+
+@media(max-width: 1000px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="lab">
+
+    <div class="header">
+        <div>
+            <h1>P.H.A.N.T.O.M Sniffing Lab</h1>
+            <p>Analiza tráfico de red simulado, identifica protocolos inseguros y encuentra evidencia de exposición.</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat">Puntaje: <strong id="score">0</strong></div>
+            <div class="stat">Evidencias: <strong id="evidence">0/3</strong></div>
+            <div class="badge">Dificultad: Básica / Media</div>
+        </div>
+    </div>
+
+    <div class="layout">
+
+        <div class="panel">
+            <div class="panel-title">Captura de paquetes</div>
+
+            <div class="toolbar">
+                <input id="filterInput" placeholder="Filtrar por protocolo, IP o texto. Ejemplo: HTTP, 10.0.0.15, login">
+                <button onclick="applyFilter()">Filtrar</button>
+                <button onclick="clearFilter()">Limpiar</button>
+            </div>
+
+            <table class="packet-table">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Tiempo</th>
+                        <th>Origen</th>
+                        <th>Destino</th>
+                        <th>Protocolo</th>
+                        <th>Info</th>
+                    </tr>
+                </thead>
+                <tbody id="packetBody"></tbody>
+            </table>
+        </div>
+
+        <div class="side">
+
+            <div class="panel mission">
+                <h2>Misión</h2>
+                <p>
+                    El equipo SOC detectó tráfico sospechoso dentro de la red interna.
+                    Tu tarea es analizar la captura y responder:
+                </p>
+                <ul>
+                    <li>¿Qué protocolo expuso información sensible?</li>
+                    <li>¿Qué usuario fue comprometido?</li>
+                    <li>¿Cuál fue la IP origen del incidente?</li>
+                </ul>
+            </div>
+
+            <div class="panel detail">
+                <h3>Detalle del paquete</h3>
+                <div id="packetDetail" class="detail-block">
+Selecciona un paquete para inspeccionar sus campos.
+                </div>
+            </div>
+
+            <div class="panel answers">
+                <div class="panel-title">Resolver incidente</div>
+
+                <div class="question">
+                    <label>1. Protocolo que expuso credenciales:</label>
+                    <select id="answerProtocol">
+                        <option value="">Seleccionar</option>
+                        <option value="DNS">DNS</option>
+                        <option value="HTTP">HTTP</option>
+                        <option value="TLS">TLS</option>
+                        <option value="ARP">ARP</option>
+                    </select>
+                </div>
+
+                <div class="question">
+                    <label>2. Usuario comprometido:</label>
+                    <select id="answerUser">
+                        <option value="">Seleccionar</option>
+                        <option value="admin">admin</option>
+                        <option value="maria.gomez">maria.gomez</option>
+                        <option value="soporte">soporte</option>
+                        <option value="guest">guest</option>
+                    </select>
+                </div>
+
+                <div class="question">
+                    <label>3. IP origen del incidente:</label>
+                    <select id="answerIP">
+                        <option value="">Seleccionar</option>
+                        <option value="10.0.0.3">10.0.0.3</option>
+                        <option value="10.0.0.15">10.0.0.15</option>
+                        <option value="10.0.0.22">10.0.0.22</option>
+                        <option value="8.8.8.8">8.8.8.8</option>
+                    </select>
+                </div>
+
+                <button class="choice-btn" onclick="checkAnswers()">Validar respuestas</button>
+
+                <div id="feedback" class="feedback hidden"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="finalPanel" class="final hidden">
+        <h2>Laboratorio completado</h2>
+        <p id="finalText"></p>
+
+        <button class="finish-btn" onclick="terminarLaboratorio()">
+            Terminar laboratorio
+        </button>
+    </div>
+
+</div>
+
+<script>
+let score = 0;
+let evidenceCount = 0;
+let selectedEvidence = {};
+let completed = false;
+
+const packets = [
+    {
+        id: 1,
+        time: "0.0012",
+        src: "10.0.0.15",
+        dst: "10.0.0.1",
+        proto: "DNS",
+        info: "Consulta A portal.phantom.local",
+        detail:
+`Frame 1
+Ethernet II
+Internet Protocol Version 4
+Source: 10.0.0.15
+Destination: 10.0.0.1
+Domain Name System
+Query: portal.phantom.local`
+    },
+    {
+        id: 2,
+        time: "0.0431",
+        src: "10.0.0.15",
+        dst: "10.0.0.50",
+        proto: "TCP",
+        info: "SYN hacia puerto 80",
+        detail:
+`Frame 2
+Source: 10.0.0.15
+Destination: 10.0.0.50
+Transmission Control Protocol
+Source Port: 51544
+Destination Port: 80
+Flags: SYN`
+    },
+    {
+        id: 3,
+        time: "0.0844",
+        src: "10.0.0.50",
+        dst: "10.0.0.15",
+        proto: "TCP",
+        info: "SYN, ACK desde puerto 80",
+        detail:
+`Frame 3
+Source: 10.0.0.50
+Destination: 10.0.0.15
+Transmission Control Protocol
+Source Port: 80
+Destination Port: 51544
+Flags: SYN, ACK`
+    },
+    {
+        id: 4,
+        time: "0.1209",
+        src: "10.0.0.15",
+        dst: "10.0.0.50",
+        proto: "HTTP",
+        info: "GET /login HTTP/1.1",
+        detail:
+`Frame 4
+Hypertext Transfer Protocol
+GET /login HTTP/1.1
+Host: portal.phantom.local
+User-Agent: Mozilla/5.0
+Nota: HTTP no cifra el contenido.`
+    },
+    {
+        id: 5,
+        time: "0.2215",
+        src: "10.0.0.15",
+        dst: "10.0.0.50",
+        proto: "HTTP",
+        info: "POST /login usuario=maria.gomez",
+        evidence: "credentials",
+        detail:
+`Frame 5
+Hypertext Transfer Protocol
+POST /login HTTP/1.1
+Host: portal.phantom.local
+Content-Type: application/x-www-form-urlencoded
+
+username=maria.gomez&password=Summer2026!
+
+EVIDENCIA:
+Credenciales enviadas en texto claro por HTTP.`
+    },
+    {
+        id: 6,
+        time: "0.3201",
+        src: "10.0.0.50",
+        dst: "10.0.0.15",
+        proto: "HTTP",
+        info: "302 Redirect /dashboard",
+        detail:
+`Frame 6
+HTTP/1.1 302 Found
+Location: /dashboard
+Set-Cookie: sessionid=8af19c2demo
+
+Riesgo:
+La sesión también podría quedar expuesta si no se usa HTTPS.`
+    },
+    {
+        id: 7,
+        time: "0.4109",
+        src: "10.0.0.22",
+        dst: "10.0.0.1",
+        proto: "DNS",
+        info: "Consulta A updates.vendor.local",
+        detail:
+`Frame 7
+DNS Query
+Source: 10.0.0.22
+Query: updates.vendor.local`
+    },
+    {
+        id: 8,
+        time: "0.5510",
+        src: "10.0.0.3",
+        dst: "10.0.0.255",
+        proto: "ARP",
+        info: "Who has 10.0.0.1? Tell 10.0.0.3",
+        evidence: "arp",
+        detail:
+`Frame 8
+Address Resolution Protocol
+Who has 10.0.0.1?
+Tell 10.0.0.3
+
+Observación:
+La actividad ARP debe revisarse si aparece repetidamente.`
+    },
+    {
+        id: 9,
+        time: "0.6012",
+        src: "10.0.0.15",
+        dst: "172.217.1.14",
+        proto: "TLS",
+        info: "Client Hello google.com",
+        detail:
+`Frame 9
+Transport Layer Security
+Client Hello
+Server Name: google.com
+
+Nota:
+TLS cifra el contenido de la comunicación.`
+    },
+    {
+        id: 10,
+        time: "0.7204",
+        src: "10.0.0.50",
+        dst: "10.0.0.15",
+        proto: "HTTP",
+        info: "200 OK dashboard",
+        evidence: "http",
+        detail:
+`Frame 10
+HTTP/1.1 200 OK
+Content-Type: text/html
+
+Conclusión:
+El portal interno funciona sobre HTTP.
+Esto permite observar credenciales y cookies en texto claro.`
+    }
+];
+
+function renderPackets(list = packets) {
+    const tbody = document.getElementById("packetBody");
+    tbody.innerHTML = "";
+
+    list.forEach(packet => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${packet.id}</td>
+            <td>${packet.time}</td>
+            <td>${packet.src}</td>
+            <td>${packet.dst}</td>
+            <td><span class="proto ${packet.proto.toLowerCase()}">${packet.proto}</span></td>
+            <td>${packet.info}</td>
+        `;
+
+        row.onclick = () => selectPacket(packet, row);
+        tbody.appendChild(row);
+    });
+}
+
+function selectPacket(packet, row) {
+    document.querySelectorAll(".packet-table tr").forEach(r => r.classList.remove("selected"));
+    row.classList.add("selected");
+
+    document.getElementById("packetDetail").innerText = packet.detail;
+
+    if (packet.evidence && !selectedEvidence[packet.evidence]) {
+        selectedEvidence[packet.evidence] = true;
+        evidenceCount++;
+        score += 10;
+        updateHUD();
+    }
+}
+
+function applyFilter() {
+    const value = document.getElementById("filterInput").value.toLowerCase();
+
+    const filtered = packets.filter(packet => {
+        return (
+            packet.proto.toLowerCase().includes(value) ||
+            packet.src.toLowerCase().includes(value) ||
+            packet.dst.toLowerCase().includes(value) ||
+            packet.info.toLowerCase().includes(value) ||
+            packet.detail.toLowerCase().includes(value)
+        );
+    });
+
+    renderPackets(filtered);
+}
+
+function clearFilter() {
+    document.getElementById("filterInput").value = "";
+    renderPackets();
+}
+
+function updateHUD() {
+    document.getElementById("score").innerText = score;
+    document.getElementById("evidence").innerText = evidenceCount + "/3";
+}
+
+function checkAnswers() {
+    const protocol = document.getElementById("answerProtocol").value;
+    const user = document.getElementById("answerUser").value;
+    const ip = document.getElementById("answerIP").value;
+
+    let result = "";
+    let gained = 0;
+
+    if (protocol === "HTTP") {
+        gained += 25;
+        result += "✓ Correcto: HTTP expuso datos en texto claro.<br>";
+    } else {
+        result += "✕ El protocolo correcto era HTTP.<br>";
+    }
+
+    if (user === "maria.gomez") {
+        gained += 25;
+        result += "✓ Correcto: el usuario comprometido fue maria.gomez.<br>";
+    } else {
+        result += "✕ El usuario comprometido era maria.gomez.<br>";
+    }
+
+    if (ip === "10.0.0.15") {
+        gained += 25;
+        result += "✓ Correcto: la IP origen fue 10.0.0.15.<br>";
+    } else {
+        result += "✕ La IP origen correcta era 10.0.0.15.<br>";
+    }
+
+    if (evidenceCount >= 3) {
+        gained += 25;
+        result += "✓ Encontraste todas las evidencias clave.<br>";
+    } else {
+        result += "⚠ Te faltaron evidencias por inspeccionar en la captura.<br>";
+    }
+
+    if (!completed) {
+        score += gained;
+        completed = true;
+    }
+
+    updateHUD();
+
+    const feedback = document.getElementById("feedback");
+    feedback.classList.remove("hidden");
+    feedback.innerHTML = result + `<br><strong>Puntos obtenidos:</strong> ${gained}`;
+
+    showFinal();
+}
+
+function showFinal() {
+    const finalPanel = document.getElementById("finalPanel");
+    finalPanel.classList.remove("hidden");
+
+    let nivel = "Aprendiz de tráfico";
+
+    if (score >= 90) {
+        nivel = "Analista Forense de Red";
+    } else if (score >= 60) {
+        nivel = "Inspector de Paquetes";
+    } else if (score >= 30) {
+        nivel = "Observador de Red";
+    }
+
+    document.getElementById("finalText").innerHTML = `
+        <strong>Nivel:</strong> ${nivel}<br><br>
+        En este laboratorio identificaste cómo un portal interno usando HTTP puede exponer credenciales.
+        También revisaste tráfico DNS, TCP, TLS y ARP para diferenciar actividad normal de evidencia relevante.
+        <br><br>
+        <strong>Recomendaciones defensivas:</strong><br>
+        - Forzar HTTPS en portales internos.<br>
+        - Evitar credenciales en texto claro.<br>
+        - Monitorear tráfico ARP sospechoso.<br>
+        - Capacitar usuarios sobre redes inseguras.<br>
+        - Revisar sesiones y cookies expuestas.
+    `;
+}
+
+function terminarLaboratorio() {
+    const data = {
+        laboratorio: "sniffing",
+        completado: true,
+        progreso: 100,
+        puntaje: score,
+        evidencias: evidenceCount
+    };
+
+    console.log("Resultado Sniffing Lab:", data);
+
+    /*
+    Cuando tengas endpoint Django:
+
+    fetch("/laboratorios/finalizar/sniffing/", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        window.location.href = "/dashboard/";
+    });
+    */
+
+    alert("Laboratorio completado.");
+    window.location.href = "/dashboard/";
+}
+
+renderPackets();
+updateHUD();
+</script>
+
+</body>
+</html>
