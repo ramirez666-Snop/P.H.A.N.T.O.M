@@ -370,76 +370,61 @@
             </div>
         </div>
 
+<div class="challenge-side">
+
     <div class="challenge-panel">
-    <h3>Desafíos Superados</h3>
+        <h3>Desafíos Superados</h3>
 
-    <div class="challenge-badges">
-
-        {% for lab in labs_completados %}
-
-            <div class="challenge-badge">
-                {{ lab.nombre }}
-            </div>
-
-        {% empty %}
-
-            <p style="color:#94a3b8;">
-                Ningún desafío completado aún.
-            </p>
-
-        {% endfor %}
-
-    </div>
-</div>
-
-          <div class="challenge-panel">
-
-    <h3>Progreso General</h3>
-
-    <p>
-        Desafíos completados:
-        <strong>{{ labs_completados_count }}/4</strong>
-    </p>
-
-    <div class="challenge-bar">
-        <span style="width: {{ porcentaje_labs }}%"></span>
-    </div>
-
-    <p>
-        Progreso total:
-        {{ porcentaje_labs }}%
-    </p>
-
-    <p>
-        Restan:
-        {{ labs_restantes }}
-        desafío(s)
-    </p>
-
-</div>
-
-        <div class="challenge-panel">
-
-    <h3>En progreso</h3>
-
-    {% for lab in labs_en_progreso %}
-
-        <div class="challenge-badge">
-            {{ lab.nombre }}
+        <div class="challenge-badges">
+            {% for lab in labs_completados %}
+                <div class="challenge-badge">
+                    {{ lab.nombre }}
+                </div>
+            {% empty %}
+                <p style="color:#94a3b8;">
+                    Ningún desafío completado aún.
+                </p>
+            {% endfor %}
         </div>
+    </div>
 
-    {% empty %}
+    <div class="challenge-panel">
+        <h3>Progreso General</h3>
 
-        <p style="color:#94a3b8;">
-            No hay desafíos activos.
+        <p>
+            Desafíos completados:
+            <strong>{{ labs_completados_count }}/{{ total_labs }}</strong>
         </p>
 
-    {% endfor %}
-
-</div>
+        <div class="challenge-bar">
+            <span style="width: {{ porcentaje_labs }}%"></span>
         </div>
 
+        <p>Progreso total: {{ porcentaje_labs }}%</p>
+
+        <p>
+            Restan:
+            {{ labs_restantes }}
+            desafío(s)
+        </p>
     </div>
+
+    <div class="challenge-panel">
+        <h3>En progreso</h3>
+
+        <div class="challenge-badges">
+            {% for lab in labs_en_progreso %}
+                <div class="challenge-badge">
+                    {{ lab.nombre }}
+                </div>
+            {% empty %}
+                <p style="color:#94a3b8;">
+                    No hay desafíos activos.
+                </p>
+            {% endfor %}
+        </div>
+    </div>
+
 </div>
 
 <script>
