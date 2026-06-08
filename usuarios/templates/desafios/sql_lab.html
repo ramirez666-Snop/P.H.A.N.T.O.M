@@ -48,6 +48,16 @@
         .error { color: #ff4444; margin-top: 10px; }
         .success { color: #00ff41; font-weight: bold; }
         .hint { color: #94a3b8; margin-top: 20px; }
+
+        .completed-box {
+            margin-top: 20px;
+            padding: 14px;
+            border: 1px solid #00ff41;
+            background: rgba(0,255,65,.08);
+            border-radius: 10px;
+            color: #00ff41;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -59,6 +69,12 @@
     <p class="hint">
         Pista: intenta alterar la condición lógica de la consulta.
     </p>
+
+    {% if ya_completado %}
+        <div class="completed-box">
+            Este desafío ya fue completado y guardado en tu progreso.
+        </div>
+    {% endif %}
 
     <hr color="#222">
 
@@ -78,7 +94,15 @@
         {% if results %}
             <ul>
                 {% for row in results %}
-                    <li>Registro encontrado: <span class="success">{{ row.0 }}</span></li>
+                    <li>
+                        Usuario:
+                        <span class="success">{{ row.0 }}</span>
+
+                        {% if row.1 %}
+                            | Secret Key:
+                            <span class="success">{{ row.1 }}</span>
+                        {% endif %}
+                    </li>
                 {% endfor %}
             </ul>
         {% else %}
@@ -94,10 +118,16 @@
 
     <hr color="#222" style="margin-top: 30px;">
 
-    {% if completado %}
+    {% if ya_completado %}
+        <button class="btn-phantom btn-disabled" disabled>
+            DESAFÍO YA COMPLETADO
+        </button>
+
+    {% elif objetivo_resuelto %}
         <button id="btnCompletar" class="btn-phantom">
             COMPLETAR DESAFÍO
         </button>
+
     {% else %}
         <button class="btn-phantom btn-disabled" disabled>
             COMPLETA EL OBJETIVO PARA ACTIVAR
@@ -110,15 +140,11 @@ const btn = document.getElementById("btnCompletar");
 
 if (btn) {
     btn.addEventListener("click", async () => {
-        const formData = new FormData();
-        formData.append("slug", "{{ slug }}");
-
         const response = await fetch("{% url 'sql_challenge' %}", {
             method: "POST",
             headers: {
                 "X-CSRFToken": "{{ csrf_token }}"
-            },
-            body: formData
+            }
         });
 
         const data = await response.json();

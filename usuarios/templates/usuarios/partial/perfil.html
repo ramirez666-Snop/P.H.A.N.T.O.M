@@ -352,21 +352,25 @@
             </div>
         </div>
 
-        <div class="profile-card">
-            <h3>🧪 LABS COMPLETADOS</h3>
-            <p>{{ labs_completados }}</p>
-            <div class="bar">
-                <span style="width: {{ porcentaje_labs }}%"></span>
-            </div>
-        </div>
+   <div class="profile-card">
+    <h3>🧪 LABS COMPLETADOS</h3>
 
-        <div class="profile-card">
-            <h3>⚙️ LABS EN PROGRESO</h3>
-            <p>{{ labs_en_progreso }}</p>
-            <div class="bar">
-                <span style="width: {{ porcentaje_labs_progreso }}%"></span>
-            </div>
-        </div>
+    <p>{{ labs_completados.count }}</p>
+
+    <div class="bar">
+        <span style="width: {{ porcentaje_labs }}%"></span>
+    </div>
+</div>
+
+<div class="profile-card">
+    <h3>⚙️ LABS EN PROGRESO</h3>
+
+    <p>{{ labs_en_progreso.count }}</p>
+
+    <div class="bar">
+        <span style="width: {{ porcentaje_labs_progreso }}%"></span>
+    </div>
+</div>
 
     </div>
 

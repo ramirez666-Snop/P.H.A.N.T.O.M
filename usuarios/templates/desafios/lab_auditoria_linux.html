@@ -363,23 +363,28 @@ udp   UNCONN 0.0.0.0:68</code></pre>
 <script>
 function terminarLaboratorio() {
     alert("Laboratorio marcado como completado.");
-
-    /*
-    Aquí puedes conectar con Django.
-
-    Ejemplo futuro:
-    fetch("/laboratorios/finalizar/1/", {
+async function terminarLaboratorio() {
+    const response = await fetch("/laboratorios/completar/lab_auditoria_linux/", {
         method: "POST",
         headers: {
             "X-CSRFToken": "{{ csrf_token }}",
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            completado: true,
-            progreso: 100
+            puntaje: puntaje
         })
     });
-    */
+
+    const data = await response.json();
+
+    if (data.status === "success") {
+        localStorage.removeItem("phantom_ing_social");
+        alert("Laboratorio completado y guardado.");
+        window.location.href = "/dashboard/";
+    } else {
+        alert(data.message || "Error al guardar laboratorio.");
+    }
+}
 }
 </script>
 

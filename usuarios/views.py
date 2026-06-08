@@ -1,10 +1,10 @@
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import django.contrib.auth.models
 from cursos.models import Curso, Inscripcion
 from django.contrib import messages
+from laboratorios.models import LaboratorioProgreso
 
 def login_view(request):
     if request.method == "POST":
@@ -51,10 +51,43 @@ def dashboard_view(request):
     cursos_completados = inscripciones.filter(completado=True)
     cursos_en_progreso = inscripciones.filter(completado=False)
 
+    labs_completados = LaboratorioProgreso.objects.filter(
+        usuario=request.user,
+        completado=True
+    )
+
+    labs_en_progreso = LaboratorioProgreso.objects.filter(
+        usuario=request.user,
+        iniciado=True,
+        completado=False
+    )
+
+    total_labs = 5  # SQL, Auditoría Linux, Ingeniería Social, Sniffing, NOC
+
+    labs_completados_count = labs_completados.count()
+    labs_en_progreso_count = labs_en_progreso.count()
+
+    labs_restantes = total_labs - labs_completados_count
+
+    if labs_restantes < 0:
+        labs_restantes = 0
+
+    porcentaje_labs = int((labs_completados_count / total_labs) * 100)
+
     return render(request, "usuarios/dashboard.html", {
         "inscripciones": inscripciones,
+
         "cursos_completados": cursos_completados,
         "cursos_en_progreso": cursos_en_progreso,
+
+        "labs_completados": labs_completados,
+        "labs_en_progreso": labs_en_progreso,
+
+        "labs_completados_count": labs_completados_count,
+        "labs_en_progreso_count": labs_en_progreso_count,
+        "labs_restantes": labs_restantes,
+        "total_labs": total_labs,
+        "porcentaje_labs": porcentaje_labs,
     })
 
 def registro_view(request):

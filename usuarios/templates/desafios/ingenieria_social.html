@@ -754,29 +754,31 @@ function terminarLaboratorio() {
     };
 
     console.log("Resultado del laboratorio:", data);
-
-    /*
-    Cuando tengas endpoint en Django, activa esto:
-
-    fetch("/laboratorios/finalizar/ingenieria-social/", {
+async function terminarLaboratorio() {
+    const response = await fetch("/laboratorios/completar/ingenieria_social/", {
         method: "POST",
         headers: {
             "X-CSRFToken": "{{ csrf_token }}",
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        window.location.href = "/dashboard/";
-    })
-    .catch(error => {
-        console.error("Error guardando laboratorio:", error);
+        body: JSON.stringify({
+            puntaje: puntaje
+        })
     });
-    */
+
+    const data = await response.json();
+
+    if (data.status === "success") {
+        localStorage.removeItem("phantom_ing_social");
+        alert("Laboratorio completado y guardado.");
+        window.location.href = "/dashboard/";
+    } else {
+        alert(data.message || "Error al guardar laboratorio.");
+    }
+}
+
 
     localStorage.removeItem("phantom_ing_social");
-    alert("Laboratorio completado. Resultado guardado localmente.");
     window.location.href = "/dashboard/";
 }
 

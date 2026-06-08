@@ -18,4 +18,6 @@ urlpatterns = [
     path("laboratorio/auditoria-linux/",challenge_logic.lab_auditoria_linux,name="lab_auditoria_linux"),
     path("laboratorio/ingenieria-social/",challenge_logic.ingenieria_social,name="ingenieria_social"),
     path("laboratorio/sniffing/",challenge_logic.sniffing_lab,name="sniffing_lab"),
+    path("laboratorio/analisis-red-noc/",challenge_logic.analisis_red_noc,name="analisis_red_noc"),
+    path("laboratorios/completar/<slug:slug>/",challenge_logic.completar_laboratorio,name="completar_laboratorio"),
 ]

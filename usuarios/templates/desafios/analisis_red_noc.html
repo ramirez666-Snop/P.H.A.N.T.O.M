@@ -1,0 +1,874 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>P.H.A.N.T.O.M - Análisis de Red NOC</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #0f1218;
+    color: #e5e7eb;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.noc-lab {
+    min-height: 100vh;
+    padding: 24px;
+    background:
+        linear-gradient(rgba(15,18,24,.94), rgba(15,18,24,.97)),
+        url("{% static 'usuarios/img/noc_background.jpg' %}");
+    background-size: cover;
+    background-position: center;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    background: #171b24;
+    border: 1px solid #2a3140;
+    border-radius: 18px;
+    padding: 22px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.header p {
+    margin: 8px 0 0;
+    color: #9ca3af;
+}
+
+.hud {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.hud-item {
+    background: #11151d;
+    border: 1px solid #2a3140;
+    border-radius: 12px;
+    padding: 12px 14px;
+    min-width: 130px;
+}
+
+.hud-item span {
+    display: block;
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+.hud-item strong {
+    font-size: 20px;
+    color: #4ade80;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 1.4fr .9fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.panel {
+    background: #171b24;
+    border: 1px solid #2a3140;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.panel-title {
+    padding: 15px 18px;
+    background: #11151d;
+    border-bottom: 1px solid #2a3140;
+    font-weight: 600;
+}
+
+.network-map {
+    position: relative;
+    height: 610px;
+    padding: 30px;
+}
+
+.node {
+    position: absolute;
+    width: 130px;
+    height: 115px;
+    background: #11151d;
+    border: 1px solid #2a3140;
+    border-radius: 16px;
+    text-align: center;
+    padding: 14px 10px;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.node:hover {
+    transform: translateY(-3px);
+    border-color: #4ade80;
+}
+
+.node img {
+    height: 46px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+.node-name {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.node-ip {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: 3px;
+}
+
+.status {
+    position: absolute;
+    top: 9px;
+    right: 9px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+}
+
+.ok .status { background: #22c55e; }
+.warn .status { background: #f59e0b; }
+.critical .status { background: #ef4444; }
+
+.ok { border-color: #2a3140; }
+.warn { border-color: #8a6418; }
+.critical { border-color: #7f1d1d; }
+
+.internet { top: 35px; left: 50%; transform: translateX(-50%); }
+.firewall { top: 170px; left: 50%; transform: translateX(-50%); }
+.switch { top: 315px; left: 50%; transform: translateX(-50%); }
+.web { top: 455px; left: 15%; }
+.db { top: 455px; left: 42%; }
+.vpn { top: 455px; right: 15%; }
+.users { top: 315px; left: 8%; }
+
+.line {
+    position: absolute;
+    background: #343c4d;
+    z-index: 0;
+}
+
+.v-line {
+    width: 2px;
+}
+
+.h-line {
+    height: 2px;
+}
+
+.line1 { top: 150px; left: 50%; height: 45px; }
+.line2 { top: 285px; left: 50%; height: 55px; }
+.line3 { top: 425px; left: 21%; width: 58%; }
+.line4 { top: 370px; left: 17%; width: 33%; }
+.line5 { top: 370px; left: 50%; width: 35%; }
+
+.side {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mission {
+    padding: 18px;
+}
+
+.mission h2 {
+    margin-top: 0;
+}
+
+.mission p,
+.mission li {
+    color: #cbd5e1;
+    line-height: 1.5;
+}
+
+.alert-box {
+    padding: 18px;
+}
+
+.alert-level {
+    display: inline-block;
+    padding: 6px 10px;
+    background: #3a2711;
+    color: #fbbf24;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.alert-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.alert-desc {
+    color: #cbd5e1;
+    line-height: 1.5;
+}
+
+.actions {
+    display: grid;
+    gap: 10px;
+    padding: 18px;
+}
+
+.action-btn {
+    background: #202734;
+    border: 1px solid #30394a;
+    color: #e5e7eb;
+    padding: 13px;
+    border-radius: 12px;
+    text-align: left;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.action-btn:hover {
+    border-color: #4ade80;
+    background: #243044;
+}
+
+.tool-panel {
+    padding: 18px;
+}
+
+.tools {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 9px;
+}
+
+.tool-btn {
+    background: #11151d;
+    border: 1px solid #2a3140;
+    color: #d1d5db;
+    padding: 11px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.tool-btn:hover {
+    border-color: #60a5fa;
+}
+
+.console {
+    margin-top: 14px;
+    background: #0b0e13;
+    border: 1px solid #2a3140;
+    border-radius: 12px;
+    padding: 14px;
+    min-height: 130px;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    color: #d1d5db;
+    white-space: pre-wrap;
+}
+
+.node-info {
+    padding: 18px;
+}
+
+.info-card {
+    background: #11151d;
+    border: 1px solid #2a3140;
+    border-radius: 12px;
+    padding: 14px;
+    color: #cbd5e1;
+    line-height: 1.5;
+}
+
+.feedback {
+    margin: 18px;
+    padding: 14px;
+    background: #11151d;
+    border: 1px solid #2a3140;
+    border-radius: 12px;
+    color: #cbd5e1;
+}
+
+.final {
+    display: none;
+    margin-top: 20px;
+    padding: 24px;
+    background: #171b24;
+    border: 1px solid #2a3140;
+    border-radius: 18px;
+}
+
+.final h2 {
+    color: #4ade80;
+}
+
+.finish-btn {
+    width: 100%;
+    margin-top: 18px;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    background: #23824f;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.finish-btn:hover {
+    background: #2d9b60;
+}
+
+@media(max-width: 1050px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .network-map {
+        height: 720px;
+    }
+
+    .web { left: 8%; }
+    .db { left: 40%; }
+    .vpn { right: 8%; }
+}
+
+@media(max-width: 720px) {
+    .header {
+        flex-direction: column;
+    }
+
+    .network-map {
+        height: 980px;
+    }
+
+    .node {
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+    }
+
+    .internet { top: 30px; }
+    .firewall { top: 170px; }
+    .switch { top: 310px; }
+    .users { top: 450px; }
+    .web { top: 590px; }
+    .db { top: 730px; }
+    .vpn { top: 870px; }
+
+    .line {
+        display: none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="noc-lab">
+
+    <div class="header">
+        <div>
+            <h1>P.H.A.N.T.O.M NOC Simulator</h1>
+            <p>Centro de Operaciones de Red. Analiza alertas, usa herramientas y toma decisiones para restaurar el servicio.</p>
+        </div>
+
+        <div class="hud">
+            <div class="hud-item">
+                <span>Disponibilidad</span>
+                <strong id="availability">100%</strong>
+            </div>
+            <div class="hud-item">
+                <span>Incidentes</span>
+                <strong id="incidents">0/5</strong>
+            </div>
+            <div class="hud-item">
+                <span>Puntaje</span>
+                <strong id="score">0</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="layout">
+
+        <div class="panel">
+            <div class="panel-title">Topología de red</div>
+
+            <div class="network-map">
+
+                <div class="line v-line line1"></div>
+                <div class="line v-line line2"></div>
+                <div class="line h-line line3"></div>
+                <div class="line h-line line4"></div>
+                <div class="line h-line line5"></div>
+
+                <div class="node internet ok" onclick="showNode('Internet', '203.0.113.1', 'Tráfico externo. Actualmente operativo.')">
+                    <div class="status"></div>
+                    <img src="{% static 'usuarios/img/internet_cloud.png' %}">
+                    <div class="node-name">Internet</div>
+                    <div class="node-ip">203.0.113.1</div>
+                </div>
+
+                <div id="nodeFirewall" class="node firewall ok" onclick="showNode('Firewall', '10.0.0.1', 'Control perimetral. Monitorea conexiones entrantes y salientes.')">
+                    <div class="status"></div>
+                    <img src="{% static 'usuarios/img/firewall.png' %}">
+                    <div class="node-name">Firewall</div>
+                    <div class="node-ip">10.0.0.1</div>
+                </div>
+
+                <div id="nodeSwitch" class="node switch ok" onclick="showNode('Core Switch', '10.0.0.2', 'Switch principal de distribución interna.')">
+                    <div class="status"></div>
+                    <img src="{% static 'usuarios/img/switch.png' %}">
+                    <div class="node-name">Core Switch</div>
+                    <div class="node-ip">10.0.0.2</div>
+                </div>
+
+                <div id="nodeWeb" class="node web ok" onclick="showNode('Web Server', '10.0.0.50', 'Servidor del portal interno PHANTOM.')">
+                    <div class="status"></div>
+                    <img src="{% static 'usuarios/img/web_server.png' %}">
+                    <div class="node-name">Web Server</div>
+                    <div class="node-ip">10.0.0.50</div>
+                </div>
+
+                <div id="nodeDB" class="node db ok" onclick="showNode('Database', '10.0.0.60', 'Base de datos principal del portal.')">
+                    <div class="status"></div>
+                    <img src="{% static 'usuarios/img/database_server.png' %}">
+                    <div class="node-name">Database</div>
+                    <div class="node-ip">10.0.0.60</div>
+                </div>
+
+                <div id="nodeVPN" class="node vpn ok" onclick="showNode('VPN Gateway', '10.0.0.10', 'Entrada remota para operadores autorizados.')">
+                    <div class="status"></div>
+                    <img src="{% static 'usuarios/img/vpn.png' %}">
+                    <div class="node-name">VPN</div>
+                    <div class="node-ip">10.0.0.10</div>
+                </div>
+
+                <div id="nodeUsers" class="node users ok" onclick="showNode('Usuarios', '10.0.0.0/24', 'Segmento de estaciones internas.')">
+                    <div class="status"></div>
+                    <img src="{% static 'usuarios/img/workstation.png' %}">
+                    <div class="node-name">Usuarios</div>
+                    <div class="node-ip">10.0.0.0/24</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="side">
+
+            <div class="panel mission">
+                <h2>Misión</h2>
+                <p>
+                    El portal principal presenta lentitud y varios usuarios reportan fallas intermitentes.
+                    Tu objetivo es analizar la infraestructura, usar herramientas básicas y decidir la mejor acción.
+                </p>
+                <ul>
+                    <li>Identifica el componente afectado.</li>
+                    <li>Usa herramientas antes de actuar.</li>
+                    <li>Reduce el impacto sin apagar servicios críticos.</li>
+                    <li>Completa los 5 incidentes.</li>
+                </ul>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">Alerta actual</div>
+                <div class="alert-box">
+                    <div class="alert-level" id="alertLevel">INFO</div>
+                    <div class="alert-title" id="alertTitle">Inicializando monitoreo</div>
+                    <div class="alert-desc" id="alertDesc">
+                        Presiona una herramienta o selecciona una acción cuando aparezca la primera alerta.
+                    </div>
+                </div>
+
+                <div class="actions" id="actions"></div>
+
+                <div id="feedback" class="feedback">
+                    Esperando eventos del NOC...
+                </div>
+            </div>
+
+            <div class="panel tool-panel">
+                <div class="panel-title">Herramientas NOC</div>
+
+                <div class="tools">
+                    <button class="tool-btn" onclick="runTool('ping')">PING</button>
+                    <button class="tool-btn" onclick="runTool('traceroute')">TRACEROUTE</button>
+                    <button class="tool-btn" onclick="runTool('netstat')">NETSTAT</button>
+                    <button class="tool-btn" onclick="runTool('logs')">LOGS</button>
+                </div>
+
+                <div class="console" id="console">Consola lista.</div>
+            </div>
+
+            <div class="panel node-info">
+                <div class="panel-title">Información del nodo</div>
+                <div class="info-card" id="nodeInfo">
+                    Selecciona un dispositivo de la topología para inspeccionarlo.
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="final" id="finalPanel">
+        <h2>Incidente resuelto</h2>
+        <p id="finalText"></p>
+
+        <button class="finish-btn" onclick="terminarLaboratorio()">
+            Terminar laboratorio
+        </button>
+    </div>
+
+</div>
+
+<script>
+let score = 0;
+let availability = 100;
+let currentIncident = 0;
+let solvedIncidents = 0;
+let usedTools = [];
+let history = [];
+
+const incidents = [
+    {
+        level: "ADVERTENCIA",
+        title: "Latencia elevada en Web Server",
+        desc: "Los usuarios reportan que el portal tarda demasiado en cargar. El servidor web responde, pero con tiempos altos.",
+        affectedNode: "nodeWeb",
+        status: "warn",
+        correctTools: ["ping", "traceroute"],
+        toolsOutput: {
+            ping: "PING 10.0.0.50\n64 bytes from 10.0.0.50: time=242ms\n64 bytes from 10.0.0.50: time=286ms\n64 bytes from 10.0.0.50: time=301ms\n\nResultado: latencia elevada.",
+            traceroute: "traceroute to 10.0.0.50\n1  10.0.0.1   3 ms\n2  10.0.0.2   8 ms\n3  10.0.0.50  290 ms\n\nResultado: el retraso aparece al llegar al servidor web.",
+            netstat: "Conexiones activas normales.\nNo se observan miles de conexiones simultáneas.",
+            logs: "web01 kernel: CPU usage warning\nnginx: upstream response time elevated"
+        },
+        actions: [
+            { text: "Reiniciar inmediatamente el servidor web", correct: false, points: -15, impact: -8, result: "Reiniciar sin diagnóstico puede causar más indisponibilidad." },
+            { text: "Revisar procesos y tráfico del servidor web", correct: true, points: 25, impact: 0, result: "Correcto. Confirmaste que el problema está en el servidor web antes de intervenir." },
+            { text: "Ignorar porque el servidor aún responde", correct: false, points: -20, impact: -10, result: "Ignorar una degradación permite que el incidente crezca." },
+            { text: "Apagar el firewall", correct: false, points: -30, impact: -15, result: "Acción incorrecta. El firewall no era la causa inicial." }
+        ]
+    },
+    {
+        level: "CRÍTICO",
+        title: "Aumento inusual de conexiones entrantes",
+        desc: "El firewall detecta miles de conexiones nuevas por minuto desde direcciones externas.",
+        affectedNode: "nodeFirewall",
+        status: "critical",
+        correctTools: ["netstat", "logs"],
+        toolsOutput: {
+            ping: "PING 10.0.0.1\nRespuesta estable.\nEl firewall está activo.",
+            traceroute: "Ruta hacia servicios internos estable, pero con saturación en el borde.",
+            netstat: "Conexiones nuevas por minuto: 5,420\nOrigen frecuente: 203.0.113.50, 203.0.113.51, 203.0.113.52\nDestino: 10.0.0.50:80",
+            logs: "firewall alert: SYN flood pattern detected\nrate limit threshold exceeded\nmultiple external sources targeting web01"
+        },
+        actions: [
+            { text: "Activar mitigación y rate limiting", correct: true, points: 35, impact: 5, result: "Correcto. Redujiste el impacto del tráfico anómalo sin apagar servicios." },
+            { text: "Permitir todo el tráfico para evitar bloqueos", correct: false, points: -30, impact: -20, result: "Permitir todo aumenta el riesgo y la saturación." },
+            { text: "Apagar el Web Server", correct: false, points: -20, impact: -20, result: "Detiene el servicio, pero no resuelve la causa del tráfico malicioso." },
+            { text: "Ignorar porque viene de Internet", correct: false, points: -25, impact: -15, result: "El origen externo no significa que sea normal." }
+        ]
+    },
+    {
+        level: "ADVERTENCIA",
+        title: "Base de datos con respuesta lenta",
+        desc: "El portal ya carga mejor, pero algunas consultas tardan más de 5 segundos.",
+        affectedNode: "nodeDB",
+        status: "warn",
+        correctTools: ["logs", "netstat"],
+        toolsOutput: {
+            ping: "PING 10.0.0.60\n64 bytes from 10.0.0.60: time=12ms\nConectividad correcta.",
+            traceroute: "Ruta interna normal hacia Database.",
+            netstat: "Conexiones activas a 10.0.0.60:5432\nweb01 mantiene múltiples sesiones persistentes.",
+            logs: "db01 warning: slow query detected\nindex scan missing on frequent lookup\nconnection pool near limit"
+        },
+        actions: [
+            { text: "Revisar logs de base de datos y conexiones activas", correct: true, points: 30, impact: 4, result: "Correcto. Identificaste saturación de consultas sin afectar disponibilidad." },
+            { text: "Eliminar la base de datos temporalmente", correct: false, points: -40, impact: -30, result: "Acción destructiva e innecesaria." },
+            { text: "Reiniciar el switch core", correct: false, points: -20, impact: -10, result: "La conectividad estaba bien; el problema era de rendimiento en DB." },
+            { text: "Ignorar porque el portal todavía funciona", correct: false, points: -15, impact: -8, result: "La degradación en DB puede convertirse en caída del servicio." }
+        ]
+    },
+    {
+        level: "ADVERTENCIA",
+        title: "Usuarios reportan desconexiones intermitentes",
+        desc: "El segmento de usuarios pierde conectividad durante algunos segundos. El core switch muestra variaciones en tráfico.",
+        affectedNode: "nodeSwitch",
+        status: "warn",
+        correctTools: ["ping", "logs"],
+        toolsOutput: {
+            ping: "PING 10.0.0.2\n64 bytes from 10.0.0.2: time=4ms\nrequest timeout\n64 bytes from 10.0.0.2: time=5ms\nrequest timeout\n\nResultado: pérdida intermitente.",
+            traceroute: "Saltos internos correctos, pero con pérdidas ocasionales en el core.",
+            netstat: "No aplica directamente en switch, pero el tráfico interno muestra picos.",
+            logs: "core-switch warning: interface Gi1/0/24 flapping\nlink up/down events detected\npossible faulty cable or endpoint loop"
+        },
+        actions: [
+            { text: "Aislar el puerto inestable y revisar cableado", correct: true, points: 35, impact: 8, result: "Correcto. Aislaste el punto con flapping sin apagar toda la red." },
+            { text: "Reiniciar toda la red", correct: false, points: -30, impact: -25, result: "Reiniciar toda la red provoca caída general." },
+            { text: "Cambiar contraseñas de todos los usuarios", correct: false, points: -10, impact: -5, result: "No hay evidencia de compromiso de credenciales en este evento." },
+            { text: "Ignorar porque se reconecta solo", correct: false, points: -20, impact: -12, result: "Los problemas intermitentes suelen empeorar si no se atienden." }
+        ]
+    },
+    {
+        level: "CRÍTICO",
+        title: "VPN con intentos fallidos repetidos",
+        desc: "El gateway VPN registra múltiples intentos fallidos desde distintas ubicaciones.",
+        affectedNode: "nodeVPN",
+        status: "critical",
+        correctTools: ["logs", "netstat"],
+        toolsOutput: {
+            ping: "PING 10.0.0.10\nRespuesta estable. El servicio VPN está activo.",
+            traceroute: "Ruta hacia gateway VPN sin pérdida.",
+            netstat: "Conexiones entrantes repetidas al puerto VPN.\nMúltiples orígenes externos.",
+            logs: "vpn-gw alert: failed authentication burst\nusernames targeted: admin, soporte, jlopez\ngeo anomalies detected\nMFA challenge failures increased"
+        },
+        actions: [
+            { text: "Habilitar bloqueo temporal por intentos fallidos y revisar MFA", correct: true, points: 40, impact: 8, result: "Correcto. Redujiste fuerza bruta sin bloquear a todos los usuarios legítimos." },
+            { text: "Desactivar MFA para reducir errores", correct: false, points: -35, impact: -18, result: "Desactivar MFA aumenta el riesgo de acceso no autorizado." },
+            { text: "Publicar una cuenta compartida temporal", correct: false, points: -45, impact: -25, result: "Una cuenta compartida rompe trazabilidad y seguridad." },
+            { text: "Ignorar porque ningún login fue exitoso", correct: false, points: -20, impact: -10, result: "Muchos intentos fallidos pueden indicar fuerza bruta o password spraying." }
+        ]
+    }
+];
+
+function startIncident() {
+    if (currentIncident >= incidents.length) {
+        showFinal();
+        return;
+    }
+
+    usedTools = [];
+
+    const incident = incidents[currentIncident];
+
+    document.getElementById("alertLevel").innerText = incident.level;
+    document.getElementById("alertTitle").innerText = incident.title;
+    document.getElementById("alertDesc").innerText = incident.desc;
+    document.getElementById("console").innerText = "Selecciona una herramienta para investigar.";
+    document.getElementById("feedback").innerText = "Analiza antes de actuar. Usar herramientas correctas mejora tu puntaje.";
+
+    resetNodeStatuses();
+    setNodeStatus(incident.affectedNode, incident.status);
+
+    const actionsBox = document.getElementById("actions");
+    actionsBox.innerHTML = "";
+
+    incident.actions.forEach(action => {
+        const btn = document.createElement("button");
+        btn.className = "action-btn";
+        btn.innerText = action.text;
+        btn.onclick = () => chooseAction(action);
+        actionsBox.appendChild(btn);
+    });
+
+    updateHUD();
+}
+
+function runTool(tool) {
+    const incident = incidents[currentIncident];
+
+    if (!incident) return;
+
+    if (!usedTools.includes(tool)) {
+        usedTools.push(tool);
+    }
+
+    document.getElementById("console").innerText = incident.toolsOutput[tool] || "Sin datos disponibles.";
+
+    if (incident.correctTools.includes(tool)) {
+        document.getElementById("feedback").innerText = "Buena herramienta. Esta salida aporta evidencia útil para el diagnóstico.";
+    } else {
+        document.getElementById("feedback").innerText = "La herramienta no es inútil, pero no es la más importante para este evento.";
+    }
+}
+
+function chooseAction(action) {
+    const incident = incidents[currentIncident];
+
+    let bonus = 0;
+    const correctUsed = incident.correctTools.filter(t => usedTools.includes(t));
+
+    if (correctUsed.length >= 1) {
+        bonus += 5;
+    }
+
+    if (correctUsed.length >= 2) {
+        bonus += 10;
+    }
+
+    score += action.points + bonus;
+    availability += action.impact;
+
+    if (availability > 100) availability = 100;
+    if (availability < 0) availability = 0;
+
+    solvedIncidents++;
+
+    history.push({
+        incidente: incident.title,
+        accion: action.text,
+        resultado: action.result,
+        herramientas: usedTools.join(", ") || "Ninguna",
+        puntos: action.points + bonus
+    });
+
+    document.getElementById("feedback").innerHTML = `
+        <strong>Resultado:</strong> ${action.result}<br>
+        <strong>Herramientas usadas:</strong> ${usedTools.join(", ") || "Ninguna"}<br>
+        <strong>Puntos:</strong> ${action.points + bonus}
+    `;
+
+    currentIncident++;
+
+    updateHUD();
+
+    setTimeout(() => {
+        startIncident();
+    }, 1700);
+}
+
+function showNode(name, ip, desc) {
+    document.getElementById("nodeInfo").innerHTML = `
+        <strong>${name}</strong><br>
+        IP: ${ip}<br><br>
+        ${desc}
+    `;
+}
+
+function setNodeStatus(id, status) {
+    const node = document.getElementById(id);
+    if (!node) return;
+
+    node.classList.remove("ok", "warn", "critical");
+    node.classList.add(status);
+}
+
+function resetNodeStatuses() {
+    const ids = [
+        "nodeFirewall",
+        "nodeSwitch",
+        "nodeWeb",
+        "nodeDB",
+        "nodeVPN",
+        "nodeUsers"
+    ];
+
+    ids.forEach(id => setNodeStatus(id, "ok"));
+}
+
+function updateHUD() {
+    document.getElementById("score").innerText = score;
+    document.getElementById("availability").innerText = availability + "%";
+    document.getElementById("incidents").innerText = solvedIncidents + "/5";
+}
+
+function showFinal() {
+    resetNodeStatuses();
+
+    document.getElementById("actions").innerHTML = "";
+    document.getElementById("alertLevel").innerText = "RESUELTO";
+    document.getElementById("alertTitle").innerText = "Monitoreo estabilizado";
+    document.getElementById("alertDesc").innerText = "Has completado todos los eventos del turno NOC.";
+    document.getElementById("console").innerText = "Fin del laboratorio.";
+
+    let nivel = "Operador NOC en entrenamiento";
+
+    if (score >= 150) {
+        nivel = "Arquitecto de Infraestructura";
+    } else if (score >= 115) {
+        nivel = "Ingeniero de Redes";
+    } else if (score >= 80) {
+        nivel = "Administrador NOC";
+    } else if (score >= 40) {
+        nivel = "Analista Junior";
+    }
+
+    let resumen = history.map((h, i) => `
+        <p>
+            <strong>${i + 1}. ${h.incidente}</strong><br>
+            Acción: ${h.accion}<br>
+            Herramientas: ${h.herramientas}<br>
+            Resultado: ${h.resultado}<br>
+            Puntos: ${h.puntos}
+        </p>
+    `).join("");
+
+    document.getElementById("finalText").innerHTML = `
+        <strong>Nivel obtenido:</strong> ${nivel}<br>
+        <strong>Puntaje final:</strong> ${score}<br>
+        <strong>Disponibilidad final:</strong> ${availability}%<br><br>
+
+        Durante este laboratorio actuaste como operador NOC. Analizaste latencia,
+        saturación de firewall, lentitud en base de datos, pérdida intermitente
+        de conectividad y ataques contra VPN.
+        <br><br>
+
+        <strong>Resumen de decisiones:</strong>
+        ${resumen}
+    `;
+
+    document.getElementById("finalPanel").style.display = "block";
+    updateHUD();
+}
+
+function terminarLaboratorio() {
+    const data = {
+        laboratorio: "analisis_red_noc",
+        completado: true,
+        progreso: 100,
+        puntaje: score,
+        disponibilidad: availability,
+        incidentes_resueltos: solvedIncidents,
+        historial: history
+    };
+
+    console.log("Resultado Análisis de Red NOC:", data);
+
+   async function terminarLaboratorio() {
+    const response = await fetch("/laboratorios/completar/analisis_red_noc/", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            puntaje: puntaje
+        })
+    });
+
+    const data = await response.json();
+
+    if (data.status === "success") {
+        localStorage.removeItem("phantom_ing_social");
+        alert("Laboratorio completado y guardado.");
+        window.location.href = "/dashboard/";
+    } else {
+        alert(data.message || "Error al guardar laboratorio.");
+    }
+}
+    window.location.href = "/dashboard/";
+}
+
+setTimeout(startIncident, 700);
+updateHUD();
+</script>
+
+</body>
+</html>

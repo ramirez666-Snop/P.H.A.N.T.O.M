@@ -403,6 +403,8 @@
 
 })();
 </script>
+
+
     <div class="stats-grid">
         <div class="dash-card">
         <h3 class="card-title">
@@ -424,25 +426,33 @@
             <p class="stat-value">{{ cursos_en_progreso.count }}</p>
         </div>
 
-        <div class="dash-card">
-             <h3 class="card-title">
-            <img
-            src="{% static 'usuarios/icons/labs1.png' %}"
-            alt="Cursos"
-            class="card-icon" >LABS COMPLETADOS
-        </h3>
-            <p class="stat-value">0</p>
-        </div>
+     <div class="dash-card">
+     <h3 class="card-title">
+        <img
+        src="{% static 'usuarios/icons/labs1.png' %}"
+        alt="Labs"
+        class="card-icon">
+        LABS COMPLETADOS
+    </h3>
 
-        <div class="dash-card">
-              <h3 class="card-title">
-            <img
-            src="{% static 'usuarios/icons/lab2.png' %}"
-            alt="Cursos"
-            class="card-icon" >LABS EN PROGRESO
-        </h3>
-            <p class="stat-value">0</p>
-        </div>
+    <p class="stat-value">
+        {{ labs_completados.count }}
+    </p>
+</div>
+
+<div class="dash-card">
+      <h3 class="card-title">
+        <img
+        src="{% static 'usuarios/icons/lab2.png' %}"
+        alt="Labs"
+        class="card-icon">
+        LABS EN PROGRESO
+    </h3>
+
+    <p class="stat-value">
+        {{ labs_en_progreso.count }}
+    </p>
+</div>
     </div>
 
     <h2 class="section-title">Cursos en progreso</h2>
@@ -512,12 +522,88 @@
     </div>
 
     <h2 class="section-title">Labs en progreso</h2>
-    <div class="courses-grid">
-        <p style="color: #94a3b8;">Aún no tienes laboratorios en progreso.</p>
+
+<div class="courses-grid">
+
+{% for lab in labs_en_progreso %}
+
+    <div class="dash-card">
+
+        <div style="font-size:2rem;margin-bottom:15px;">
+            🧪
+        </div>
+
+        <h3>{{ lab.nombre }}</h3>
+
+        <p style="color:#94a3b8;font-size:.9rem;">
+            Laboratorio iniciado.
+        </p>
+
+        <div class="progress-wrapper">
+
+            <div class="progress-info">
+                <span>Estado</span>
+                <span>En progreso</span>
+            </div>
+
+            <div class="bar-bg">
+                <span class="bar-fill" style="width:50%"></span>
+            </div>
+
+        </div>
+
     </div>
 
+{% empty %}
+
+<p style="color:#94a3b8;">
+    Aún no tienes laboratorios en progreso.
+</p>
+
+{% endfor %}
+
+</div>
+
     <h2 class="section-title">Labs completados</h2>
-    <div class="courses-grid">
-        <p style="color: #94a3b8;">Aún no has completado laboratorios.</p>
+
+<div class="courses-grid">
+
+{% for lab in labs_completados %}
+
+    <div class="dash-card">
+
+        <div style="font-size:2rem;margin-bottom:15px;">
+            ✅
+        </div>
+
+        <h3>{{ lab.nombre }}</h3>
+
+        <p style="color:#94a3b8;font-size:.9rem;">
+            Calificación: {{ lab.calificacion }}
+        </p>
+
+        <div class="progress-wrapper">
+
+            <div class="progress-info">
+                <span>Estado</span>
+                <span>Completado</span>
+            </div>
+
+            <div class="bar-bg">
+                <span class="bar-fill" style="width:100%"></span>
+            </div>
+
+        </div>
+
     </div>
+
+{% empty %}
+
+<p style="color:#94a3b8;">
+    Aún no has completado laboratorios.
+</p>
+
+{% endfor %}
+
+</div>
 </div>
