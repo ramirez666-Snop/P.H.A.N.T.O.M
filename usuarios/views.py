@@ -5,6 +5,15 @@ import django.contrib.auth.models
 from cursos.models import Curso, Inscripcion
 from django.contrib import messages
 from laboratorios.models import LaboratorioProgreso
+from django.shortcuts import render, redirect
+
+@login_required
+def aviso_etico_view(request):
+    if request.method == "POST":
+        request.session["aviso_etico_aceptado"] = True
+        return redirect("dashboard")
+
+    return render(request, "usuarios/aviso_etico.html")
 
 def login_view(request):
     if request.method == "POST":
@@ -31,7 +40,7 @@ def login_view(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return redirect("dashboard")
+                return redirect("aviso_etico")
             else:
                 return render(request, "usuarios/login.html", {"error": "Cuenta desactivada"})
         else:
@@ -44,6 +53,9 @@ def login_view(request):
 
 @login_required
 def dashboard_view(request):
+    if not request.session.get("aviso_etico_aceptado"):
+        return redirect("aviso_etico")
+
     inscripciones = Inscripcion.objects.filter(
         usuario=request.user
     ).select_related("curso")
@@ -62,34 +74,26 @@ def dashboard_view(request):
         completado=False
     )
 
-    total_labs = 5  # SQL, Auditoría Linux, Ingeniería Social, Sniffing, NOC
+    total_labs = 5
 
     labs_completados_count = labs_completados.count()
     labs_en_progreso_count = labs_en_progreso.count()
+    labs_restantes = max(total_labs - labs_completados_count, 0)
 
-    labs_restantes = total_labs - labs_completados_count
-
-    if labs_restantes < 0:
-        labs_restantes = 0
-
-    porcentaje_labs = int((labs_completados_count / total_labs) * 100)
+    porcentaje_labs = int((labs_completados_count / total_labs) * 100) if total_labs > 0 else 0
 
     return render(request, "usuarios/dashboard.html", {
         "inscripciones": inscripciones,
-
         "cursos_completados": cursos_completados,
         "cursos_en_progreso": cursos_en_progreso,
-
         "labs_completados": labs_completados,
         "labs_en_progreso": labs_en_progreso,
-
         "labs_completados_count": labs_completados_count,
         "labs_en_progreso_count": labs_en_progreso_count,
         "labs_restantes": labs_restantes,
         "total_labs": total_labs,
         "porcentaje_labs": porcentaje_labs,
     })
-
 def registro_view(request):
     if request.method == "POST":
         username = request.POST.get("username")

@@ -8,6 +8,6 @@ urlpatterns = [
     path('registro/', views.registro_view, name='registro'),
     path('cargar-curso/<int:curso_id>/', views.cargar_curso, name='cargar_curso'),
     path('', include('cursos.urls')),
-
+    path("aviso-etico/", views.aviso_etico_view, name="aviso_etico"),
 ]
 

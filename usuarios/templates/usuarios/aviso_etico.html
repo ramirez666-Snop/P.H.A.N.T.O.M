@@ -1,0 +1,142 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>P.H.A.N.T.O.M - Aviso Ético</title>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #0f172a, #020617);
+            color: #e2e8f0;
+            font-family: Inter, system-ui, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .ethics-card {
+            max-width: 820px;
+            background: rgba(15, 23, 42, 0.88);
+            border: 1px solid rgba(0, 170, 255, 0.35);
+            box-shadow: 0 0 40px rgba(0, 170, 255, 0.25);
+            border-radius: 28px;
+            padding: 36px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ethics-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent, rgba(0,170,255,.18), transparent);
+            transform: translateX(-100%);
+            animation: scan 3s infinite;
+        }
+
+        @keyframes scan {
+            to { transform: translateX(100%); }
+        }
+
+        .ethics-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 2rem;
+            margin-bottom: 14px;
+        }
+
+        .warning {
+            color: #f87171;
+            font-weight: 800;
+            margin-bottom: 18px;
+        }
+
+        p, li {
+            color: #cbd5e1;
+            line-height: 1.7;
+        }
+
+        ul {
+            margin: 18px 0 24px 22px;
+        }
+
+        .legal-box {
+            background: rgba(2, 6, 23, 0.8);
+            border: 1px solid rgba(0, 170, 255, 0.25);
+            border-radius: 18px;
+            padding: 18px;
+            margin: 22px 0;
+        }
+
+        .btn-accept {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #00aaff, #2563eb);
+            color: #fff;
+            font-weight: 900;
+            cursor: pointer;
+            margin-top: 18px;
+            transition: .3s;
+        }
+
+        .btn-accept:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 24px rgba(0,170,255,.65);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="ethics-card">
+    <div class="ethics-content">
+        <h1>⚠️ Aviso de uso ético</h1>
+
+        <p class="warning">
+            Todo el contenido de P.H.A.N.T.O.M es exclusivamente educativo.
+        </p>
+
+        <p>
+            Esta plataforma está diseñada para aprender ciberseguridad,
+            análisis de vulnerabilidades, laboratorios controlados y hacking ético.
+            No debe usarse para atacar, dañar, acceder o manipular sistemas sin autorización.
+        </p>
+
+        <ul>
+            <li>Solo practica en entornos propios o autorizados.</li>
+            <li>No intentes acceder a sistemas reales sin permiso explícito.</li>
+            <li>No uses técnicas aprendidas para robar datos, afectar servicios o vulnerar terceros.</li>
+            <li>El uso indebido puede tener consecuencias legales.</li>
+        </ul>
+
+        <div class="legal-box">
+            <p>
+                En México, el acceso, copia, modificación, destrucción o pérdida de información
+                en sistemas informáticos sin autorización puede ser sancionado conforme al
+                Código Penal Federal. También existen obligaciones legales sobre protección
+                de datos personales.
+            </p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <button class="btn-accept" type="submit">
+                Acepto y conozco los riesgos
+            </button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
