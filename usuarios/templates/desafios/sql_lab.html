@@ -1,138 +1,330 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>PHANTOM - SQL Lab</title>
+    <title>SQL Injection Lab</title>
+
     <style>
         body {
-            background-color: #0a0a0a;
-            color: #00ff41;
-            font-family: 'Poppins', sans-serif;
-            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at top left, rgba(0, 170, 255, 0.15), transparent 35%),
+                        #020617;
+            color: #e2e8f0;
+            font-family: Consolas, monospace;
         }
 
-        .terminal {
-            background: #000;
-            border: 1px solid #333;
+        .sql-lab-container {
+            width: min(1200px, 94%);
+            margin: 40px auto;
+        }
+
+        .lab-header,
+        .console-panel,
+        .hint-panel,
+        .results-panel,
+        .completion-panel {
+            background: rgba(7, 10, 14, 0.95);
+            border: 1px solid rgba(0, 170, 255, 0.25);
+            border-radius: 22px;
             padding: 24px;
-            font-family: 'JetBrains Mono', monospace;
-            box-shadow: 0 0 18px rgba(0, 255, 65, 0.25);
-            border-radius: 14px;
+            box-shadow: 0 0 25px rgba(0, 170, 255, 0.12);
         }
 
-        input {
-            background: #111;
-            border: 1px solid #00ff41;
-            color: #00ff41;
+        .lab-header {
+            margin-bottom: 24px;
+        }
+
+        .lab-header h2,
+        .console-panel h3,
+        .hint-panel h3,
+        .results-panel h3 {
+            color: #00aaff;
+            margin-top: 0;
+        }
+
+        .lab-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .console-panel input {
+            width: 100%;
+            box-sizing: border-box;
+            background: #020617;
+            color: #00ff9d;
+            border: 1px solid rgba(0, 170, 255, 0.4);
+            border-radius: 12px;
+            padding: 14px;
+            margin: 12px 0 16px;
+            font-family: Consolas, monospace;
+            outline: none;
+        }
+
+        .query-box,
+        .hint-card,
+        .alert-box {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(0, 170, 255, 0.2);
+            border-radius: 14px;
+            padding: 15px;
+            margin-top: 16px;
+        }
+
+        .query-box pre {
+            color: #00ff9d;
+            white-space: pre-wrap;
+        }
+
+        .hint-card {
+            margin-bottom: 14px;
+        }
+
+        .hint-card h4 {
+            color: #90e0ff;
+            margin: 0 0 8px;
+        }
+
+        .hint-card code {
+            display: block;
+            background: #020617;
+            color: #00ff9d;
             padding: 10px;
-            width: 340px;
-            font-family: 'JetBrains Mono', monospace;
+            border-radius: 10px;
+        }
+
+        .alert-error {
+            color: #fca5a5;
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        .alert-success,
+        .completed-box {
+            color: #86efac;
+            border-color: rgba(34, 197, 94, 0.4);
+        }
+
+        .results-panel {
+            margin-top: 24px;
+        }
+
+        .results-panel table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .results-panel th,
+        .results-panel td {
+            padding: 14px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+            text-align: left;
+        }
+
+        .results-panel th {
+            color: #00aaff;
+            background: rgba(0, 170, 255, 0.12);
+        }
+
+        .success {
+            color: #00ff9d;
+            font-weight: bold;
+        }
+
+        .empty-results {
+            color: #64748b;
+        }
+
+        .completion-panel {
+            margin-top: 24px;
+            text-align: center;
         }
 
         .btn-phantom {
-            background: #00ff41;
-            color: #000;
+            background: #00aaff;
+            color: #fff;
+            text-align: center;
+            padding: 12px 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s ease;
             border: none;
-            padding: 10px 16px;
             cursor: pointer;
-            font-weight: bold;
-            border-radius: 8px;
-            margin-top: 12px;
+        }
+
+        .btn-phantom:hover {
+            background: #00cdff;
+            box-shadow: 0 0 20px rgba(0, 170, 255, 0.6);
+            transform: scale(1.02);
         }
 
         .btn-disabled {
-            opacity: .35;
+            opacity: 0.45;
             cursor: not-allowed;
         }
 
-        .error { color: #ff4444; margin-top: 10px; }
-        .success { color: #00ff41; font-weight: bold; }
-        .hint { color: #94a3b8; margin-top: 20px; }
-
-        .completed-box {
-            margin-top: 20px;
-            padding: 14px;
-            border: 1px solid #00ff41;
-            background: rgba(0,255,65,.08);
-            border-radius: 10px;
-            color: #00ff41;
-            font-weight: bold;
+        @media (max-width: 900px) {
+            .lab-layout {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<div class="terminal">
-    <h2>[SISTEMA P.H.A.N.T.O.M] - SQL INJECTION LAB</h2>
-    <p>Objetivo: Obtener la <strong>secret_key</strong> del usuario <strong>admin</strong>.</p>
+<div class="sql-lab-container">
 
-    <p class="hint">
-        Pista: intenta alterar la condición lógica de la consulta.
-    </p>
+    <div class="lab-header">
+        <h2>[SISTEMA P.H.A.N.T.O.M] - SQL INJECTION LAB</h2>
+        <p>
+            Objetivo: obtener la <strong>secret_key</strong> del usuario
+            <strong>admin</strong>.
+        </p>
+    </div>
 
-    {% if ya_completado %}
-        <div class="completed-box">
-            Este desafío ya fue completado y guardado en tu progreso.
+    <div class="lab-layout">
+
+        <div class="console-panel">
+            <h3>CONSOLA SQL SIMULADA</h3>
+
+            <form method="GET">
+                <label>Entrada de consulta:</label>
+
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="Ejemplo: admin"
+                    value="{{ request.GET.q }}"
+                >
+
+                <button type="submit" class="btn-phantom">
+                    EJECUTAR CONSULTA
+                </button>
+            </form>
+
+            {% if query_ejecutada %}
+                <div class="query-box">
+                    <strong>Consulta vulnerable simulada:</strong>
+                    <pre>{{ query_ejecutada }}</pre>
+                </div>
+            {% endif %}
+
+            {% if error %}
+                <div class="alert-box alert-error">
+                    <strong>[SQL ERROR]</strong>
+                    <p>{{ error }}</p>
+                </div>
+            {% endif %}
+
+            {% if objetivo_resuelto %}
+                <div class="alert-box alert-success">
+                    <strong>Vulnerabilidad demostrada</strong>
+                    <p>
+                        La condición lógica fue alterada y se mostraron registros
+                        que no debían ser visibles.
+                    </p>
+                </div>
+            {% endif %}
         </div>
-    {% endif %}
 
-    <hr color="#222">
+        <aside class="hint-panel">
+            <h3>Panel de ayuda</h3>
 
-    <form method="GET">
-        <label>CONSULTA DE USUARIO:</label><br><br>
-        <input type="text" name="q" placeholder="' OR 1=1 --" value="{{ request.GET.q }}">
-        <button type="submit" class="btn-phantom">EJECUTAR</button>
-    </form>
+            <div class="hint-card">
+                <h4>Contexto</h4>
+                <p>
+                    Este laboratorio es una simulación segura. No ejecuta consultas
+                    reales sobre Neon ni sobre la base de datos principal.
+                </p>
+            </div>
 
-    {% if error %}
-        <p class="error"><strong>[SQL ERROR]:</strong> {{ error }}</p>
-    {% endif %}
+            <div class="hint-card">
+                <h4>Pista</h4>
+                <p>
+                    Intenta alterar la condición lógica de la consulta para que
+                    siempre sea verdadera.
+                </p>
+            </div>
 
-    <div style="margin-top: 30px;">
-        <h4>RESULTADOS DE LA DB:</h4>
+            <div class="hint-card">
+                <h4>Prueba normal</h4>
+                <code>admin</code>
+            </div>
+
+            <div class="hint-card">
+                <h4>Prueba vulnerable</h4>
+                <code>' OR 1=1 --</code>
+            </div>
+
+            {% if ya_completado %}
+                <div class="hint-card completed-box">
+                    Este desafío ya fue completado y guardado en tu progreso.
+                </div>
+            {% endif %}
+        </aside>
+
+    </div>
+
+    <div class="results-panel">
+        <h3>RESULTADOS DE LA DB SIMULADA</h3>
 
         {% if results %}
-            <ul>
-                {% for row in results %}
-                    <li>
-                        Usuario:
-                        <span class="success">{{ row.0 }}</span>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Rol</th>
+                        <th>Secret Key</th>
+                    </tr>
+                </thead>
 
-                        {% if row.1 %}
-                            | Secret Key:
-                            <span class="success">{{ row.1 }}</span>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
+                <tbody>
+                    {% for row in results %}
+                        <tr>
+                            <td>{{ row.username }}</td>
+                            <td>{{ row.role }}</td>
+                            <td>
+                                <span class="success">
+                                    {{ row.secret_key }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         {% else %}
-            <p style="color: #666;">No se encontraron registros o la consulta falló.</p>
+            <p class="empty-results">
+                No se encontraron registros.
+            </p>
         {% endif %}
     </div>
 
-    {% if query_ejecutada %}
-        <p style="color: #444; font-size: 0.8rem; margin-top: 35px;">
-            DEBUG QUERY: <code>{{ query_ejecutada }}</code>
-        </p>
-    {% endif %}
+    <div class="completion-panel">
+        {% if ya_completado %}
+            <button class="btn-phantom btn-disabled" disabled>
+                DESAFÍO YA COMPLETADO
+            </button>
 
-    <hr color="#222" style="margin-top: 30px;">
+        {% elif objetivo_resuelto %}
+            <button id="btnCompletar" class="btn-phantom">
+                COMPLETAR DESAFÍO
+            </button>
 
-    {% if ya_completado %}
-        <button class="btn-phantom btn-disabled" disabled>
-            DESAFÍO YA COMPLETADO
-        </button>
+        {% else %}
+            <button class="btn-phantom btn-disabled" disabled>
+                COMPLETA EL OBJETIVO PARA ACTIVAR
+            </button>
+        {% endif %}
+    </div>
 
-    {% elif objetivo_resuelto %}
-        <button id="btnCompletar" class="btn-phantom">
-            COMPLETAR DESAFÍO
-        </button>
-
-    {% else %}
-        <button class="btn-phantom btn-disabled" disabled>
-            COMPLETA EL OBJETIVO PARA ACTIVAR
-        </button>
-    {% endif %}
 </div>
 
 <script>

@@ -14,7 +14,30 @@
             --panel-bottom:#0f2747;
             --input-bg:#1a2a45;
         }
+.password-rules {
+    margin: 10px 0 16px;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
 
+.password-rules p {
+    margin: 6px 0;
+    font-size: 13px;
+    color: #ff7b7b;
+    transition: 0.25s ease;
+}
+
+.password-rules p.valid {
+    color: #00ff88;
+}
+
+button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    filter: grayscale(0.6);
+}
         *{box-sizing:border-box}
 
         body {
@@ -84,11 +107,46 @@
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 0 25px rgba(0, 170, 255, 0.6);
-            max-width: 420px;
+            max-width: 480px;
             width: 100%;
             margin: 0 auto;
         }
+.input-group {
+    position: relative;
+    min-height: 48px;
+}
 
+.input-group input {
+    padding-right: 42px;
+}
+
+.toggle-password {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: #9bdcff;
+    cursor: pointer;
+    font-size: 18px;
+    margin: 0;
+    padding: 0;
+    flex: 0 0 32px;
+}
+
+.toggle-password:hover {
+    color: #00aaff;
+    background: transparent;
+}
+
+.password-rules {
+    margin: 12px 0 10px;
+    padding: 10px 12px;
+}
+
+.password-rules p {
+    margin: 4px 0;
+    font-size: 12.5px;
+}
         .form-box h2 {
             color: var(--accent);
             margin-bottom: 8px;
@@ -244,8 +302,6 @@
     <div class="right">
         <div class="form-box">
             <h2>Crear Cuenta</h2>
-            <p>Regístrate para acceder a los laboratorios</p>
-            
             {% if messages %}
                 {% for message in messages %}
                 <div class="{% if message.tags == 'error' %}error-message{% else %}success-message{% endif %}">
@@ -270,23 +326,83 @@
                 </div>
 
                 <label for="password1">Contraseña</label>
-                <div class="input-group">
-                    <img src="{% static 'usuarios/candado.png' %}" alt="Contraseña" class="icono-candado">
-                    <input type="password" id="password1" name="password1" placeholder="••••••••" required>
-                </div>
+<div class="input-group">
+    <img src="{% static 'usuarios/candado.png' %}" alt="Contraseña" class="icono-candado">
+    <input type="password" id="password1" name="password1" placeholder="••••••••" required>
+    <button type="button" class="toggle-password" data-target="password1">👁</button>
+</div>
 
-                <label for="password2">Confirmar contraseña</label>
-                <div class="input-group">
-                    <img src="{% static 'usuarios/candado.png' %}" alt="Confirmar" class="icono-candado">
-                    <input type="password" id="password2" name="password2" placeholder="••••••••" required>
-                </div>
-
-                <button type="submit">Registrarse</button>
+<label for="password2">Confirmar contraseña</label>
+<div class="input-group">
+    <img src="{% static 'usuarios/candado.png' %}" alt="Confirmar" class="icono-candado">
+    <input type="password" id="password2" name="password2" placeholder="••••••••" required>
+    <button type="button" class="toggle-password" data-target="password2">👁</button>
+</div>
+                    <div class="password-rules">
+    <p id="rule-length">✕ Mínimo 8 caracteres</p>
+    <p id="rule-upper">✕ Una letra mayúscula</p>
+    <p id="rule-number">✕ Un número</p>
+    <p id="rule-match">✕ Las contraseñas coinciden</p>
+</div>
+                <button type="submit" id="btnRegistro" disabled>
+                    Registrarse
+                </button>
             </form>
             <div class="links">
                 <a href="/">¿Ya tienes cuenta? Iniciar sesión</a>
             </div>
         </div>
     </div>
+    <script>
+const password1 = document.getElementById("password1");
+const password2 = document.getElementById("password2");
+const btnRegistro = document.getElementById("btnRegistro");
+
+const ruleLength = document.getElementById("rule-length");
+const ruleUpper = document.getElementById("rule-upper");
+const ruleNumber = document.getElementById("rule-number");
+const ruleMatch = document.getElementById("rule-match");
+
+function setRule(element, isValid, text) {
+    element.classList.toggle("valid", isValid);
+    element.innerText = (isValid ? "✓ " : "✕ ") + text;
+}
+
+function validarPassword() {
+    const pass1 = password1.value;
+    const pass2 = password2.value;
+
+    const hasLength = pass1.length >= 8;
+    const hasUpper = /[A-ZÁÉÍÓÚÑ]/.test(pass1);
+    const hasNumber = /\d/.test(pass1);
+    const matches = pass1 !== "" && pass1 === pass2;
+
+    setRule(ruleLength, hasLength, "Mínimo 8 caracteres");
+    setRule(ruleUpper, hasUpper, "Una letra mayúscula");
+    setRule(ruleNumber, hasNumber, "Un número");
+    setRule(ruleMatch, matches, "Las contraseñas coinciden");
+
+    btnRegistro.disabled = !(hasLength && hasUpper && hasNumber && matches);
+}
+
+password1.addEventListener("input", validarPassword);
+password2.addEventListener("input", validarPassword);
+
+validarPassword();
+
+document.querySelectorAll(".toggle-password").forEach(button => {
+    button.addEventListener("click", () => {
+        const input = document.getElementById(button.dataset.target);
+
+        if (input.type === "password") {
+            input.type = "text";
+            button.innerText = "👁";
+        } else {
+            input.type = "password";
+            button.innerText = "👁";
+        }
+    });
+});
+</script>
 </body>
 </html>

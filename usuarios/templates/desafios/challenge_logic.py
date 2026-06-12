@@ -1,70 +1,148 @@
-from django.shortcuts import render
+
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.utils import timezone
-from laboratorios.models import Resultado
+from laboratorios.models import LaboratorioProgreso
 
 
+@login_required
+def completar_laboratorio(request, slug):
+
+    try:
+
+        if request.method != "POST":
+            return JsonResponse({
+                "status": "error",
+                "message": "Método no permitido"
+            }, status=405)
+
+        data = json.loads(request.body or "{}")
+
+        puntaje = data.get("puntaje", 100)
+
+        progreso = get_object_or_404(
+            LaboratorioProgreso,
+            usuario=request.user,
+            slug=slug
+        )
+
+        progreso.completado = True
+        progreso.progreso_binario = 100
+        progreso.calificacion = puntaje
+        progreso.fecha_finalizacion = timezone.now()
+        progreso.save()
+
+        return JsonResponse({
+            "status": "success",
+            "message": "Laboratorio completado correctamente"
+        })
+
+    except Exception as e:
+        print("ERROR LAB:", e)
+
+        return JsonResponse({
+            "status": "error",
+            "message": str(e)
+        }, status=500)
+
+
+        
 @login_required
 def desafio_sql_injection(request):
-    q = request.GET.get("q", "")
-    results = []
-    error = None
-    query_ejecutada = None
-    completado = False
+    slug = "sql-injection"
 
-    if q:
-        query_ejecutada = f"SELECT secret_key FROM users WHERE username = '{q}'"
-
-        if "' OR 1=1 --" in q or "OR 1=1" in q.upper():
-            results = [("PHANTOM{sql_injection_success}",)]
-            completado = True
-        else:
-            error = "Consulta inválida o sin resultados."
-
-    return render(request, "desafios/sql_lab.html", {
-        "results": results,
-        "error": error,
-        "query_ejecutada": query_ejecutada,
-        "completado": completado,
-        "slug": "sql-injection",
-    })
-
-
-@login_required
-def completar_desafio(request):
-    if request.method != "POST":
-        return JsonResponse({
-            "status": "error",
-            "message": "Método no permitido"
-        }, status=405)
-
-    slug = request.POST.get("slug")
-
-    nombres = {
-        "sql-injection": "SQL Injection",
-        "tcp-visualizer": "Visualización TCP",
-    }
-
-    if slug not in nombres:
-        return JsonResponse({
-            "status": "error",
-            "message": "Desafío inválido"
-        }, status=400)
-
-    resultado, _ = Resultado.objects.get_or_create(
+    progreso, _ = LaboratorioProgreso.objects.get_or_create(
         usuario=request.user,
         slug=slug,
         defaults={
-            "nombre": nombres[slug],
-            "calificacion": 100
+            "nombre": "SQL Injection",
+            "iniciado": True,
+            "completado": False,
         }
     )
 
-    resultado.nombre = nombres[slug]
-    resultado.completado = True
-    resultado.calificacion = 100
-    resultado.fecha_completado = timezone.now()
-    resultado.save()
+    if request.method == "POST":
+        progreso.iniciado = True
+        progreso.completado = True
+        progreso.save()
 
-    return JsonResponse({"status": "success"})
+        return JsonResponse({
+            "status": "success",
+            "message": "Desafío guardado correctamente."
+        })
+
+    q = request.GET.get("q", "").strip()
+    print("VALOR DE Q:", q)
+
+    results = []
+    error = None
+    query_ejecutada = None
+    objetivo_resuelto = False
+
+    if q:
+        query_ejecutada = (
+            "SELECT username, role, secret_key "
+            "FROM users "
+            f"WHERE username = '{q}';"
+        )
+
+        q_lower = q.lower()
+        q_clean = q_lower.replace(" ", "")
+
+        if q_lower == "admin":
+            results = [
+                {
+                    "username": "admin",
+                    "role": "administrator",
+                    "secret_key": "********"
+                }
+            ]
+
+        elif q_lower == "victor":
+            results = [
+                {
+                    "username": "victor",
+                    "role": "student",
+                    "secret_key": "********"
+                }
+            ]
+
+        elif q_lower == "guest":
+            results = [
+                {
+                    "username": "guest",
+                    "role": "guest",
+                    "secret_key": "********"
+                }
+            ]
+
+        elif "'or1=1--" in q_clean or "'or'1'='1" in q_clean:
+            results = [
+                {
+                    "username": "admin",
+                    "role": "administrator",
+                    "secret_key": "PHANTOM{SQL_INJECTION_LAB_COMPLETED}"
+                },
+                {
+                    "username": "victor",
+                    "role": "student",
+                    "secret_key": "********"
+                },
+                {
+                    "username": "guest",
+                    "role": "guest",
+                    "secret_key": "********"
+                },
+            ]
+
+            objetivo_resuelto = True
+
+        else:
+            error = "La consulta no devolvió registros."
+
+    return render(request, "challenges/sql_injection.html", {
+        "results": results,
+        "error": error,
+        "query_ejecutada": query_ejecutada,
+        "objetivo_resuelto": objetivo_resuelto,
+        "ya_completado": progreso.completado,
+    })

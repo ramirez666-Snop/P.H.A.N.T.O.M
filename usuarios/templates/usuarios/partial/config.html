@@ -1,10 +1,15 @@
 {% load static %}
 
+
 <style>
 .config-container {
     max-width: 760px;
     margin: 0 auto;
     padding: 30px 20px;
+}
+
+.config-title {
+    font-family: 'Elfis', sans-serif;
 }
 
 .config-card {
@@ -98,50 +103,113 @@
     transform: translateY(-2px);
     box-shadow: 0 0 24px rgba(0,170,255,0.55);
 }
+.messages-container {
+    margin: 18px 0;
+}
+
+.message-alert {
+    padding: 12px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.message-success {
+    background: rgba(34, 197, 94, 0.15);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.message-error {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.message-info {
+    background: rgba(59, 130, 246, 0.15);
+    color: #93c5fd;
+    border: 1px solid rgba(59, 130, 246, 0.35);
+}
+
 </style>
+
+{% load static %}
 
 <div class="config-container">
     <div class="config-card">
-<h2 class="config-title">
-    <img
-        src="{% static 'usuarios/icons/icons8-ajustes.svg' %}"
-        class="section-icon"
-        alt="Configuración"
-    >
-    Configuración de Perfil
-</h2>
-    <p class="config-subtitle">
+
+        <h2 class="config-title">
+            <img
+                src="{% static 'usuarios/icons/icons8-ajustes.svg' %}"
+                class="section-icon"
+                alt="Configuración"
+            >
+            Configuración de Perfil
+        </h2>
+
+        <p class="config-subtitle">
             Actualiza tus credenciales
         </p>
 
-        <form method="post">
-            {% csrf_token %}
+        {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                    <div class="message-alert message-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    <form method="post" action="{% url 'dashboard_partial' 'config' %}">
+                {% csrf_token %}
 
             <div class="form-group">
                 <label>Nombre de usuario</label>
-                <input type="text" name="username" value="{{ request.user.username }}">
+                <input
+                    type="text"
+                    name="username"
+                    value="{{ request.user.username }}"
+                    required
+                >
             </div>
 
             <div class="form-group">
                 <label>Correo electrónico</label>
-                <input type="email" name="email" value="{{ request.user.email }}">
+                <input
+                    type="email"
+                    name="email"
+                    value="{{ request.user.email }}"
+                    required
+                >
             </div>
 
             <div class="config-divider"></div>
 
             <div class="form-group">
                 <label>Nueva contraseña</label>
-                <input type="password" name="password1" placeholder="Nueva contraseña">
+                <input
+                    type="password"
+                    name="password1"
+                    placeholder="Nueva contraseña"
+                >
             </div>
 
             <div class="form-group">
                 <label>Confirmar contraseña</label>
-                <input type="password" name="password2" placeholder="Confirmar contraseña">
+                <input
+                    type="password"
+                    name="password2"
+                    placeholder="Confirmar contraseña"
+                >
             </div>
 
             <button type="submit" class="btn-save">
                 Guardar cambios
             </button>
         </form>
+
     </div>
 </div>
