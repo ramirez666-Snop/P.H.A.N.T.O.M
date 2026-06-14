@@ -9,7 +9,6 @@ from django.contrib.auth import (
     get_user_model,
 )
 from django.contrib.auth.decorators import login_required
-
 from cursos.models import Curso, Inscripcion
 from laboratorios.models import LaboratorioProgreso
 
@@ -66,11 +65,34 @@ def login_view(request):
 
     return render(request, "usuarios/login.html")
 
-
 @login_required
 def dashboard_view(request):
     if not request.session.get("aviso_etico_aceptado"):
         return redirect("aviso_etico")
+
+    cursos = Curso.objects.all()
+
+    categorias_cursos = {
+        1: "redes",
+        2: "vulnerabilidades",
+        3: "vulnerabilidades",
+        4: "redes",
+        5: "vulnerabilidades",
+        6: "vulnerabilidades",
+         7: "web",
+    }
+
+    cursos_cards = []
+
+    for curso in cursos:
+        cursos_cards.append({
+            "id": curso.id,
+            "titulo": curso.titulo,
+            "descripcion": curso.descripcion,
+            "duracion": curso.duracion,
+            "dificultad": curso.dificultad,
+            "categoria": categorias_cursos.get(curso.id, "web"),
+        })
 
     inscripciones = Inscripcion.objects.filter(
         usuario=request.user
@@ -103,11 +125,16 @@ def dashboard_view(request):
     )
 
     return render(request, "usuarios/dashboard.html", {
+        "cursos": cursos,
+        "cursos_cards": cursos_cards,
+
         "inscripciones": inscripciones,
         "cursos_completados": cursos_completados,
         "cursos_en_progreso": cursos_en_progreso,
+
         "labs_completados": labs_completados,
         "labs_en_progreso": labs_en_progreso,
+
         "labs_completados_count": labs_completados_count,
         "labs_en_progreso_count": labs_en_progreso_count,
         "labs_restantes": labs_restantes,

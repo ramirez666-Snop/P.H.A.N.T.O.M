@@ -1,114 +1,92 @@
 {% load static %}
+
 <link rel="stylesheet" href="{% static 'usuarios/css/diseno.css' %}">
+
+<style>
+.dificultad-facil {
+    color: #4ade80;
+}
+
+.dificultad-media {
+    color: #fbbf24;
+}
+
+.dificultad-dificil {
+    color: #f87171;
+}
+</style>
+
 <div class="labs-container">
     <div class="labs-banner">
         <div class="labs-banner-text">
             <h2>Cursos de Aprendizaje</h2>
-            <p style="color: #94a3b8;">Despliega entornos controlados y pon a prueba tus habilidades.</p>
+            <p style="color: #94a3b8;">
+                Despliega entornos controlados y pon a prueba tus habilidades.
+            </p>
         </div>
     </div>
 
-
-   <div class="labs-filters">
-    <div class="filter-chip active" data-filter="todos">Todos</div>
-    <div class="filter-chip" data-filter="web">Seguridad Web</div>
-    <div class="filter-chip" data-filter="redes">Redes</div>
-    <div class="filter-chip" data-filter="vulnerabilidades">Vulnerabilidades</div>
-</div>
+    <div class="labs-filters">
+        <div class="filter-chip active" data-filter="todos">Todos</div>
+        <div class="filter-chip" data-filter="web">Seguridad Web</div>
+        <div class="filter-chip" data-filter="redes">Redes</div>
+        <div class="filter-chip" data-filter="vulnerabilidades">Vulnerabilidades</div>
+    </div>
 
     <div class="labs-grid">
-        
-            <div class="lab-card-phantom" data-category="redes">
-                <div class="lab-icon-sphere">🌐</div>
-            <h3>Fundamentos de Análisis de Seguridad en Redes</h3>
-            <p>Introducción al análisis de seguridad en redes: detección de amenazas, vulnerabilidades y protección básica de infraestructuras.</p>
-            
-            <div class="lab-stats">
-                <span class="stat-tag">⏱ 1h</span>
-                <span class="stat-tag" style="color:#4ade80;">Fácil</span>
-            </div>
-<button class="lab-btn btn-phantom" onclick="window.open('/cursos/curso/1/', '_blank')">
-    Comenzar
-</button>
 
+        {% for curso in cursos_cards %}
 
-</div>
+            <div class="lab-card-phantom" data-category="{{ curso.categoria }}">
 
-        <div class="lab-card-phantom" data-category="vulnerabilidades">
-            <div class="lab-icon-sphere">🔐</div>
-            <h3>PHISHING</h3>
-            <p>Técnica de fraude en la que atacantes se hacen pasar por entidades confiables para engañar a usuarios y obtener información sensible, como contraseñas o datos bancarios.</p>
-            
-            <div class="lab-stats">
-                <span class="stat-tag">⏱ 1h</span>
-                <span class="stat-tag" style="color:#fbbf24;">Media</span>
-            </div>
+                <div class="lab-icon-sphere">
+                    {% if curso.categoria == "redes" %}
+                        🌐
+                    {% elif curso.categoria == "web" %}
+                        💻
+                    {% elif curso.categoria == "vulnerabilidades" %}
+                        🛡️
+                    {% else %}
+                        📘
+                    {% endif %}
+                </div>
 
-<button class="lab-btn btn-phantom" onclick="window.open('/cursos/curso/2/', '_blank')">
-    Comenzar
-</button>        </div>
+                <h3>{{ curso.titulo }}</h3>
 
-        <div class="lab-card-phantom" data-category="vulnerabilidades">
-            <div class="lab-icon-sphere">🛡️</div>
-            <h3>RANSOMWARE</h3>
-            <p>Malware que bloquea o cifra archivos y exige un pago para restaurar el acceso.</p>
-            
-            <div class="lab-stats">
-                <span class="stat-tag">⏱ 1h</span>
-                <span class="stat-tag" style="color:#f87171;">Difícil</span>
-            </div>
+                <p>{{ curso.descripcion }}</p>
 
-    <button class="lab-btn btn-phantom" onclick="window.open('/cursos/curso/3/', '_blank')">
-    Comenzar
-</button>
-        </div>
+                <div class="lab-stats">
+                    {% if curso.duracion %}
+                        <span class="stat-tag">⏱ {{ curso.duracion }}</span>
+                    {% endif %}
 
-         <div class="lab-card-phantom" data-category="web">
-            <div class="lab-icon-sphere">📡</div>
-            <h3>Análisis de Red y Operaciones NOC</h3>
-            <p>Aprende a supervisar infraestructuras de red, interpretar alertas, diagnosticar problemas de conectividad y responder a incidentes como un operador de un Centro de Operaciones de Red (NOC).</p>
-            
-            <div class="lab-stats">
-                <span class="stat-tag">⏱ 15-20 minutos</span>
-                <span class="stat-tag" style="color:#fbbf24;">Intermedio</span>
+                    {% if curso.dificultad == "Fácil" or curso.dificultad == "Facil" %}
+                        <span class="stat-tag dificultad-facil">{{ curso.dificultad }}</span>
+                    {% elif curso.dificultad == "Media" or curso.dificultad == "Intermedio" %}
+                        <span class="stat-tag dificultad-media">{{ curso.dificultad }}</span>
+                    {% elif curso.dificultad == "Difícil" or curso.dificultad == "Dificil" %}
+                        <span class="stat-tag dificultad-dificil">{{ curso.dificultad }}</span>
+                    {% else %}
+                        <span class="stat-tag">{{ curso.dificultad }}</span>
+                    {% endif %}
+                </div>
+
+                <button class="lab-btn btn-phantom"
+                    onclick="window.open('/cursos/curso/{{ curso.id }}/', '_blank')">
+                    Comenzar
+                </button>
+
             </div>
 
-    <button class="lab-btn btn-phantom" onclick="window.open('/cursos/curso/4/', '_blank')">
-    Comenzar
-</button>
-        </div>
+        {% empty %}
 
-        <div class="lab-card-phantom" data-category="vulnerabilidades">
-            <div class="lab-icon-sphere">🆔</div>
-            <h3>Introduccion a SQL Injection</h3>
-            <p>Una aplicación es tan segura como la consulta más débil que ejecuta. Un solo parámetro mal validado puede convertir una simple búsqueda en una puerta de acceso a toda una base de datos.</p>
-            
-            <div class="lab-stats">
-                <span class="stat-tag">⏱ 20 minutos</span>
-                <span class="stat-tag" style="color:#4ade80;">Fácil</span>
-            </div>
+            <p style="color:#94a3b8;">No hay cursos disponibles.</p>
 
-    <button class="lab-btn btn-phantom" onclick="window.open('/cursos/curso/5/', '_blank')">
-    Comenzar
-</button>
-        </div>
+        {% endfor %}
 
-            <div class="lab-card-phantom" data-category="vulnerabilidades">
-            <div class="lab-icon-sphere">👥</div>
-            <h3>Ingeniería Social y Manipulación Psicológica</h3>
-            <p>Aprende cómo los atacantes manipulan la confianza, la urgencia y la curiosidad para comprometer organizaciones. Identifica técnicas de ingeniería social y pon a prueba tus habilidades en escenarios interactivos basados en situaciones reales.</p>
-            
-            <div class="lab-stats">
-                <span class="stat-tag">⏱ 45-60 minutos</span>
-                <span class="stat-tag" style="color:#4ade80;">Fácil</span>
-            </div>
-
-    <button class="lab-btn btn-phantom" onclick="window.open('/cursos/curso/6/', '_blank')">
-    Comenzar
-</button>
-        </div>
     </div>
 </div>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const chips = document.querySelectorAll(".filter-chip");
